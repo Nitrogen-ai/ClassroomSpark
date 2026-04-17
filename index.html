@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClassroomSpark — Free Learning Tools</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#FFFDF7;--surface:#FFF9EE;--card:#FFFFFF;
+  --ink:#1A1A2E;--ink2:#3D3D5C;--ink3:#7A7A9C;
+  --spark:#F59E0B;--spark2:#D97706;--sparkGlow:#FEF3C7;
+  --coral:#EF4444;--ocean:#0EA5E9;--mint:#10B981;
+  --radius:16px;--shadow:0 4px 24px rgba(26,26,46,.06);
+  --shadowHover:0 8px 40px rgba(26,26,46,.12);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Source Serif 4',Georgia,serif;background:var(--bg);color:var(--ink);line-height:1.7;overflow-x:hidden}
+body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.5}
+h1,h2,h3,h4{font-family:'Outfit',sans-serif;line-height:1.2}
+a{color:var(--spark2);text-decoration:none;transition:color .2s}
+a:hover{color:var(--coral)}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,253,247,.85);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,0,0,.05)}
+.nav-inner{max-width:1100px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Outfit',sans-serif;font-weight:800;font-size:1.4rem;color:var(--ink);display:flex;align-items:center;gap:8px}
+.logo-spark{color:var(--spark);font-size:1.6rem;animation:sparkle 2s ease-in-out infinite}
+@keyframes sparkle{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.2) rotate(15deg)}}
+.nav-right{display:flex;align-items:center;gap:24px}
+.nav-links{display:flex;gap:24px;font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:500}
+.nav-links a{color:var(--ink2)}
+.nav-links a:hover{color:var(--spark)}
+.lang-toggle{
+  display:flex;border-radius:8px;overflow:hidden;border:2px solid rgba(0,0,0,.08);
+  font-family:'Outfit',sans-serif;font-size:.78rem;font-weight:700;
+}
+.lang-btn{padding:5px 12px;cursor:pointer;background:transparent;border:none;color:var(--ink3);transition:all .2s}
+.lang-btn.active{background:var(--ink);color:#fff}
+
+/* Hero */
+.hero{min-height:92vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 32px 80px;position:relative;background:linear-gradient(170deg,var(--bg) 0%,var(--sparkGlow) 50%,var(--bg) 100%)}
+.hero-content{max-width:720px}
+.hero-badge{display:inline-block;padding:6px 18px;border-radius:30px;background:rgba(245,158,11,.1);color:var(--spark2);font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:24px}
+.hero h1{font-size:3.5rem;font-weight:800;margin-bottom:20px}
+.hero h1 .spark-word{color:var(--spark);position:relative;display:inline-block}
+.hero h1 .spark-word::after{content:'✦';position:absolute;top:-12px;right:-20px;font-size:.7rem;color:var(--spark);animation:twinkle 1.5s ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+.hero p{font-size:1.25rem;color:var(--ink2);max-width:560px;margin:0 auto 36px}
+.hero-buttons{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border-radius:12px;font-family:'Outfit',sans-serif;font-weight:600;font-size:1rem;border:none;cursor:pointer;transition:all .3s;text-decoration:none}
+.btn-primary{background:var(--ink);color:#fff;box-shadow:0 4px 16px rgba(26,26,46,.15)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(26,26,46,.2);color:#fff}
+.btn-secondary{background:transparent;color:var(--ink);border:2px solid rgba(26,26,46,.15)}
+.btn-secondary:hover{border-color:var(--spark);color:var(--spark);transform:translateY(-2px)}
+.hero-sparks{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden}
+.hero-sparks span{position:absolute;color:var(--spark);opacity:.15;font-size:1.5rem;animation:float 6s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-20px) rotate(180deg)}}
+
+/* Section */
+.section{padding:100px 32px}
+.section-inner{max-width:1100px;margin:0 auto}
+.section-label{font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--spark);margin-bottom:12px}
+.section-title{font-size:2.4rem;font-weight:700;margin-bottom:16px}
+.section-subtitle{font-size:1.1rem;color:var(--ink2);max-width:600px;margin-bottom:48px}
+
+/* App Cards */
+.apps-grid{display:grid;gap:32px}
+.app-card{background:var(--card);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);transition:all .4s;border:1px solid rgba(0,0,0,.04);display:grid;grid-template-columns:1fr 1fr}
+.app-card:hover{box-shadow:var(--shadowHover);transform:translateY(-4px)}
+.app-preview{padding:40px;display:flex;align-items:center;justify-content:center;min-height:280px;position:relative}
+.app-preview-mock{width:100%;max-width:260px;border-radius:12px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.4);padding:16px}
+.mock-bar{display:flex;gap:6px;margin-bottom:12px}
+.mock-dot{width:8px;height:8px;border-radius:50%}
+.mock-line{height:10px;border-radius:4px;margin-bottom:8px}
+.mock-btn-row{display:flex;gap:8px;margin-top:12px}
+.mock-btn{height:28px;border-radius:8px;flex:1}
+.mock-label{text-align:center;margin-top:10px;font-family:Outfit,sans-serif;font-size:.6rem;opacity:.4}
+
+.app-info{padding:36px;display:flex;flex-direction:column;justify-content:center}
+.app-tag{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:600;width:fit-content;margin-bottom:14px}
+.tag-lang{background:rgba(14,165,233,.1);color:var(--ocean)}
+.tag-sci{background:rgba(16,185,129,.1);color:var(--mint)}
+.app-info h3{font-size:1.5rem;font-weight:700;margin-bottom:10px}
+.app-info p{color:var(--ink2);margin-bottom:16px;font-size:.95rem}
+.app-features{list-style:none;margin-bottom:20px}
+.app-features li{padding:5px 0;color:var(--ink2);font-size:.9rem;display:flex;align-items:flex-start;gap:10px}
+.app-features li::before{content:'✦';color:var(--spark);font-size:.65rem;margin-top:5px;flex-shrink:0}
+.download-row{display:flex;gap:10px;flex-wrap:wrap}
+
+/* How */
+.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+.how-card{text-align:center;padding:36px 24px}
+.how-icon{width:64px;height:64px;border-radius:16px;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:1.8rem}
+.how-card h4{font-size:1.1rem;margin-bottom:8px}
+.how-card p{font-size:.9rem;color:var(--ink3)}
+
+/* About */
+.about-box{display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:center;background:var(--surface);border-radius:20px;padding:48px}
+.about-avatar{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,var(--spark),var(--coral));display:flex;align-items:center;justify-content:center;font-size:2.5rem;box-shadow:0 4px 20px rgba(245,158,11,.2)}
+.about-text h3{font-size:1.4rem;margin-bottom:12px}
+.about-text p{color:var(--ink2);font-size:1rem}
+
+/* Tip */
+.tip-section{text-align:center;background:linear-gradient(170deg,var(--sparkGlow),var(--bg));padding:80px 32px}
+.tip-box{max-width:600px;margin:0 auto;background:var(--card);border-radius:20px;padding:48px;box-shadow:var(--shadow);border:2px solid rgba(245,158,11,.15)}
+.tip-box h2{font-size:1.8rem;margin-bottom:12px}
+.tip-box p{color:var(--ink2);margin-bottom:28px;font-size:1rem}
+.tip-link{display:inline-flex;align-items:center;gap:10px;padding:16px 36px;border-radius:14px;background:linear-gradient(135deg,var(--spark),var(--spark2));color:#fff;font-family:'Outfit',sans-serif;font-weight:700;font-size:1.1rem;box-shadow:0 4px 20px rgba(245,158,11,.3);transition:all .3s;text-decoration:none}
+.tip-link:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(245,158,11,.4);color:#fff}
+
+/* Terms */
+.terms-content{max-width:700px;background:var(--surface);border-radius:16px;padding:36px;font-size:.92rem;color:var(--ink2);line-height:1.8}
+.terms-content h4{font-family:'Outfit',sans-serif;color:var(--ink);margin:16px 0 8px;font-size:1rem}
+.terms-content h4:first-child{margin-top:0}
+
+/* Contact */
+.contact-box{text-align:center;max-width:500px;margin:0 auto;background:var(--card);border-radius:20px;padding:40px;box-shadow:var(--shadow)}
+.contact-box p{color:var(--ink2);margin-bottom:20px}
+.contact-hint{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:12px;background:var(--surface);color:var(--ink2);font-family:'Outfit',sans-serif;font-size:.9rem}
+
+/* Footer */
+footer{text-align:center;padding:40px 32px;border-top:1px solid rgba(0,0,0,.05);font-family:'Outfit',sans-serif;font-size:.8rem;color:var(--ink3)}
+footer .footer-brand{font-weight:700;color:var(--ink2)}
+.footer-credit{font-size:.65rem;color:var(--ink3);opacity:.4;margin-top:8px}
+
+/* Year badge */
+.year-badge{display:inline-block;padding:2px 10px;border-radius:6px;font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:700;margin-left:8px;vertical-align:middle}
+.yb-7{background:rgba(14,165,233,.12);color:var(--ocean)}
+.yb-8{background:rgba(245,158,11,.12);color:var(--spark2)}
+.yb-10{background:rgba(239,68,68,.12);color:var(--coral)}
+
+@media(max-width:768px){
+  .hero h1{font-size:2.2rem}
+  .hero p{font-size:1.05rem}
+  .app-card{grid-template-columns:1fr}
+  .how-grid{grid-template-columns:1fr;gap:16px}
+  .about-box{grid-template-columns:1fr;text-align:center}
+  .about-avatar{margin:0 auto}
+  .nav-links{display:none}
+  .section{padding:60px 20px}
+  .app-info{padding:24px}
+  .tip-box{padding:32px 24px}
+  .section-title{font-size:1.8rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo"><span class="logo-spark">✦</span> ClassroomSpark</div>
+    <div class="nav-right">
+      <div class="nav-links">
+        <a href="#apps" data-t="navTools">Tools</a>
+        <a href="#how" data-t="navHow">How It Works</a>
+        <a href="#about" data-t="navAbout">About</a>
+        <a href="#support" data-t="navSupport">Support</a>
+        <a href="#contact" data-t="navContact">Contact</a>
+      </div>
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('de')">DE</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-sparks">
+    <span style="top:15%;left:10%">✦</span><span style="top:25%;right:15%;animation-delay:1s;font-size:1rem">✦</span>
+    <span style="top:60%;left:20%;animation-delay:2s;font-size:2rem">✦</span><span style="top:70%;right:25%;animation-delay:.5s">✦</span>
+    <span style="top:40%;left:50%;animation-delay:1.5s;font-size:.8rem">✦</span><span style="top:80%;left:70%;animation-delay:3s;font-size:1.2rem">✦</span>
+  </div>
+  <div class="hero-content reveal">
+    <div class="hero-badge" data-t="heroBadge">Free &amp; Open for Educators</div>
+    <h1 data-t="heroTitle">Teaching tools that <span class="spark-word">spark</span> learning</h1>
+    <p data-t="heroSub">Handcrafted, offline-ready web apps for language and science teachers. Free to download — powered by a tip-based honesty model.</p>
+    <div class="hero-buttons">
+      <a href="#apps" class="btn btn-primary" data-t="heroCTA">⬇ Browse Tools</a>
+      <a href="#support" class="btn btn-secondary" data-t="heroTip">☕ Leave a Tip</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="apps">
+  <div class="section-inner">
+    <div class="section-label reveal" data-t="secTools">Tools</div>
+    <h2 class="section-title reveal" data-t="secToolsTitle">Learning Apps</h2>
+    <p class="section-subtitle reveal" data-t="secToolsSub">Each app works entirely offline — no accounts, no tracking, no ads. Just download the HTML file and open it in any browser.</p>
+
+    <div class="apps-grid">
+
+      <!-- Verb Conjugation Year 7 -->
+      <div class="app-card reveal">
+        <div class="app-preview" style="background:linear-gradient(135deg,#0f0f1a,#1a1a2e)">
+          <div class="app-preview-mock" style="background:#1a1a2e">
+            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#e94560"></div></div>
+            <div class="mock-line" style="width:80%;background:linear-gradient(90deg,#e94560,#ff6b9d);height:14px;margin-bottom:14px"></div>
+            <div class="mock-line" style="width:55%;background:#4fc3f7;opacity:.5"></div>
+            <div class="mock-line" style="width:100%;background:#ffffff10"></div>
+            <div class="mock-line" style="width:40%;background:#ffd700;opacity:.4"></div>
+            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#e94560,#ff6b9d)"></div><div class="mock-btn" style="background:#ffffff10"></div></div>
+            <div class="mock-label" style="color:#ffffff40">🎯 Year 7</div>
+          </div>
+        </div>
+        <div class="app-info">
+          <div class="app-tag tag-lang">🌍 English</div>
+          <h3 data-t="app1Title">Verb Conjugation Trainer <span class="year-badge yb-7">Year 7</span></h3>
+          <p data-t="app1Desc">Beginner-friendly conjugation trainer covering 7 essential tenses — perfect for Year 7 students building their grammar foundation.</p>
+          <ul class="app-features">
+            <li data-t="app1f1">7 tenses: simple present, present &amp; past progressive, present perfect, simple past, will- &amp; going to-future</li>
+            <li data-t="app1f2">Spinning wheel randomiser for each grammar category</li>
+            <li data-t="app1f3">85+ irregular verbs with optional verb form tips</li>
+            <li data-t="app1f4">CSV import for student names — classroom ready</li>
+            <li data-t="app1f5">Color-coded formation rules as learning aid</li>
+          </ul>
+          <div class="download-row">
+            <a href="verb_conjugation_trainer_year7.html" download class="btn btn-primary">⬇ Download</a>
+            <a href="#support" class="btn btn-secondary">☕ Tip</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Verb Conjugation Year 8 -->
+      <div class="app-card reveal">
+        <div class="app-preview" style="background:linear-gradient(135deg,#0f0f1a,#16213e)">
+          <div class="app-preview-mock" style="background:#1a1a2e">
+            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#e94560"></div></div>
+            <div class="mock-line" style="width:85%;background:linear-gradient(90deg,#f59e0b,#fbbf24);height:14px;margin-bottom:14px"></div>
+            <div class="mock-line" style="width:65%;background:#b388ff;opacity:.5"></div>
+            <div class="mock-line" style="width:100%;background:#ffffff10"></div>
+            <div class="mock-line" style="width:50%;background:#4fc3f7;opacity:.4"></div>
+            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#f59e0b,#fbbf24)"></div><div class="mock-btn" style="background:#ffffff10"></div></div>
+            <div class="mock-label" style="color:#ffffff40">🎯 Year 8</div>
+          </div>
+        </div>
+        <div class="app-info">
+          <div class="app-tag tag-lang">🌍 English</div>
+          <h3 data-t="app2Title">Verb Conjugation Trainer <span class="year-badge yb-8">Year 8</span></h3>
+          <p data-t="app2Desc">Intermediate level with 9 tenses — adding present perfect progressive and past perfect for deeper grammar practice.</p>
+          <ul class="app-features">
+            <li data-t="app2f1">9 tenses: all Year 7 tenses + present perfect progressive &amp; past perfect</li>
+            <li data-t="app2f2">Positive &amp; negative polarity with contraction support</li>
+            <li data-t="app2f3">Smart predicate checker — accepts any valid sentence</li>
+            <li data-t="app2f4">3-attempt system with progressive hints</li>
+            <li data-t="app2f5">Sentence type validation (statement, Wh- &amp; Yes/No-question)</li>
+          </ul>
+          <div class="download-row">
+            <a href="verb_conjugation_trainer_year8.html" download class="btn btn-primary">⬇ Download</a>
+            <a href="#support" class="btn btn-secondary">☕ Tip</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Verb Conjugation Year 10 -->
+      <div class="app-card reveal">
+        <div class="app-preview" style="background:linear-gradient(135deg,#1a0f1a,#2e1a2e)">
+          <div class="app-preview-mock" style="background:#1a1a2e">
+            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#e94560"></div></div>
+            <div class="mock-line" style="width:90%;background:linear-gradient(90deg,#ef4444,#f97316);height:14px;margin-bottom:14px"></div>
+            <div class="mock-line" style="width:70%;background:#ffd700;opacity:.5"></div>
+            <div class="mock-line" style="width:100%;background:#ffffff10"></div>
+            <div class="mock-line" style="width:45%;background:#b388ff;opacity:.4"></div>
+            <div class="mock-line" style="width:80%;background:#ffffff08"></div>
+            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#ef4444,#f97316)"></div><div class="mock-btn" style="background:#ffffff10"></div></div>
+            <div class="mock-label" style="color:#ffffff40">🎯 Year 10</div>
+          </div>
+        </div>
+        <div class="app-info">
+          <div class="app-tag tag-lang">🌍 English</div>
+          <h3 data-t="app3Title">Verb Conjugation Trainer <span class="year-badge yb-10">Year 10</span></h3>
+          <p data-t="app3Desc">Complete edition covering all 13 English tenses — including future progressive, future perfect, and all progressive forms.</p>
+          <ul class="app-features">
+            <li data-t="app3f1">All 13 tenses including future progressive, future perfect &amp; future perfect progressive</li>
+            <li data-t="app3f2">Full tense tracking — every tense gets practised before recycling</li>
+            <li data-t="app3f3">Streaks, scores &amp; confetti rewards</li>
+            <li data-t="app3f4">Color-coded formation rules with examples using a different verb</li>
+            <li data-t="app3f5">100% offline — single HTML file, no install needed</li>
+          </ul>
+          <div class="download-row">
+            <a href="verb_conjugation_trainer_year10.html" download class="btn btn-primary">⬇ Download</a>
+            <a href="#support" class="btn btn-secondary">☕ Tip</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Periodic Table Trainer -->
+      <div class="app-card reveal">
+        <div class="app-preview" style="background:linear-gradient(135deg,#0a1628,#0f2440)">
+          <div class="app-preview-mock" style="background:#0f1a2e">
+            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#0ea5e9"></div></div>
+            <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:3px;margin-bottom:10px">
+              <div style="background:#ef4444;height:16px;border-radius:3px;opacity:.7"></div>
+              <div style="background:#f59e0b;height:16px;border-radius:3px;opacity:.7"></div>
+              <div style="background:#10b981;height:16px;border-radius:3px;opacity:.7"></div>
+              <div style="background:#0ea5e9;height:16px;border-radius:3px;opacity:.7"></div>
+              <div style="background:#8b5cf6;height:16px;border-radius:3px;opacity:.7"></div>
+              <div style="background:#ec4899;height:16px;border-radius:3px;opacity:.7"></div>
+              <div style="background:#0ea5e9;height:16px;border-radius:3px;opacity:.5"></div>
+              <div style="background:#10b981;height:16px;border-radius:3px;opacity:.5"></div>
+              <div style="background:#f59e0b;height:16px;border-radius:3px;opacity:.5"></div>
+              <div style="background:#ef4444;height:16px;border-radius:3px;opacity:.5"></div>
+              <div style="background:#8b5cf6;height:16px;border-radius:3px;opacity:.5"></div>
+              <div style="background:#ec4899;height:16px;border-radius:3px;opacity:.5"></div>
+            </div>
+            <div class="mock-line" style="width:60%;background:#ffd700;opacity:.4"></div>
+            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#0ea5e9,#06b6d4)"></div><div class="mock-btn" style="background:#ffffff10"></div></div>
+            <div class="mock-label" style="color:#ffffff40">🧪 Periodensystem</div>
+          </div>
+        </div>
+        <div class="app-info">
+          <div class="app-tag tag-sci">🧪 <span data-t="tagSci">Science / Chemistry</span></div>
+          <h3 data-t="app4Title">Periodic Table Trainer</h3>
+          <p data-t="app4Desc">Interactive periodic table quiz — practise element names, symbols, and atomic numbers with a spinning name wheel for classroom use.</p>
+          <ul class="app-features">
+            <li data-t="app4f1">Interactive periodic table with clickable elements</li>
+            <li data-t="app4f2">Quiz mode: name, symbol &amp; atomic number</li>
+            <li data-t="app4f3">Built-in name wheel for random student selection</li>
+            <li data-t="app4f4">Bilingual (German / English) with language toggle</li>
+            <li data-t="app4f5">Works offline on any device — phone, tablet, laptop</li>
+          </ul>
+          <div class="download-row">
+            <a href="periodensystem_trainer.html" download class="btn btn-primary">⬇ Download</a>
+            <a href="#support" class="btn btn-secondary">☕ Tip</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section" id="how" style="background:var(--surface)">
+  <div class="section-inner">
+    <div class="section-label reveal" data-t="secHow">Process</div>
+    <h2 class="section-title reveal" data-t="secHowTitle">How It Works</h2>
+    <p class="section-subtitle reveal" data-t="secHowSub">Three simple steps. No sign-up, no paywall, no strings attached.</p>
+    <div class="how-grid">
+      <div class="how-card reveal">
+        <div class="how-icon" style="background:rgba(14,165,233,.1)">⬇</div>
+        <h4 data-t="how1T">1. Download</h4>
+        <p data-t="how1P">Grab any tool as a single HTML file. It's yours to keep, share, and adapt for your classroom.</p>
+      </div>
+      <div class="how-card reveal">
+        <div class="how-icon" style="background:rgba(16,185,129,.1)">🌐</div>
+        <h4 data-t="how2T">2. Open &amp; Use</h4>
+        <p data-t="how2P">Open the file in any browser — Chrome, Firefox, Safari. Works offline, on any device.</p>
+      </div>
+      <div class="how-card reveal">
+        <div class="how-icon" style="background:rgba(245,158,11,.1)">☕</div>
+        <h4 data-t="how3T">3. Tip if You Like It</h4>
+        <p data-t="how3P">If a tool helps your teaching, consider a small tip. It's voluntary and based on the honesty principle.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="section-inner">
+    <div class="section-label reveal" data-t="secAbout">About</div>
+    <h2 class="section-title reveal" data-t="secAboutTitle">Behind ClassroomSpark</h2>
+    <div class="about-box reveal">
+      <div class="about-avatar">👨‍🏫</div>
+      <div class="about-text">
+        <h3 data-t="aboutH">Made by a Teacher, for Teachers</h3>
+        <p data-t="aboutP1">ClassroomSpark is a personal project born from real classroom needs. Every tool is designed with pedagogical intent — thoughtful learning experiences that help students practise, make mistakes, and improve.</p>
+        <p style="margin-top:12px" data-t="aboutP2">The apps are crafted iteratively: conceived, tested, and refined until they work the way a good exercise should. They'll always be free to use. If you find them useful, a small tip helps keep the project going.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tip-section" id="support">
+  <div class="tip-box reveal">
+    <h2 data-t="tipH">☕ Support ClassroomSpark</h2>
+    <p data-t="tipP">These tools are free because education shouldn't have a paywall. If an app saved you preparation time or helped your students — a small tip goes a long way.</p>
+    <a href="https://buymeacoffee.com/classroomspark" target="_blank" rel="noopener" class="tip-link">☕ Buy Me a Coffee</a>
+    <p style="margin-top:16px;font-size:.8rem;color:var(--ink3)" data-t="tipThx">Every tip — no matter the size — is genuinely appreciated. Thank you! 🙏</p>
+  </div>
+</section>
+
+<section class="section" id="terms">
+  <div class="section-inner">
+    <div class="section-label reveal" data-t="secTerms">Legal</div>
+    <h2 class="section-title reveal" data-t="secTermsTitle">Terms of Use</h2>
+    <div class="terms-content reveal">
+      <h4 data-t="t1h">Usage Rights</h4>
+      <p data-t="t1p">All tools on ClassroomSpark are provided free of charge for personal and educational use. You may download, use, and share them with colleagues and students. You may adapt them for your own classroom needs.</p>
+      <h4 data-t="t2h">Restrictions</h4>
+      <p data-t="t2p">You may not resell these tools or claim them as your own creation. You may not redistribute modified versions under a different brand without attribution. Commercial use beyond individual classroom settings requires prior written consent.</p>
+      <h4 data-t="t3h">Tip-Based Model</h4>
+      <p data-t="t3p">ClassroomSpark operates on an honesty-based tip model. There is no obligation to pay, and all tools remain fully functional without payment. Tips are voluntary contributions to support ongoing development.</p>
+      <h4 data-t="t4h">Disclaimer</h4>
+      <p data-t="t4p">Tools are provided "as is" without warranty. While great care is taken to ensure accuracy, no guarantee is made. Content may be updated or corrected at any time.</p>
+      <h4 data-t="t5h">Privacy</h4>
+      <p data-t="t5p">ClassroomSpark tools run entirely in your browser. No data is collected, transmitted, or stored on any server. Your students' information stays on your device.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="contact" style="background:var(--surface)">
+  <div class="section-inner" style="text-align:center">
+    <div class="section-label reveal" data-t="secContact">Contact</div>
+    <h2 class="section-title reveal" data-t="secContactTitle">Get in Touch</h2>
+    <div class="contact-box reveal">
+      <p data-t="contactP">Have a suggestion, found a bug, or want to request a new tool? I'd love to hear from you.</p>
+      <div class="contact-hint">💬 <span data-t="contactHint">Reach out via the contact form on <strong>Buy Me a Coffee</strong></span></div>
+      <p style="margin-top:16px;font-size:.85rem;color:var(--ink3)" data-t="contactSub">I read and reply to every message.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">✦ ClassroomSpark</div>
+  <p style="margin-top:6px" data-t="footerP">Free learning tools for educators — built with care, shared with trust.</p>
+  <div class="footer-credit">Poremski</div>
+</footer>
+
+<script>
+const T={
+en:{
+  navTools:"Tools",navHow:"How It Works",navAbout:"About",navSupport:"Support",navContact:"Contact",
+  heroBadge:"Free & Open for Educators",
+  heroTitle:'Teaching tools that <span class="spark-word">spark</span> learning',
+  heroSub:"Handcrafted, offline-ready web apps for language and science teachers. Free to download — powered by a tip-based honesty model.",
+  heroCTA:"⬇ Browse Tools",heroTip:"☕ Leave a Tip",
+  secTools:"Tools",secToolsTitle:"Learning Apps",
+  secToolsSub:"Each app works entirely offline — no accounts, no tracking, no ads. Just download the HTML file and open it in any browser.",
+  app1Title:'Verb Conjugation Trainer <span class="year-badge yb-7">Year 7</span>',
+  app1Desc:"Beginner-friendly conjugation trainer covering 7 essential tenses — perfect for Year 7 students building their grammar foundation.",
+  app1f1:"7 tenses: simple present, present & past progressive, present perfect, simple past, will- & going to-future",
+  app1f2:"Spinning wheel randomiser for each grammar category",
+  app1f3:"85+ irregular verbs with optional verb form tips",
+  app1f4:"CSV import for student names — classroom ready",
+  app1f5:"Color-coded formation rules as learning aid",
+  app2Title:'Verb Conjugation Trainer <span class="year-badge yb-8">Year 8</span>',
+  app2Desc:"Intermediate level with 9 tenses — adding present perfect progressive and past perfect for deeper grammar practice.",
+  app2f1:"9 tenses: all Year 7 tenses + present perfect progressive & past perfect",
+  app2f2:"Positive & negative polarity with contraction support",
+  app2f3:"Smart predicate checker — accepts any valid sentence",
+  app2f4:"3-attempt system with progressive hints",
+  app2f5:"Sentence type validation (statement, Wh- & Yes/No-question)",
+  app3Title:'Verb Conjugation Trainer <span class="year-badge yb-10">Year 10</span>',
+  app3Desc:"Complete edition covering all 13 English tenses — including future progressive, future perfect, and all progressive forms.",
+  app3f1:"All 13 tenses including future progressive, future perfect & future perfect progressive",
+  app3f2:"Full tense tracking — every tense gets practised before recycling",
+  app3f3:"Streaks, scores & confetti rewards",
+  app3f4:"Color-coded formation rules with examples using a different verb",
+  app3f5:"100% offline — single HTML file, no install needed",
+  tagSci:"Science / Chemistry",
+  app4Title:"Periodic Table Trainer",
+  app4Desc:"Interactive periodic table quiz — practise element names, symbols, and atomic numbers with a spinning name wheel for classroom use.",
+  app4f1:"Interactive periodic table with clickable elements",
+  app4f2:"Quiz mode: name, symbol & atomic number",
+  app4f3:"Built-in name wheel for random student selection",
+  app4f4:"Bilingual (German / English) with language toggle",
+  app4f5:"Works offline on any device — phone, tablet, laptop",
+  secHow:"Process",secHowTitle:"How It Works",secHowSub:"Three simple steps. No sign-up, no paywall, no strings attached.",
+  how1T:"1. Download",how1P:"Grab any tool as a single HTML file. It's yours to keep, share, and adapt for your classroom.",
+  how2T:"2. Open & Use",how2P:"Open the file in any browser — Chrome, Firefox, Safari. Works offline, on any device.",
+  how3T:"3. Tip if You Like It",how3P:"If a tool helps your teaching, consider a small tip. It's voluntary and based on the honesty principle.",
+  secAbout:"About",secAboutTitle:"Behind ClassroomSpark",
+  aboutH:"Made by a Teacher, for Teachers",
+  aboutP1:"ClassroomSpark is a personal project born from real classroom needs. Every tool is designed with pedagogical intent — thoughtful learning experiences that help students practise, make mistakes, and improve.",
+  aboutP2:"The apps are crafted iteratively: conceived, tested, and refined until they work the way a good exercise should. They'll always be free to use. If you find them useful, a small tip helps keep the project going.",
+  tipH:"☕ Support ClassroomSpark",tipP:"These tools are free because education shouldn't have a paywall. If an app saved you preparation time or helped your students — a small tip goes a long way.",
+  tipThx:"Every tip — no matter the size — is genuinely appreciated. Thank you! 🙏",
+  secTerms:"Legal",secTermsTitle:"Terms of Use",
+  t1h:"Usage Rights",t1p:"All tools on ClassroomSpark are provided free of charge for personal and educational use. You may download, use, and share them with colleagues and students. You may adapt them for your own classroom needs.",
+  t2h:"Restrictions",t2p:"You may not resell these tools or claim them as your own creation. You may not redistribute modified versions under a different brand without attribution. Commercial use beyond individual classroom settings requires prior written consent.",
+  t3h:"Tip-Based Model",t3p:"ClassroomSpark operates on an honesty-based tip model. There is no obligation to pay, and all tools remain fully functional without payment. Tips are voluntary contributions to support ongoing development.",
+  t4h:"Disclaimer",t4p:'Tools are provided "as is" without warranty. While great care is taken to ensure accuracy, no guarantee is made. Content may be updated or corrected at any time.',
+  t5h:"Privacy",t5p:"ClassroomSpark tools run entirely in your browser. No data is collected, transmitted, or stored on any server. Your students' information stays on your device.",
+  secContact:"Contact",secContactTitle:"Get in Touch",
+  contactP:"Have a suggestion, found a bug, or want to request a new tool? I'd love to hear from you.",
+  contactHint:'Reach out via the contact form on <strong>Buy Me a Coffee</strong>',
+  contactSub:"I read and reply to every message.",
+  footerP:"Free learning tools for educators — built with care, shared with trust.",
+},
+de:{
+  navTools:"Tools",navHow:"So funktioniert's",navAbout:"Über uns",navSupport:"Unterstützen",navContact:"Kontakt",
+  heroBadge:"Kostenlos & offen für Lehrkräfte",
+  heroTitle:'Lerntools, die den Unterricht <span class="spark-word">bereichern</span>',
+  heroSub:"Handgemachte, offline-fähige Web-Apps für Sprach- und Naturwissenschaftslehrkräfte. Kostenlos herunterladen — getragen von einem Trinkgeld-Modell auf Vertrauensbasis.",
+  heroCTA:"⬇ Tools entdecken",heroTip:"☕ Trinkgeld geben",
+  secTools:"Tools",secToolsTitle:"Lern-Apps",
+  secToolsSub:"Jede App funktioniert komplett offline — kein Konto, kein Tracking, keine Werbung. Einfach die HTML-Datei herunterladen und im Browser öffnen.",
+  app1Title:'Verb Conjugation Trainer <span class="year-badge yb-7">Klasse 7</span>',
+  app1Desc:"Einsteigerfreundlicher Konjugationstrainer mit 7 grundlegenden Zeitformen — ideal für Klasse 7 zum Aufbau einer soliden Grammatikbasis.",
+  app1f1:"7 Zeitformen: Simple Present, Present & Past Progressive, Present Perfect, Simple Past, Will- & Going-to-Future",
+  app1f2:"Glücksrad-Zufallsprinzip für jede Grammatikkategorie",
+  app1f3:"85+ unregelmäßige Verben mit optionalen Stammform-Tipps",
+  app1f4:"CSV-Import für Schülernamen — sofort im Unterricht einsetzbar",
+  app1f5:"Farbcodierte Bildungsregeln als Lernhilfe",
+  app2Title:'Verb Conjugation Trainer <span class="year-badge yb-8">Klasse 8</span>',
+  app2Desc:"Mittelstufe mit 9 Zeitformen — erweitert um Present Perfect Progressive und Past Perfect für tieferes Grammatikverständnis.",
+  app2f1:"9 Zeitformen: alle aus Klasse 7 + Present Perfect Progressive & Past Perfect",
+  app2f2:"Positive & negative Polarität mit Kurzform-Unterstützung (don't, won't...)",
+  app2f3:"Intelligente Prädikatsprüfung — akzeptiert jeden gültigen Satz",
+  app2f4:"3-Versuche-System mit aufbauenden Hinweisen",
+  app2f5:"Satzart-Validierung (Aussagesatz, W-Frage & Ja/Nein-Frage)",
+  app3Title:'Verb Conjugation Trainer <span class="year-badge yb-10">Klasse 10</span>',
+  app3Desc:"Vollständige Ausgabe mit allen 13 englischen Zeitformen — inklusive Future Progressive, Future Perfect und alle Progressive-Formen.",
+  app3f1:"Alle 13 Zeitformen inkl. Future Progressive, Future Perfect & Future Perfect Progressive",
+  app3f2:"Zeitformen-Tracking — jede Zeitform wird geübt, bevor sie wiederholt wird",
+  app3f3:"Streaks, Punktestand & Konfetti-Belohnungen",
+  app3f4:"Farbcodierte Bildungsregeln mit Beispielen eines anderen Verbs",
+  app3f5:"100% offline — einzelne HTML-Datei, keine Installation nötig",
+  tagSci:"Naturwissenschaft / Chemie",
+  app4Title:"Periodensystem Trainer",
+  app4Desc:"Interaktives Periodensystem-Quiz — Elementnamen, Symbole und Ordnungszahlen üben, mit Namenrad für den Unterrichtseinsatz.",
+  app4f1:"Interaktives Periodensystem mit klickbaren Elementen",
+  app4f2:"Quiz-Modus: Name, Symbol & Ordnungszahl",
+  app4f3:"Eingebautes Namenrad für zufällige Schülerauswahl",
+  app4f4:"Zweisprachig (Deutsch / Englisch) mit Sprachumschalter",
+  app4f5:"Funktioniert offline auf jedem Gerät — Handy, Tablet, Laptop",
+  secHow:"Ablauf",secHowTitle:"So funktioniert's",secHowSub:"Drei einfache Schritte. Keine Anmeldung, keine Paywall, keine Haken.",
+  how1T:"1. Herunterladen",how1P:"Jedes Tool als einzelne HTML-Datei speichern. Behalten, teilen und für den eigenen Unterricht anpassen.",
+  how2T:"2. Öffnen & Nutzen",how2P:"Die Datei in einem beliebigen Browser öffnen — Chrome, Firefox, Safari. Funktioniert offline, auf jedem Gerät.",
+  how3T:"3. Trinkgeld, wenn es gefällt",how3P:"Wenn ein Tool den Unterricht bereichert, freue ich mich über ein kleines Trinkgeld. Freiwillig und auf Vertrauensbasis.",
+  secAbout:"Über uns",secAboutTitle:"Hinter ClassroomSpark",
+  aboutH:"Von einer Lehrkraft, für Lehrkräfte",
+  aboutP1:"ClassroomSpark ist ein persönliches Projekt, das aus echten Bedürfnissen im Unterricht entstanden ist. Jedes Tool ist pädagogisch durchdacht — durchdachte Lernübungen, die Schülerinnen und Schülern helfen, zu üben, Fehler zu machen und sich zu verbessern.",
+  aboutP2:"Die Apps werden iterativ entwickelt: konzipiert, getestet und verfeinert, bis sie so funktionieren, wie eine gute Übung es sollte. Sie werden immer kostenlos bleiben. Ein kleines Trinkgeld hilft, das Projekt am Laufen zu halten.",
+  tipH:"☕ ClassroomSpark unterstützen",tipP:"Diese Tools sind kostenlos, weil Bildung keine Paywall haben sollte. Wenn eine App Vorbereitungszeit gespart oder Schülern geholfen hat — ein kleines Trinkgeld macht einen großen Unterschied.",
+  tipThx:"Jedes Trinkgeld — egal wie klein — wird aufrichtig geschätzt. Vielen Dank! 🙏",
+  secTerms:"Rechtliches",secTermsTitle:"Nutzungsbedingungen",
+  t1h:"Nutzungsrechte",t1p:"Alle Tools auf ClassroomSpark werden kostenlos für den persönlichen und schulischen Gebrauch bereitgestellt. Sie dürfen heruntergeladen, genutzt und mit Kolleginnen, Kollegen und Schülern geteilt werden. Anpassungen für den eigenen Unterricht sind erlaubt.",
+  t2h:"Einschränkungen",t2p:"Die Tools dürfen nicht weiterverkauft oder als eigenes Werk ausgegeben werden. Veränderte Versionen dürfen nicht ohne Quellenangabe unter einem anderen Namen verbreitet werden. Kommerzielle Nutzung über den eigenen Unterricht hinaus bedarf der vorherigen schriftlichen Zustimmung.",
+  t3h:"Trinkgeld-Modell",t3p:"ClassroomSpark basiert auf einem ehrlichen Trinkgeld-Modell. Es gibt keine Zahlungspflicht, und alle Tools funktionieren vollständig ohne Bezahlung. Trinkgelder sind freiwillige Beiträge zur Unterstützung der Weiterentwicklung.",
+  t4h:"Haftungsausschluss",t4p:"Die Tools werden ohne Gewährleistung bereitgestellt. Obwohl große Sorgfalt auf Richtigkeit gelegt wird, kann keine Garantie gegeben werden. Inhalte können jederzeit aktualisiert oder korrigiert werden.",
+  t5h:"Datenschutz",t5p:"ClassroomSpark-Tools laufen vollständig im Browser. Es werden keine Daten erhoben, übertragen oder auf einem Server gespeichert. Die Daten Ihrer Schüler bleiben auf Ihrem Gerät.",
+  secContact:"Kontakt",secContactTitle:"Kontakt aufnehmen",
+  contactP:"Vorschlag, Fehler gefunden oder ein neues Tool gewünscht? Ich freue mich über jede Nachricht.",
+  contactHint:'Kontaktformular auf <strong>Buy Me a Coffee</strong> nutzen',
+  contactSub:"Ich lese und beantworte jede Nachricht.",
+  footerP:"Kostenlose Lerntools für Lehrkräfte — mit Sorgfalt gebaut, mit Vertrauen geteilt.",
+}
+};
+
+let curLang='en';
+function setLang(l){
+  curLang=l;
+  document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.trim()===l.toUpperCase())});
+  document.documentElement.lang=l;
+  document.querySelectorAll('[data-t]').forEach(el=>{
+    const key=el.getAttribute('data-t');
+    if(T[l]&&T[l][key]) el.innerHTML=T[l][key];
+  });
+}
+
+// Scroll reveal
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(i*.04)+'s';obs.observe(el)});
+</script>
+</body>
+</html>
