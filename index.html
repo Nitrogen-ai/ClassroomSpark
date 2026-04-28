@@ -129,9 +129,64 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
 
 /* Year badge */
 .year-badge{display:inline-block;padding:2px 10px;border-radius:6px;font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:700;margin-left:8px;vertical-align:middle}
+.yb-5{background:rgba(139,92,246,.12);color:#7c3aed}
+.yb-6{background:rgba(16,185,129,.12);color:var(--mint)}
 .yb-7{background:rgba(14,165,233,.12);color:var(--ocean)}
 .yb-8{background:rgba(245,158,11,.12);color:var(--spark2)}
 .yb-10{background:rgba(239,68,68,.12);color:var(--coral)}
+.skill-badge{display:inline-block;padding:2px 10px;border-radius:6px;font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:700;margin-left:8px;vertical-align:middle;letter-spacing:.3px}
+.sb-active{background:rgba(20,184,166,.12);color:#0d9488}
+.sb-indirect{background:rgba(244,114,182,.12);color:#db2777}
+.sb-comm{background:rgba(168,85,247,.12);color:#9333ea}
+
+/* Play-online button (variant of secondary, with subtle glow) */
+.btn-play{background:#fff;color:var(--ocean);border:2px solid var(--ocean)}
+.btn-play:hover{background:var(--ocean);color:#fff;transform:translateY(-2px);box-shadow:0 6px 20px rgba(14,165,233,.25)}
+.download-row{flex-wrap:wrap}
+
+/* Subject Chooser — the two big category tiles */
+.subject-chooser{padding:80px 32px 20px;background:linear-gradient(180deg,var(--bg) 0%,var(--surface) 100%)}
+.subject-intro{text-align:center;max-width:640px;margin:0 auto 40px}
+.subject-intro .section-label{margin-bottom:10px}
+.subject-intro h2{font-size:2rem;font-weight:700;margin-bottom:10px}
+.subject-intro p{color:var(--ink2);font-size:1.05rem}
+.subjects-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;max-width:1100px;margin:0 auto}
+.subject-tile{
+  position:relative;padding:56px 40px;border-radius:24px;text-align:center;
+  cursor:pointer;transition:transform .4s cubic-bezier(.16,1,.3,1),box-shadow .4s;
+  overflow:hidden;text-decoration:none;background:var(--card);
+  box-shadow:var(--shadow);border:2px solid rgba(0,0,0,.04);
+  min-height:320px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px;
+}
+.subject-tile:hover{transform:translateY(-6px);box-shadow:var(--shadowHover);border-color:var(--tile-c1)}
+.subject-tile::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--tile-c1) 0%,var(--tile-c2) 100%);opacity:.06;transition:opacity .4s;z-index:0}
+.subject-tile:hover::before{opacity:.12}
+.subject-tile::after{content:'';position:absolute;top:-40%;right:-40%;width:80%;height:80%;background:radial-gradient(circle,var(--tile-c1) 0%,transparent 65%);opacity:.08;transition:opacity .6s,transform .6s;z-index:0}
+.subject-tile:hover::after{opacity:.18;transform:scale(1.2)}
+.subject-tile > *{position:relative;z-index:1}
+.subject-tile.english{--tile-c1:var(--ocean);--tile-c2:#06b6d4}
+.subject-tile.chemistry{--tile-c1:var(--mint);--tile-c2:#14b8a6}
+.subject-icon{font-size:4rem;margin-bottom:4px;display:block;transition:transform .5s cubic-bezier(.34,1.56,.64,1);filter:drop-shadow(0 4px 12px rgba(0,0,0,.08))}
+.subject-tile:hover .subject-icon{transform:scale(1.15) rotate(-6deg)}
+.subject-title{font-family:'Outfit',sans-serif;font-size:2.2rem;font-weight:800;color:var(--ink);margin:0}
+.subject-subtitle{color:var(--ink2);font-size:1.05rem;max-width:380px;margin:0}
+.subject-count{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;border-radius:30px;background:var(--tile-c1);color:#fff;font-family:'Outfit',sans-serif;font-weight:700;font-size:.85rem;letter-spacing:.5px;box-shadow:0 4px 14px color-mix(in srgb,var(--tile-c1) 40%,transparent)}
+.subject-arrow{display:inline-block;font-size:1.6rem;color:var(--tile-c1);transition:transform .3s;font-family:'Outfit',sans-serif;font-weight:600}
+.subject-tile:hover .subject-arrow{transform:translateY(4px)}
+
+/* Category sub-section inside apps */
+.category-header{display:flex;align-items:center;gap:14px;margin:56px 0 24px;padding-bottom:14px;border-bottom:2px solid rgba(0,0,0,.06);scroll-margin-top:80px}
+.category-header:first-of-type{margin-top:8px}
+.category-icon{font-size:2rem}
+.category-name{font-family:'Outfit',sans-serif;font-size:1.6rem;font-weight:700;margin:0}
+.category-meta{margin-left:auto;font-family:'Outfit',sans-serif;font-size:.82rem;color:var(--ink3);text-transform:uppercase;letter-spacing:1px}
+
+/* Lang/skill tag color variants */
+.tag-lang.tag-y5{background:rgba(139,92,246,.1);color:#7c3aed}
+.tag-lang.tag-y6{background:rgba(16,185,129,.1);color:var(--mint)}
+.tag-lang.tag-skill-active{background:rgba(20,184,166,.1);color:#0d9488}
+.tag-lang.tag-skill-indirect{background:rgba(244,114,182,.1);color:#db2777}
+.tag-sci.tag-comm{background:rgba(168,85,247,.1);color:#9333ea}
 
 @media(max-width:768px){
   .hero h1{font-size:2.2rem}
@@ -145,6 +200,14 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
   .app-info{padding:24px}
   .tip-box{padding:32px 24px}
   .section-title{font-size:1.8rem}
+  .subjects-grid{grid-template-columns:1fr;gap:18px}
+  .subject-tile{padding:40px 28px;min-height:260px}
+  .subject-icon{font-size:3.2rem}
+  .subject-title{font-size:1.7rem}
+  .subject-chooser{padding:60px 20px 10px}
+  .category-header{flex-wrap:wrap;gap:10px;margin:40px 0 20px}
+  .category-name{font-size:1.3rem}
+  .category-meta{margin-left:0;width:100%}
 }
 </style>
 </head>
@@ -155,7 +218,7 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
     <div class="logo"><span class="logo-spark">✦</span> ClassroomSpark</div>
     <div class="nav-right">
       <div class="nav-links">
-        <a href="#apps" data-t="navTools">Tools</a>
+        <a href="#subjects" data-t="navTools">Tools</a>
         <a href="#how" data-t="navHow">How It Works</a>
         <a href="#about" data-t="navAbout">About</a>
         <a href="#support" data-t="navSupport">Support</a>
@@ -180,9 +243,33 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
     <h1 data-t="heroTitle">Teaching tools that <span class="spark-word">spark</span> learning</h1>
     <p data-t="heroSub">Handcrafted, offline-ready web apps for language and science teachers. Free to download — powered by a tip-based honesty model.</p>
     <div class="hero-buttons">
-      <a href="#apps" class="btn btn-primary" data-t="heroCTA">⬇ Browse Tools</a>
+      <a href="#subjects" class="btn btn-primary" data-t="heroCTA">⬇ Choose a Subject</a>
       <a href="#support" class="btn btn-secondary" data-t="heroTip">☕ Leave a Tip</a>
     </div>
+  </div>
+</section>
+
+<section class="subject-chooser" id="subjects">
+  <div class="subject-intro reveal">
+    <div class="section-label" data-t="secSubjects">Subjects</div>
+    <h2 data-t="secSubjectsTitle">Choose your subject</h2>
+    <p data-t="secSubjectsSub">Two subject areas, each with a set of focused training apps. Pick one to browse the available tools.</p>
+  </div>
+  <div class="subjects-grid">
+    <a href="#cat-english" class="subject-tile english reveal">
+      <span class="subject-icon">🌍</span>
+      <h3 class="subject-title" data-t="tileEnTitle">English</h3>
+      <p class="subject-subtitle" data-t="tileEnSub">Verb conjugation across six year-levels plus dedicated trainers for active/passive voice and direct/indirect speech.</p>
+      <span class="subject-count" data-t="tileEnCount">7 apps · Year 5 → 10</span>
+      <span class="subject-arrow">↓</span>
+    </a>
+    <a href="#cat-chemistry" class="subject-tile chemistry reveal">
+      <span class="subject-icon">🧪</span>
+      <h3 class="subject-title" data-t="tileChTitle">Chemistry</h3>
+      <p class="subject-subtitle" data-t="tileChSub">Periodic table quizzes and an interactive trainer for chemical communication — symbols, formulas, and the language of chemistry.</p>
+      <span class="subject-count" data-t="tileChCount">2 apps</span>
+      <span class="subject-arrow">↓</span>
+    </a>
   </div>
 </section>
 
@@ -193,6 +280,77 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
     <p class="section-subtitle reveal" data-t="secToolsSub">Each app works entirely offline — no accounts, no tracking, no ads. Just download the HTML file and open it in any browser.</p>
 
     <div class="apps-grid">
+
+      <!-- ══════════ ENGLISH CATEGORY ══════════ -->
+      <div class="category-header reveal" id="cat-english">
+        <span class="category-icon">🌍</span>
+        <h3 class="category-name" data-t="catEnTitle">English</h3>
+        <span class="category-meta" data-t="catEnMeta">7 apps · Year 5 → 10</span>
+      </div>
+
+      <!-- Verb Conjugation Year 5 -->
+      <div class="app-card reveal">
+        <div class="app-preview" style="background:linear-gradient(135deg,#1a0f24,#2a1638)">
+          <div class="app-preview-mock" style="background:#1f1428">
+            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#a78bfa"></div></div>
+            <div class="mock-line" style="width:65%;background:linear-gradient(90deg,#8b5cf6,#a78bfa);height:14px;margin-bottom:14px"></div>
+            <div class="mock-line" style="width:45%;background:#fbbf24;opacity:.5"></div>
+            <div class="mock-line" style="width:100%;background:#ffffff10"></div>
+            <div class="mock-line" style="width:30%;background:#a78bfa;opacity:.4"></div>
+            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#8b5cf6,#a78bfa)"></div><div class="mock-btn" style="background:#ffffff10"></div></div>
+            <div class="mock-label" style="color:#ffffff40">🎯 Year 5</div>
+          </div>
+        </div>
+        <div class="app-info">
+          <div class="app-tag tag-lang tag-y5">🌍 English</div>
+          <h3 data-t="appY5Title">Verb Conjugation Trainer <span class="year-badge yb-5">Year 5</span></h3>
+          <p data-t="appY5Desc">First-steps trainer focused on the two foundational tenses every Year 5 learner needs — gentle, focused, and confidence-building.</p>
+          <ul class="app-features">
+            <li data-t="appY5f1">2 tenses: simple present &amp; present progressive</li>
+            <li data-t="appY5f2">Spinning wheel randomiser for verbs, persons &amp; sentence types</li>
+            <li data-t="appY5f3">85+ verbs with optional verb-form tips</li>
+            <li data-t="appY5f4">CSV import for student names — classroom ready</li>
+            <li data-t="appY5f5">Color-coded formation rules as a learning aid</li>
+          </ul>
+          <div class="download-row">
+            <a href="verb_conjugation_trainer_year5.html" download class="btn btn-primary">⬇ Download</a>
+            <a href="https://nitrogen-ai.github.io/training/verb_conjugation_trainer_year5.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnPlay">▶ Play Online</a>
+            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Verb Conjugation Year 6 -->
+      <div class="app-card reveal">
+        <div class="app-preview" style="background:linear-gradient(135deg,#0a1a14,#14332a)">
+          <div class="app-preview-mock" style="background:#0f2419">
+            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#10b981"></div></div>
+            <div class="mock-line" style="width:75%;background:linear-gradient(90deg,#10b981,#34d399);height:14px;margin-bottom:14px"></div>
+            <div class="mock-line" style="width:50%;background:#4fc3f7;opacity:.5"></div>
+            <div class="mock-line" style="width:100%;background:#ffffff10"></div>
+            <div class="mock-line" style="width:35%;background:#ffd700;opacity:.4"></div>
+            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#10b981,#34d399)"></div><div class="mock-btn" style="background:#ffffff10"></div></div>
+            <div class="mock-label" style="color:#ffffff40">🎯 Year 6</div>
+          </div>
+        </div>
+        <div class="app-info">
+          <div class="app-tag tag-lang tag-y6">🌍 English</div>
+          <h3 data-t="appY6Title">Verb Conjugation Trainer <span class="year-badge yb-6">Year 6</span></h3>
+          <p data-t="appY6Desc">Entry-level conjugation trainer with 6 foundational tenses — ideal for Year 6 students taking their first steps into English grammar.</p>
+          <ul class="app-features">
+            <li data-t="appY6f1">6 tenses: simple present, present progressive, simple past, present perfect, will- &amp; going to-future</li>
+            <li data-t="appY6f2">Spinning wheel randomiser for each grammar category</li>
+            <li data-t="appY6f3">85+ irregular verbs with optional verb form tips</li>
+            <li data-t="appY6f4">CSV import for student names — classroom ready</li>
+            <li data-t="appY6f5">Color-coded formation rules as learning aid</li>
+          </ul>
+          <div class="download-row">
+            <a href="verb_conjugation_trainer_year6.html" download class="btn btn-primary">⬇ Download</a>
+            <a href="https://nitrogen-ai.github.io/training/verb_conjugation_trainer_year6.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnPlay">▶ Play Online</a>
+            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
+          </div>
+        </div>
+      </div>
 
       <!-- Verb Conjugation Year 7 -->
       <div class="app-card reveal">
@@ -220,7 +378,40 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
           </ul>
           <div class="download-row">
             <a href="verb_conjugation_trainer_year7.html" download class="btn btn-primary">⬇ Download</a>
-            <a href="#support" class="btn btn-secondary">☕ Tip</a>
+            <a href="https://nitrogen-ai.github.io/training/verb_conjugation_trainer_year7.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnPlay">▶ Play Online</a>
+            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active & Passive Trainer -->
+      <div class="app-card reveal">
+        <div class="app-preview" style="background:linear-gradient(135deg,#0a1a1f,#0f2933)">
+          <div class="app-preview-mock" style="background:#0e2228">
+            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#14b8a6"></div></div>
+            <div style="display:flex;gap:6px;margin-bottom:12px;align-items:center"><div style="background:#4fc3f7;width:38%;height:12px;border-radius:3px"></div><div style="color:#ffffff60;font-size:.7rem;font-family:monospace">⇄</div><div style="background:#f778ba;width:38%;height:12px;border-radius:3px"></div></div>
+            <div class="mock-line" style="width:60%;background:linear-gradient(90deg,#14b8a6,#5eead4);height:12px"></div>
+            <div class="mock-line" style="width:100%;background:#ffffff10"></div>
+            <div class="mock-line" style="width:45%;background:#ffd700;opacity:.4"></div>
+            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#14b8a6,#5eead4)"></div><div class="mock-btn" style="background:#ffffff10"></div></div>
+            <div class="mock-label" style="color:#ffffff40">🔄 Active ⇄ Passive</div>
+          </div>
+        </div>
+        <div class="app-info">
+          <div class="app-tag tag-lang tag-skill-active">🌍 English</div>
+          <h3 data-t="appAPTitle">Active &amp; Passive Trainer <span class="skill-badge sb-active" data-t="apSkillBadge">Year 7+</span></h3>
+          <p data-t="appAPDesc">Practise transforming sentences between active and passive voice across multiple tenses — with smart validation that accepts any grammatically valid version.</p>
+          <ul class="app-features">
+            <li data-t="appAPf1">Bidirectional: active → passive &amp; passive → active</li>
+            <li data-t="appAPf2">Multiple tenses with automatic auxiliary handling</li>
+            <li data-t="appAPf3">Spinning wheels for tense, polarity &amp; sentence type</li>
+            <li data-t="appAPf4">CSV import for student names &amp; streak tracking</li>
+            <li data-t="appAPf5">Bilingual UI (German / English) with language toggle</li>
+          </ul>
+          <div class="download-row">
+            <a href="active_passive_trainer.html" download class="btn btn-primary">⬇ Download</a>
+            <a href="https://nitrogen-ai.github.io/training/active_passive_trainer.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnPlay">▶ Play Online</a>
+            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
           </div>
         </div>
       </div>
@@ -251,7 +442,40 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
           </ul>
           <div class="download-row">
             <a href="verb_conjugation_trainer_year8.html" download class="btn btn-primary">⬇ Download</a>
-            <a href="#support" class="btn btn-secondary">☕ Tip</a>
+            <a href="https://nitrogen-ai.github.io/training/verb_conjugation_trainer_year8.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnPlay">▶ Play Online</a>
+            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Direct & Indirect Speech Trainer -->
+      <div class="app-card reveal">
+        <div class="app-preview" style="background:linear-gradient(135deg,#1a0f1a,#2e1626)">
+          <div class="app-preview-mock" style="background:#241420">
+            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#f472b6"></div></div>
+            <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center"><div style="color:#4fc3f7;font-size:.8rem;font-family:monospace">"…"</div><div style="background:#f472b6;width:50%;height:10px;border-radius:3px"></div></div>
+            <div style="color:#f472b6;font-size:.7rem;font-family:monospace;margin-bottom:8px">→ said that …</div>
+            <div class="mock-line" style="width:80%;background:linear-gradient(90deg,#ec4899,#f472b6);height:12px"></div>
+            <div class="mock-line" style="width:55%;background:#ffd700;opacity:.4"></div>
+            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#ec4899,#f472b6)"></div><div class="mock-btn" style="background:#ffffff10"></div></div>
+            <div class="mock-label" style="color:#ffffff40">💬 Indirect Speech</div>
+          </div>
+        </div>
+        <div class="app-info">
+          <div class="app-tag tag-lang tag-skill-indirect">🌍 English</div>
+          <h3 data-t="appISTitle">Direct &amp; Indirect Speech Trainer <span class="skill-badge sb-indirect" data-t="isSkillBadge">Year 8+</span></h3>
+          <p data-t="appISDesc">Convert between direct quotes and reported speech with full backshift handling — across statements, questions, and modal verbs.</p>
+          <ul class="app-features">
+            <li data-t="appISf1">8 tense/modal forms with proper backshift rules</li>
+            <li data-t="appISf2">Statements, Wh-questions, Yes/No-questions &amp; advice</li>
+            <li data-t="appISf3">Reporting verbs: said, told, asked, advised, suggested</li>
+            <li data-t="appISf4">Pronoun &amp; possessive shift handled automatically</li>
+            <li data-t="appISf5">Bilingual UI with smart sentence-level validation</li>
+          </ul>
+          <div class="download-row">
+            <a href="indirect_speech_trainer.html" download class="btn btn-primary">⬇ Download</a>
+            <a href="https://nitrogen-ai.github.io/training/indirect_speech_trainer.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnPlay">▶ Play Online</a>
+            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
           </div>
         </div>
       </div>
@@ -283,9 +507,17 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
           </ul>
           <div class="download-row">
             <a href="verb_conjugation_trainer_year10.html" download class="btn btn-primary">⬇ Download</a>
-            <a href="#support" class="btn btn-secondary">☕ Tip</a>
+            <a href="https://nitrogen-ai.github.io/training/verb_conjugation_trainer_year10.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnPlay">▶ Play Online</a>
+            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
           </div>
         </div>
+      </div>
+
+      <!-- ══════════ CHEMISTRY CATEGORY ══════════ -->
+      <div class="category-header reveal" id="cat-chemistry">
+        <span class="category-icon">🧪</span>
+        <h3 class="category-name" data-t="catChTitle">Chemistry</h3>
+        <span class="category-meta" data-t="catChMeta">2 apps</span>
       </div>
 
       <!-- Periodic Table Trainer -->
@@ -325,7 +557,40 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
           </ul>
           <div class="download-row">
             <a href="periodensystem_trainer.html" download class="btn btn-primary">⬇ Download</a>
-            <a href="#support" class="btn btn-secondary">☕ Tip</a>
+            <a href="https://nitrogen-ai.github.io/training/periodensystem_trainer.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnPlay">▶ Play Online</a>
+            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chemical Communication Trainer -->
+      <div class="app-card reveal">
+        <div class="app-preview" style="background:linear-gradient(135deg,#160d24,#241638)">
+          <div class="app-preview-mock" style="background:#1c1230">
+            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#a855f7"></div></div>
+            <div style="font-family:'Fredoka','Outfit',sans-serif;font-size:1.4rem;text-align:center;color:#c084fc;margin:8px 0;letter-spacing:2px">H₂O · NaCl · CO₂</div>
+            <div class="mock-line" style="width:70%;background:linear-gradient(90deg,#a855f7,#c084fc);height:12px;margin-bottom:10px"></div>
+            <div class="mock-line" style="width:50%;background:#ffd700;opacity:.4"></div>
+            <div class="mock-line" style="width:90%;background:#ffffff10"></div>
+            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#a855f7,#c084fc)"></div><div class="mock-btn" style="background:#ffffff10"></div></div>
+            <div class="mock-label" style="color:#ffffff40">⚗️ Chemical Communication</div>
+          </div>
+        </div>
+        <div class="app-info">
+          <div class="app-tag tag-sci tag-comm">🧪 <span data-t="tagSci2">Science / Chemistry</span></div>
+          <h3 data-t="appCCTitle">Chemical Communication Trainer <span class="skill-badge sb-comm" data-t="ccSkillBadge">New</span></h3>
+          <p data-t="appCCDesc">Practise the language of chemistry — element symbols, molecular formulas, and the rules behind how chemists communicate compounds and reactions.</p>
+          <ul class="app-features">
+            <li data-t="appCCf1">Element symbols, names &amp; key chemistry vocabulary</li>
+            <li data-t="appCCf2">Molecular formulas — from compound name to formula</li>
+            <li data-t="appCCf3">Interactive prompts with immediate feedback</li>
+            <li data-t="appCCf4">Bilingual UI (German / English) for the bilingual classroom</li>
+            <li data-t="appCCf5">Works offline on any device — phone, tablet, laptop</li>
+          </ul>
+          <div class="download-row">
+            <a href="chemical_communication_trainer.html" download class="btn btn-primary">⬇ Download</a>
+            <a href="https://nitrogen-ai.github.io/training/chemical_communication_trainer.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnPlay">▶ Play Online</a>
+            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
           </div>
         </div>
       </div>
@@ -427,9 +692,56 @@ en:{
   heroBadge:"Free & Open for Educators",
   heroTitle:'Teaching tools that <span class="spark-word">spark</span> learning',
   heroSub:"Handcrafted, offline-ready web apps for language and science teachers. Free to download — powered by a tip-based honesty model.",
-  heroCTA:"⬇ Browse Tools",heroTip:"☕ Leave a Tip",
+  heroCTA:"⬇ Choose a Subject",heroTip:"☕ Leave a Tip",
+  secSubjects:"Subjects",secSubjectsTitle:"Choose your subject",
+  secSubjectsSub:"Two subject areas, each with a set of focused training apps. Pick one to browse the available tools.",
+  tileEnTitle:"English",
+  tileEnSub:"Verb conjugation across six year-levels plus dedicated trainers for active/passive voice and direct/indirect speech.",
+  tileEnCount:"7 apps · Year 5 → 10",
+  tileChTitle:"Chemistry",
+  tileChSub:"Periodic table quizzes and an interactive trainer for chemical communication — symbols, formulas, and the language of chemistry.",
+  tileChCount:"2 apps",
   secTools:"Tools",secToolsTitle:"Learning Apps",
   secToolsSub:"Each app works entirely offline — no accounts, no tracking, no ads. Just download the HTML file and open it in any browser.",
+  catEnTitle:"English",catEnMeta:"7 apps · Year 5 → 10",
+  catChTitle:"Chemistry",catChMeta:"2 apps",
+  btnPlay:"▶ Play Online",btnTip:"☕ Tip",
+  appY5Title:'Verb Conjugation Trainer <span class="year-badge yb-5">Year 5</span>',
+  appY5Desc:"First-steps trainer focused on the two foundational tenses every Year 5 learner needs — gentle, focused, and confidence-building.",
+  appY5f1:"2 tenses: simple present & present progressive",
+  appY5f2:"Spinning wheel randomiser for verbs, persons & sentence types",
+  appY5f3:"85+ verbs with optional verb-form tips",
+  appY5f4:"CSV import for student names — classroom ready",
+  appY5f5:"Color-coded formation rules as a learning aid",
+  appY6Title:'Verb Conjugation Trainer <span class="year-badge yb-6">Year 6</span>',
+  appY6Desc:"Entry-level conjugation trainer with 6 foundational tenses — ideal for Year 6 students taking their first steps into English grammar.",
+  appY6f1:"6 tenses: simple present, present progressive, simple past, present perfect, will- & going to-future",
+  appY6f2:"Spinning wheel randomiser for each grammar category",
+  appY6f3:"85+ irregular verbs with optional verb form tips",
+  appY6f4:"CSV import for student names — classroom ready",
+  appY6f5:"Color-coded formation rules as learning aid",
+  apSkillBadge:"Year 7+",isSkillBadge:"Year 8+",ccSkillBadge:"New",tagSci2:"Science / Chemistry",
+  appAPTitle:'Active & Passive Trainer <span class="skill-badge sb-active">Year 7+</span>',
+  appAPDesc:"Practise transforming sentences between active and passive voice across multiple tenses — with smart validation that accepts any grammatically valid version.",
+  appAPf1:"Bidirectional: active → passive & passive → active",
+  appAPf2:"Multiple tenses with automatic auxiliary handling",
+  appAPf3:"Spinning wheels for tense, polarity & sentence type",
+  appAPf4:"CSV import for student names & streak tracking",
+  appAPf5:"Bilingual UI (German / English) with language toggle",
+  appISTitle:'Direct & Indirect Speech Trainer <span class="skill-badge sb-indirect">Year 8+</span>',
+  appISDesc:"Convert between direct quotes and reported speech with full backshift handling — across statements, questions, and modal verbs.",
+  appISf1:"8 tense/modal forms with proper backshift rules",
+  appISf2:"Statements, Wh-questions, Yes/No-questions & advice",
+  appISf3:"Reporting verbs: said, told, asked, advised, suggested",
+  appISf4:"Pronoun & possessive shift handled automatically",
+  appISf5:"Bilingual UI with smart sentence-level validation",
+  appCCTitle:'Chemical Communication Trainer <span class="skill-badge sb-comm">New</span>',
+  appCCDesc:"Practise the language of chemistry — element symbols, molecular formulas, and the rules behind how chemists communicate compounds and reactions.",
+  appCCf1:"Element symbols, names & key chemistry vocabulary",
+  appCCf2:"Molecular formulas — from compound name to formula",
+  appCCf3:"Interactive prompts with immediate feedback",
+  appCCf4:"Bilingual UI (German / English) for the bilingual classroom",
+  appCCf5:"Works offline on any device — phone, tablet, laptop",
   app1Title:'Verb Conjugation Trainer <span class="year-badge yb-7">Year 7</span>',
   app1Desc:"Beginner-friendly conjugation trainer covering 7 essential tenses — perfect for Year 7 students building their grammar foundation.",
   app1f1:"7 tenses: simple present, present & past progressive, present perfect, simple past, will- & going to-future",
@@ -486,9 +798,56 @@ de:{
   heroBadge:"Kostenlos & offen für Lehrkräfte",
   heroTitle:'Lerntools, die den Unterricht <span class="spark-word">bereichern</span>',
   heroSub:"Handgemachte, offline-fähige Web-Apps für Sprach- und Naturwissenschaftslehrkräfte. Kostenlos herunterladen — getragen von einem Trinkgeld-Modell auf Vertrauensbasis.",
-  heroCTA:"⬇ Tools entdecken",heroTip:"☕ Trinkgeld geben",
+  heroCTA:"⬇ Fach auswählen",heroTip:"☕ Trinkgeld geben",
+  secSubjects:"Fächer",secSubjectsTitle:"Wähle dein Fach",
+  secSubjectsSub:"Zwei Fachbereiche mit jeweils einer Reihe fokussierter Übungs-Apps. Wähle einen aus, um die verfügbaren Tools zu durchstöbern.",
+  tileEnTitle:"Englisch",
+  tileEnSub:"Verbkonjugation in sechs Jahrgangsstufen sowie spezielle Trainer für Aktiv/Passiv und direkte/indirekte Rede.",
+  tileEnCount:"7 Apps · Klasse 5 → 10",
+  tileChTitle:"Chemie",
+  tileChSub:"Periodensystem-Quizze und ein interaktiver Trainer zur chemischen Kommunikation — Symbole, Formeln und die Sprache der Chemie.",
+  tileChCount:"2 Apps",
   secTools:"Tools",secToolsTitle:"Lern-Apps",
   secToolsSub:"Jede App funktioniert komplett offline — kein Konto, kein Tracking, keine Werbung. Einfach die HTML-Datei herunterladen und im Browser öffnen.",
+  catEnTitle:"Englisch",catEnMeta:"7 Apps · Klasse 5 → 10",
+  catChTitle:"Chemie",catChMeta:"2 Apps",
+  btnPlay:"▶ Online spielen",btnTip:"☕ Trinkgeld",
+  appY5Title:'Verb Conjugation Trainer <span class="year-badge yb-5">Klasse 5</span>',
+  appY5Desc:"Erste-Schritte-Trainer mit den zwei grundlegenden Zeitformen für Klasse 5 — sanft, fokussiert und vertrauensbildend.",
+  appY5f1:"2 Zeitformen: Simple Present & Present Progressive",
+  appY5f2:"Glücksrad-Zufallsprinzip für Verben, Personen & Satzarten",
+  appY5f3:"85+ Verben mit optionalen Stammform-Tipps",
+  appY5f4:"CSV-Import für Schülernamen — sofort im Unterricht einsetzbar",
+  appY5f5:"Farbcodierte Bildungsregeln als Lernhilfe",
+  appY6Title:'Verb Conjugation Trainer <span class="year-badge yb-6">Klasse 6</span>',
+  appY6Desc:"Einstiegstrainer mit 6 grundlegenden Zeitformen — ideal für Klasse 6 als erster Schritt in die englische Grammatik.",
+  appY6f1:"6 Zeitformen: Simple Present, Present Progressive, Simple Past, Present Perfect, Will- & Going-to-Future",
+  appY6f2:"Glücksrad-Zufallsprinzip für jede Grammatikkategorie",
+  appY6f3:"85+ unregelmäßige Verben mit optionalen Stammform-Tipps",
+  appY6f4:"CSV-Import für Schülernamen — sofort im Unterricht einsetzbar",
+  appY6f5:"Farbcodierte Bildungsregeln als Lernhilfe",
+  apSkillBadge:"Klasse 7+",isSkillBadge:"Klasse 8+",ccSkillBadge:"Neu",tagSci2:"Naturwissenschaft / Chemie",
+  appAPTitle:'Aktiv & Passiv Trainer <span class="skill-badge sb-active">Klasse 7+</span>',
+  appAPDesc:"Üben des Umformens von Sätzen zwischen Aktiv und Passiv über mehrere Zeitformen — mit intelligenter Prüfung, die jede grammatisch gültige Variante akzeptiert.",
+  appAPf1:"Bidirektional: Aktiv → Passiv & Passiv → Aktiv",
+  appAPf2:"Mehrere Zeitformen mit automatischer Hilfsverb-Behandlung",
+  appAPf3:"Glücksräder für Zeitform, Polarität & Satzart",
+  appAPf4:"CSV-Import für Schülernamen & Streak-Tracking",
+  appAPf5:"Zweisprachige Oberfläche (Deutsch / Englisch) mit Sprachumschalter",
+  appISTitle:'Direkte & indirekte Rede Trainer <span class="skill-badge sb-indirect">Klasse 8+</span>',
+  appISDesc:"Umwandeln zwischen direkten Zitaten und indirekter Rede mit vollständiger Backshift-Behandlung — bei Aussagesätzen, Fragen und Modalverben.",
+  appISf1:"8 Zeitformen/Modalformen mit korrekten Backshift-Regeln",
+  appISf2:"Aussagesätze, W-Fragen, Ja/Nein-Fragen & Aufforderungen",
+  appISf3:"Berichtende Verben: said, told, asked, advised, suggested",
+  appISf4:"Pronomen- & Possessivpronomen-Verschiebung automatisch",
+  appISf5:"Zweisprachige Oberfläche mit intelligenter Satzprüfung",
+  appCCTitle:'Chemische Kommunikation Trainer <span class="skill-badge sb-comm">Neu</span>',
+  appCCDesc:"Übe die Sprache der Chemie — Elementsymbole, Molekülformeln und die Regeln, nach denen Chemiker Verbindungen und Reaktionen kommunizieren.",
+  appCCf1:"Elementsymbole, -namen & wichtige Chemie-Vokabeln",
+  appCCf2:"Molekülformeln — vom Verbindungsnamen zur Formel",
+  appCCf3:"Interaktive Aufgaben mit sofortiger Rückmeldung",
+  appCCf4:"Zweisprachige Oberfläche (Deutsch / Englisch) für den bilingualen Unterricht",
+  appCCf5:"Funktioniert offline auf jedem Gerät — Handy, Tablet, Laptop",
   app1Title:'Verb Conjugation Trainer <span class="year-badge yb-7">Klasse 7</span>',
   app1Desc:"Einsteigerfreundlicher Konjugationstrainer mit 7 grundlegenden Zeitformen — ideal für Klasse 7 zum Aufbau einer soliden Grammatikbasis.",
   app1f1:"7 Zeitformen: Simple Present, Present & Past Progressive, Present Perfect, Simple Past, Will- & Going-to-Future",
