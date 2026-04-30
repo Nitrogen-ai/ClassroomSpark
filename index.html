@@ -138,6 +138,7 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
 .sb-active{background:rgba(20,184,166,.12);color:#0d9488}
 .sb-indirect{background:rgba(244,114,182,.12);color:#db2777}
 .sb-comm{background:rgba(168,85,247,.12);color:#9333ea}
+.sb-hypo{background:rgba(6,182,212,.12);color:#0891b2}
 
 /* Play-online button (variant of secondary, with subtle glow) */
 .btn-play{background:#fff;color:var(--ocean);border:2px solid var(--ocean)}
@@ -187,6 +188,7 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
 .tag-lang.tag-skill-active{background:rgba(20,184,166,.1);color:#0d9488}
 .tag-lang.tag-skill-indirect{background:rgba(244,114,182,.1);color:#db2777}
 .tag-sci.tag-comm{background:rgba(168,85,247,.1);color:#9333ea}
+.tag-sci.tag-hypo{background:rgba(6,182,212,.1);color:#0891b2}
 
 @media(max-width:768px){
   .hero h1{font-size:2.2rem}
@@ -266,8 +268,8 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
     <a href="#cat-chemistry" class="subject-tile chemistry reveal">
       <span class="subject-icon">🧪</span>
       <h3 class="subject-title" data-t="tileChTitle">Chemistry</h3>
-      <p class="subject-subtitle" data-t="tileChSub">Periodic table quizzes and an interactive trainer for chemical communication — symbols, formulas, and the language of chemistry.</p>
-      <span class="subject-count" data-t="tileChCount">2 apps</span>
+      <p class="subject-subtitle" data-t="tileChSub">Periodic table quizzes, chemical communication, and an inquiry-based hypothesis trainer — three angles on the language and thinking of chemistry.</p>
+      <span class="subject-count" data-t="tileChCount">3 apps</span>
       <span class="subject-arrow">↓</span>
     </a>
   </div>
@@ -517,7 +519,7 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
       <div class="category-header reveal" id="cat-chemistry">
         <span class="category-icon">🧪</span>
         <h3 class="category-name" data-t="catChTitle">Chemistry</h3>
-        <span class="category-meta" data-t="catChMeta">2 apps</span>
+        <span class="category-meta" data-t="catChMeta">3 apps</span>
       </div>
 
       <!-- Periodic Table Trainer -->
@@ -590,6 +592,43 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
           <div class="download-row">
             <a href="chemical_communication_trainer.html" download class="btn btn-primary">⬇ Download</a>
             <a href="https://nitrogen-ai.github.io/training/chemical_communication_trainer.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnPlay">▶ Play Online</a>
+            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hypothesentrainer Chemie -->
+      <div class="app-card reveal">
+        <div class="app-preview" style="background:linear-gradient(135deg,#0a1f24,#0f3338)">
+          <div class="app-preview-mock" style="background:#0d2a30">
+            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#06b6d4"></div></div>
+            <div style="font-family:'Fredoka','Outfit',sans-serif;font-size:1.05rem;text-align:center;color:#67e8f9;margin:6px 0 4px;font-weight:600">🧪 Phänomen → Hypothese</div>
+            <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;margin-bottom:10px">
+              <span style="background:rgba(6,182,212,.25);color:#67e8f9;padding:2px 8px;border-radius:6px;font-size:.62rem">Kl. 7</span>
+              <span style="background:rgba(6,182,212,.18);color:#67e8f9;padding:2px 8px;border-radius:6px;font-size:.62rem;opacity:.85">Kl. 8</span>
+              <span style="background:rgba(6,182,212,.18);color:#67e8f9;padding:2px 8px;border-radius:6px;font-size:.62rem;opacity:.7">Kl. 9</span>
+              <span style="background:rgba(6,182,212,.18);color:#67e8f9;padding:2px 8px;border-radius:6px;font-size:.62rem;opacity:.55">Kl. 10–12</span>
+            </div>
+            <div class="mock-line" style="width:90%;background:#ffffff10;height:14px;margin-bottom:6px"></div>
+            <div class="mock-line" style="width:75%;background:#ffffff10;height:14px"></div>
+            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#06b6d4,#67e8f9)"></div><div class="mock-btn" style="background:#ffffff10"></div></div>
+            <div class="mock-label" style="color:#ffffff40">⚛️ Auf Teilchenebene</div>
+          </div>
+        </div>
+        <div class="app-info">
+          <div class="app-tag tag-sci tag-hypo">🧪 <span data-t="tagSci3">Science / Chemistry</span></div>
+          <h3 data-t="appHTTitle">Hypothesentrainer Chemie <span class="skill-badge sb-hypo" data-t="htDeBadge">🇩🇪 DE only</span></h3>
+          <p data-t="appHTDesc">Inquiry-based chemistry trainer for grades 7–12 — students explore phenomena, formulate their own hypotheses on the particle level, and reveal explanations to self-assess their scientific reasoning.</p>
+          <ul class="app-features">
+            <li data-t="appHTf1">Grades 7–12 with phenomena tailored to each level</li>
+            <li data-t="appHTf2">Write-your-own hypothesis input (min. 10 characters)</li>
+            <li data-t="appHTf3">Optional thinking prompts before revealing explanations</li>
+            <li data-t="appHTf4">Particle-level explanations + "deep dive" for advanced students</li>
+            <li data-t="appHTf5">Self-assessment system (correct / needs revision)</li>
+          </ul>
+          <div class="download-row">
+            <a href="hypothesentrainer.html" download class="btn btn-primary">⬇ Download</a>
+            <a href="https://nitrogen-ai.github.io/training/hypothesentrainer.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnPlay">▶ Play Online</a>
             <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
           </div>
         </div>
@@ -699,12 +738,12 @@ en:{
   tileEnSub:"Verb conjugation across six year-levels plus dedicated trainers for active/passive voice and direct/indirect speech.",
   tileEnCount:"7 apps · Year 5 → 10",
   tileChTitle:"Chemistry",
-  tileChSub:"Periodic table quizzes and an interactive trainer for chemical communication — symbols, formulas, and the language of chemistry.",
-  tileChCount:"2 apps",
+  tileChSub:"Periodic table quizzes, chemical communication, and an inquiry-based hypothesis trainer — three angles on the language and thinking of chemistry.",
+  tileChCount:"3 apps",
   secTools:"Tools",secToolsTitle:"Learning Apps",
   secToolsSub:"Each app works entirely offline — no accounts, no tracking, no ads. Just download the HTML file and open it in any browser.",
   catEnTitle:"English",catEnMeta:"7 apps · Year 5 → 10",
-  catChTitle:"Chemistry",catChMeta:"2 apps",
+  catChTitle:"Chemistry",catChMeta:"3 apps",
   btnPlay:"▶ Play Online",btnTip:"☕ Tip",
   appY5Title:'Verb Conjugation Trainer <span class="year-badge yb-5">Year 5</span>',
   appY5Desc:"First-steps trainer focused on the two foundational tenses every Year 5 learner needs — gentle, focused, and confidence-building.",
@@ -742,6 +781,14 @@ en:{
   appCCf3:"Interactive prompts with immediate feedback",
   appCCf4:"Bilingual UI (German / English) for the bilingual classroom",
   appCCf5:"Works offline on any device — phone, tablet, laptop",
+  tagSci3:"Science / Chemistry",htDeBadge:"🇩🇪 DE only",
+  appHTTitle:'Hypothesentrainer Chemie <span class="skill-badge sb-hypo">🇩🇪 DE only</span>',
+  appHTDesc:"Inquiry-based chemistry trainer for grades 7–12 — students explore phenomena, formulate their own hypotheses on the particle level, and reveal explanations to self-assess their scientific reasoning.",
+  appHTf1:"Grades 7–12 with phenomena tailored to each level",
+  appHTf2:"Write-your-own hypothesis input (min. 10 characters)",
+  appHTf3:"Optional thinking prompts before revealing explanations",
+  appHTf4:"Particle-level explanations + \"deep dive\" for advanced students",
+  appHTf5:"Self-assessment system (correct / needs revision)",
   app1Title:'Verb Conjugation Trainer <span class="year-badge yb-7">Year 7</span>',
   app1Desc:"Beginner-friendly conjugation trainer covering 7 essential tenses — perfect for Year 7 students building their grammar foundation.",
   app1f1:"7 tenses: simple present, present & past progressive, present perfect, simple past, will- & going to-future",
@@ -805,12 +852,12 @@ de:{
   tileEnSub:"Verbkonjugation in sechs Jahrgangsstufen sowie spezielle Trainer für Aktiv/Passiv und direkte/indirekte Rede.",
   tileEnCount:"7 Apps · Klasse 5 → 10",
   tileChTitle:"Chemie",
-  tileChSub:"Periodensystem-Quizze und ein interaktiver Trainer zur chemischen Kommunikation — Symbole, Formeln und die Sprache der Chemie.",
-  tileChCount:"2 Apps",
+  tileChSub:"Periodensystem-Quizze, chemische Kommunikation und ein hypothesengeleiteter Trainer — drei Zugänge zur Sprache und zum Denken der Chemie.",
+  tileChCount:"3 Apps",
   secTools:"Tools",secToolsTitle:"Lern-Apps",
   secToolsSub:"Jede App funktioniert komplett offline — kein Konto, kein Tracking, keine Werbung. Einfach die HTML-Datei herunterladen und im Browser öffnen.",
   catEnTitle:"Englisch",catEnMeta:"7 Apps · Klasse 5 → 10",
-  catChTitle:"Chemie",catChMeta:"2 Apps",
+  catChTitle:"Chemie",catChMeta:"3 Apps",
   btnPlay:"▶ Online spielen",btnTip:"☕ Trinkgeld",
   appY5Title:'Verb Conjugation Trainer <span class="year-badge yb-5">Klasse 5</span>',
   appY5Desc:"Erste-Schritte-Trainer mit den zwei grundlegenden Zeitformen für Klasse 5 — sanft, fokussiert und vertrauensbildend.",
@@ -848,6 +895,14 @@ de:{
   appCCf3:"Interaktive Aufgaben mit sofortiger Rückmeldung",
   appCCf4:"Zweisprachige Oberfläche (Deutsch / Englisch) für den bilingualen Unterricht",
   appCCf5:"Funktioniert offline auf jedem Gerät — Handy, Tablet, Laptop",
+  tagSci3:"Naturwissenschaft / Chemie",htDeBadge:"🇩🇪 Nur DE",
+  appHTTitle:'Hypothesentrainer Chemie <span class="skill-badge sb-hypo">🇩🇪 Nur DE</span>',
+  appHTDesc:"Forschend-entdeckender Chemie-Trainer für Klasse 7–12 — Schüler:innen erkunden Phänomene, formulieren eigene Hypothesen auf Teilchenebene und überprüfen ihre Erklärungen zur Selbsteinschätzung des naturwissenschaftlichen Denkens.",
+  appHTf1:"Klasse 7–12 mit auf jede Stufe abgestimmten Phänomenen",
+  appHTf2:"Eigene Hypothesen eingeben (mind. 10 Zeichen)",
+  appHTf3:"Optionale Denkanstöße vor dem Aufdecken der Erklärung",
+  appHTf4:"Erklärungen auf Teilchenebene + Vertiefung für Fortgeschrittene",
+  appHTf5:"Selbsteinschätzung (richtig / zu überarbeiten)",
   app1Title:'Verb Conjugation Trainer <span class="year-badge yb-7">Klasse 7</span>',
   app1Desc:"Einsteigerfreundlicher Konjugationstrainer mit 7 grundlegenden Zeitformen — ideal für Klasse 7 zum Aufbau einer soliden Grammatikbasis.",
   app1f1:"7 Zeitformen: Simple Present, Present & Past Progressive, Present Perfect, Simple Past, Will- & Going-to-Future",
