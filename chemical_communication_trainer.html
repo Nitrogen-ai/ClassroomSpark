@@ -553,6 +553,43 @@
   .subst-name-de { font-size: 1.5rem; font-weight: 800; color: var(--text); }
   .subst-name-en { font-size: 0.95rem; color: var(--dim); font-style: italic; margin-top: 0.15rem; }
 
+  /* === KONTEXT-INFO === */
+  .context-box {
+    margin-top: 1rem;
+    background: rgba(124,106,247,0.06);
+    border: 2px solid rgba(124,106,247,0.28);
+    border-radius: 12px;
+    padding: 0.8rem 1rem;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .context-box:hover:not(.revealed) {
+    background: rgba(124,106,247,0.12);
+    border-color: var(--accent);
+  }
+  .context-box.revealed {
+    background: rgba(0,200,83,0.07);
+    border-color: rgba(0,200,83,0.4);
+    cursor: default;
+  }
+  .context-title {
+    font-weight: 800;
+    font-size: 0.92rem;
+    color: var(--text);
+    letter-spacing: 0.01em;
+  }
+  .context-hint {
+    font-size: 0.72rem;
+    color: var(--dim);
+    margin-top: 0.25rem;
+  }
+  .context-text {
+    font-size: 0.92rem;
+    line-height: 1.45;
+    color: var(--text);
+    margin-top: 0.45rem;
+  }
+
   /* === SCORE BUTTONS === */
   .score-area {
     margin-top: 1rem;
@@ -889,8 +926,9 @@ function nAcidFull(n, name) {
   const iOH = atoms.length;
   atoms.push({e:"O", x: cc + COS60, y: SIN60, lp:2});
   bonds.push({a:cc, b:iOH, o:1});
-  // H an OH (weiter rechts)
-  atoms.push({e:"H", x: cc + COS60 + 1, y: SIN60, lp:0});
+  // H an OH — linear in Verlängerung der C–O-Achse (wie bei Alkanolen),
+  // damit die OH-Gruppe gerade absteht und die LPs senkrecht liegen.
+  atoms.push({e:"H", x: cc + 2*COS60, y: 2*SIN60, lp:0});
   bonds.push({a:iOH, b:atoms.length-1, o:1});
   if (n===1) {
     // HCOOH: zusätzliches H links am Carbonyl-C
@@ -904,18 +942,22 @@ function acidFormula(n) {
 }
 
 function nAcidSkeletal(n, name) {
-  // Carboxyl-C ist Teil der Zickzack-Kette; =O und -O-H beide im 120°-Winkel
-  if (n < 2) return null;
+  // Carboxyl-C ist Teil der Zickzack-Kette; =O und -O-H beide im 120°-Winkel.
+  // Für alle Kettenlängen ab n=1 (Methansäure) verfügbar.
+  if (n < 1) return null;
   const atoms = [], bonds = [];
   for (let i=0; i<n; i++) {
     atoms.push({e:"C", x: i*SIN60, y: (i%2===0 ? 0 : COS60), lp:0, hidden:true});
   }
   for (let i=0; i<n-1; i++) bonds.push({a:i, b:i+1, o:1});
   const last = atoms[n-1];
-  const prev = atoms[n-2];
-  const dx = last.x - prev.x, dy = last.y - prev.y;
-  const ux = dx/Math.hypot(dx,dy), uy = dy/Math.hypot(dx,dy);
-  const base = Math.atan2(uy, ux);   // Richtung der eingehenden Bindung
+  let base;
+  if (n >= 2) {
+    const prev = atoms[n-2];
+    base = Math.atan2(last.y - prev.y, last.x - prev.x);  // Richtung der eingehenden Bindung
+  } else {
+    base = 0;   // n=1 (Methansäure): so behandeln, als käme die Kette von links
+  }
   // Zwei freie Richtungen am Carbonyl-C: jeweils 60° von der "Verlängerung" base abgewinkelt
   const angA = base + Math.PI/3;
   const angB = base - Math.PI/3;
@@ -929,19 +971,15 @@ function nAcidSkeletal(n, name) {
   const oH = atoms.length;
   atoms.push({e:"O", x: last.x + Math.cos(ohAng), y: last.y + Math.sin(ohAng), lp:2});
   bonds.push({a: n-1, b: oH, o:1});
-  // H am O: wir wollen volle Bindungslänge 1, im 120°-Winkel zur C-O-Achse,
-  // auf der Außenseite (weg von der Kette).
-  // Die C-O-Achse zeigt vom C aus in Richtung ohAng. Vom O aus zeigt sie in Richtung ohAng+π zurück zum C.
-  // Die zwei freien 120°-Richtungen am O sind ohAng + π ± 2π/3. Wir wählen die nach außen weisende.
-  const hAngA = ohAng + Math.PI - Math.PI/3 * 2;   // = ohAng + π/3
-  const hAngB = ohAng + Math.PI + Math.PI/3 * 2;   // = ohAng + 5π/3 ≡ ohAng - π/3
-  // Welche Richtung zeigt weiter weg von der Kette? Kette ist links, =O ist oben/unten.
-  // Wähle Richtung, deren cos das gleiche Vorzeichen hat wie ux (also nach rechts wie die Kette weiterführen würde)
-  const hVx = Math.cos(hAngA), hVy = Math.sin(hAngA);
-  const HAng = (Math.cos(hAngA) > Math.cos(hAngB)) ? hAngA : hAngB;
+  // H am O linear in Verlängerung der C–O-Achse (wie bei Alkanolen)
   const oxAt = atoms[oH];
-  atoms.push({e:"H", x: oxAt.x + Math.cos(HAng), y: oxAt.y + Math.sin(HAng), lp:0});
+  atoms.push({e:"H", x: oxAt.x + Math.cos(ohAng), y: oxAt.y + Math.sin(ohAng), lp:0});
   bonds.push({a: oH, b: atoms.length-1, o:1});
+  if (n === 1) {
+    // Ameisensäure: das Formyl-H am Carboxyl-C explizit zeichnen
+    atoms.push({e:"H", x: atoms[0].x - 1, y: atoms[0].y, lp:0});
+    bonds.push({a: 0, b: atoms.length-1, o:1});
+  }
   return {atoms, bonds, name, formula: acidFormula(n)};
 }
 
@@ -973,23 +1011,30 @@ function aldehydeFormula(n) {
   return "C"+(n===1?"":sub(n))+"H"+sub(2*n)+"O";
 }
 function nAldehydeSkeletal(n, name) {
-  if (n < 3) return null;
-  const sk = nAlkaneSkeletal(n, name);
-  const lastIdx = sk.atoms.length - 1;
-  const last = sk.atoms[lastIdx];
-  // Außenseite-Konvention wie Alkanol: gerade → -y (oben), ungerade → +y (unten)
+  // Verfügbar ab n=1 (Methanal). Carbonyl am Kettenende, Aldehyd-H gegenüber =O.
+  if (n < 1) return null;
+  const atoms = [], bonds = [];
+  for (let i=0; i<n; i++) {
+    atoms.push({e:"C", x: i*SIN60, y: (i%2===0 ? 0 : COS60), lp:0, hidden:true});
+  }
+  for (let i=0; i<n-1; i++) bonds.push({a:i, b:i+1, o:1});
+  const lastIdx = n - 1;
+  const last = atoms[lastIdx];
+  // Außenseite-Konvention: gerade Index → -y (oben), ungerade → +y (unten)
   const dy = (lastIdx % 2 === 0) ? -1 : +1;
-  // =O bei (last.x + COS60, last.y + dy*SIN60)  — 120° zur Kettenrichtung
-  const oDb = sk.atoms.length;
-  sk.atoms.push({e:"O", x: last.x + COS60, y: last.y + dy*SIN60, lp:2});
-  sk.bonds.push({a: lastIdx, b: oDb, o:2});
-  // Aldehyd-H: am Carbonyl-C, in 120°-Stellung zur Kettenrichtung,
-  // auf der gegenüberliegenden Seite zu =O
-  sk.atoms.push({e:"H", x: last.x + COS60, y: last.y - dy*SIN60, lp:0});
-  sk.bonds.push({a: lastIdx, b: sk.atoms.length-1, o:1});
-  sk.name = name;
-  sk.formula = aldehydeFormula(n);
-  return sk;
+  // =O — 120° zur Kettenrichtung
+  const oDb = atoms.length;
+  atoms.push({e:"O", x: last.x + COS60, y: last.y + dy*SIN60, lp:2});
+  bonds.push({a: lastIdx, b: oDb, o:2});
+  // Aldehyd-H gegenüberliegend zu =O
+  atoms.push({e:"H", x: last.x + COS60, y: last.y - dy*SIN60, lp:0});
+  bonds.push({a: lastIdx, b: atoms.length-1, o:1});
+  // Methanal (n=1) ist H2C=O → zweites H am C
+  if (n === 1) {
+    atoms.push({e:"H", x: last.x - 1, y: last.y, lp:0});
+    bonds.push({a: lastIdx, b: atoms.length-1, o:1});
+  }
+  return {atoms, bonds, name, formula: aldehydeFormula(n)};
 }
 
 /* ============================================================
@@ -1023,13 +1068,11 @@ function nKetoneSkeletal(n, pos, name) {
   const cc = pos - 1;
   // =O am cc, senkrecht zur Kettenmitte: nach oben (kleineres y)
   const cAt = sk.atoms[cc];
-  // Carbonyl-O auf der Außenseite — User-Wunsch:
-  //   Pentan-3-on (cc=2, gerade) → bleibt unten (+y)
-  //   Propan-2-on, Butan-2-on, Pentan-2-on (cc=1, ungerade) → ebenfalls unten
-  // → einfach: immer +y (unten), unabhängig von Parität
-  // Hintergrund: Alkanol/Aldehyd zeigen oben (Außenseite vom Tal), aber User möchte
-  // die Ketogruppe konsistent unten haben.
-  const dy = +1;
+  // Carbonyl-O auf der dem Rückgrat abgewandten (symmetrischen) Außenseite:
+  //   gerade Index (Peak, y=0)        → nach oben (−1)
+  //   ungerader Index (Tal, y=COS60)  → nach unten (+1)
+  // Dadurch zeigt Pentan-3-on (cc=2) nach oben, die 2-one weiter nach unten.
+  const dy = (cc % 2 === 0) ? -1 : +1;
   sk.atoms.push({e:"O", x: cAt.x, y: cAt.y + dy, lp:2});
   sk.bonds.push({a: cc, b: sk.atoms.length-1, o:2});
   sk.name = name;
@@ -1067,17 +1110,19 @@ function nAlkeneFull(n, pos, name) {
       //   terminal & sp²: 4 - 2 = 2 Hs (CH₂=)
       //   intern  & sp²: 4 - 2 - 1 = 1 H
       const isTerminal = (i===dbA && isLeft) || (i===dbB && isRight);
-      // Richtung: weg von der Doppelbindung (i===dbA → nach -x; i===dbB → nach +x)
-      const dx = (i===dbA) ? -COS60 : +COS60;
-      // 1 H schräg nach oben (+SIN60 in y wegen Konvention y wächst nach unten)
-      atoms.push({e:"H", x: i + dx, y: -SIN60, lp:0});
-      bonds.push({a:i, b: atoms.length-1, o:1});
       if (isTerminal) {
-        // 2. H schräg nach unten
+        // terminales =CH2: zwei Hs schräg nach außen (oben/unten)
+        const dx = (i===dbA) ? -COS60 : +COS60;
+        atoms.push({e:"H", x: i + dx, y: -SIN60, lp:0});
+        bonds.push({a:i, b: atoms.length-1, o:1});
         atoms.push({e:"H", x: i + dx, y:  SIN60, lp:0});
         bonds.push({a:i, b: atoms.length-1, o:1});
+      } else {
+        // internes sp²-C (=CH−): das eine H steht rechtwinklig zu den beiden
+        // (kollinearen, horizontalen) C–C-Bindungen, also senkrecht nach oben.
+        atoms.push({e:"H", x: i, y: -1, lp:0});
+        bonds.push({a:i, b: atoms.length-1, o:1});
       }
-      // intern: kein 2. H
     } else {
       // sp³: terminal-C bekommt 3 Hs, intern 2 Hs
       atoms.push({e:"H", x:i, y:-1, lp:0}); bonds.push({a:i, b:atoms.length-1, o:1});
@@ -1186,9 +1231,10 @@ function esterFull(nA, nB, name) {
     bonds.push({a:0, b:atoms.length-1, o:1});
   }
   const cc = nA - 1;
-  // =O oben-rechts vom Carbonyl-C
+  // =O senkrecht nach oben vom Carbonyl-C (rechtwinklig, wie bei Alkanonen),
+  // damit keine gestauchten Winkel entstehen.
   const iOdb = atoms.length;
-  atoms.push({e:"O", x: cc + COS60, y: -SIN60, lp:2});
+  atoms.push({e:"O", x: cc, y: -1, lp:2});
   bonds.push({a:cc, b:iOdb, o:2});
   // -O- nach rechts
   const iOe = atoms.length;
@@ -1214,8 +1260,8 @@ function esterFull(nA, nB, name) {
 }
 
 function esterSkeletal(nA, nB, name) {
-  // Skelett ab nA+nB >= 3
-  if (nA + nB < 3) return null;
+  // Skelett für alle Ester verfügbar (auch Methylformiat, nA=nB=1).
+  if (nA < 1 || nB < 1) return null;
   const atoms = [], bonds = [];
   // Zickzack der R-Kette (links)
   for (let i=0; i<nA; i++) {
@@ -1224,8 +1270,11 @@ function esterSkeletal(nA, nB, name) {
   for (let i=0; i<nA-1; i++) bonds.push({a:i, b:i+1, o:1});
   const ccIdx = nA - 1;
   const ccAt = atoms[ccIdx];
-  // =O am Carbonyl-C, nach oben
-  atoms.push({e:"O", x: ccAt.x, y: ccAt.y - 1, lp:2});
+  // =O am Carbonyl-C auf der symmetrischen Außenseite (Parität wie bei Ketonen):
+  //   gerade Index → oben (−1), ungerader Index → unten (+1).
+  //   So werden Methyl-/Ethylacetat gespiegelt, Formiate bleiben oben.
+  const dyO = (ccIdx % 2 === 0) ? -1 : +1;
+  atoms.push({e:"O", x: ccAt.x, y: ccAt.y + dyO, lp:2});
   bonds.push({a: ccIdx, b: atoms.length-1, o:2});
   // -O- in Kettenfortsetzung (zickzack)
   const oeAt = {e:"O", x: ccAt.x + SIN60, y: (nA % 2 === 0) ? 0 : COS60, lp:2};
@@ -1244,6 +1293,11 @@ function esterSkeletal(nA, nB, name) {
   }
   const totalC = nA + nB;
   const totalH = 2*nA + 2*nB;
+  if (nA === 1) {
+    // Formiate (Methyl-/Ethylformiat): Formyl-H am Carboxyl-C zeichnen
+    atoms.push({e:"H", x: ccAt.x - 1, y: ccAt.y, lp:0});
+    bonds.push({a: ccIdx, b: atoms.length-1, o:1});
+  }
   return {atoms, bonds, name, formula: "C"+sub(totalC)+"H"+sub(totalH)+"O₂"};
 }
 
@@ -1481,6 +1535,147 @@ function benzeneSkeletal() {
   return {atoms, bonds, name:"Benzol", formula:"C₆H₆"};
 }
 
+/* ============================================================
+   AROMATEN-RENDERER (Kekulé mit innenliegenden Doppelbindungen
+   + optional mesomere Schreibweise mit Ring in der Mitte).
+   Liefert Geometrie — eigene saubere Ringe.
+   ============================================================ */
+function aromaticSpec(kind) {
+  const S = SIN60;                 // 0.866
+  function hexVerts(cx, cy) {      // Pointy-Top-Hexagon (Umkreisradius 1)
+    const vs = [];
+    for (let i=0; i<6; i++) {
+      const a = -Math.PI/2 + i*Math.PI/3;
+      vs.push([cx + Math.cos(a), cy + Math.sin(a)]);
+    }
+    return vs;                     // [0 oben, 1 or, 2 ur, 3 unten, 4 ul, 5 ol]
+  }
+  let centers;
+  if (kind === "naphthalene")      centers = [[0,0],[2*S,0]];
+  else if (kind === "anthracene")  centers = [[0,0],[2*S,0],[4*S,0]];
+  else                             centers = [[0,0]];
+
+  const verts = [];
+  const key = (x,y)=>x.toFixed(3)+","+y.toFixed(3);
+  const vmap = new Map();
+  const addV = (x,y)=>{ const k=key(x,y); if(vmap.has(k)) return vmap.get(k);
+    const id=verts.length; verts.push([x,y]); vmap.set(k,id); return id; };
+
+  const edgeMap = new Map();
+  centers.forEach(([cx,cy])=>{
+    const vs = hexVerts(cx,cy).map(([x,y])=>addV(x,y));
+    for(let i=0;i<6;i++){
+      const a=vs[i], b=vs[(i+1)%6];
+      const ek = a<b ? a+"-"+b : b+"-"+a;
+      if(!edgeMap.has(ek)) edgeMap.set(ek,{a,b,ring:[cx,cy],dbl:false});
+    }
+  });
+
+  const markDbl = (x1,y1,x2,y2)=>{
+    const a=vmap.get(key(x1,y1)), b=vmap.get(key(x2,y2));
+    if(a==null||b==null) return;
+    const ek = a<b ? a+"-"+b : b+"-"+a;
+    if(edgeMap.has(ek)) edgeMap.get(ek).dbl=true;
+  };
+  // Vertex-Helfer relativ zu Ringzentrum
+  const T=(c)=>[c[0],   c[1]-1];      // oben
+  const OR=(c)=>[c[0]+S,c[1]-0.5];    // oben-rechts
+  const UR=(c)=>[c[0]+S,c[1]+0.5];    // unten-rechts
+  const B=(c)=>[c[0],   c[1]+1];      // unten
+  const UL=(c)=>[c[0]-S,c[1]+0.5];    // unten-links
+  const OL=(c)=>[c[0]-S,c[1]-0.5];    // oben-links
+  const md=(p,q)=>markDbl(p[0],p[1],q[0],q[1]);
+
+  if(kind==="benzene"){
+    const c=centers[0];
+    md(T(c),OR(c)); md(UR(c),B(c)); md(UL(c),OL(c));
+  } else if(kind==="naphthalene"){
+    const A=centers[0], Bc=centers[1];
+    // verifizierte Kekulé (jedes C genau eine Doppelbindung, geteilte Kante einfach)
+    md(T(A),OL(A));        // e1
+    md(UL(A),B(A));        // e3
+    md(B(Bc),UL(Bc));      // e5  (UL(B) = unterer Brückenkopf)
+    md(UR(Bc),OR(Bc));     // e7
+    md(T(Bc),OL(Bc));      // e9  (OL(B) = oberer Brückenkopf)
+  } else if(kind==="anthracene"){
+    const A=centers[0], Bc=centers[1], C=centers[2];
+    md(B(A),UR(A)); md(B(Bc),UR(Bc)); md(B(C),UR(C));
+    md(OR(C),T(C)); md(OR(Bc),T(Bc)); md(OR(A),T(A));
+    md(OL(A),UL(A));
+  }
+
+  return {verts, edges:[...edgeMap.values()], centers};
+}
+
+/* Zeichnet ein Aromaten-Skelett als SVG.
+   kind: "benzene" | "naphthalene" | "anthracene".
+   Bei Benzol wird zusätzlich rechts die mesomere Schreibweise (Ring) gezeigt. */
+function renderAromatic(kind, name, formula) {
+  const spec = aromaticSpec(kind);
+  const showMeso = (kind === "benzene");
+
+  function panel(ox, pw, ph, asCircle) {
+    let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+    for(const [x,y] of spec.verts){ if(x<minX)minX=x; if(x>maxX)maxX=x; if(y<minY)minY=y; if(y>maxY)maxY=y; }
+    const w=maxX-minX, h=maxY-minY;
+    const MARGIN = ph*0.18;
+    const scale = Math.min((pw-2*MARGIN)/Math.max(w,0.01), (ph-2*MARGIN)/Math.max(h,0.01));
+    const cx0=(minX+maxX)/2, cy0=(minY+maxY)/2;
+    const toX = x => ox + pw/2 + (x-cx0)*scale;
+    const toY = y => ph/2 + (y-cy0)*scale;
+    const stroke = Math.max(4, scale*0.05);
+    const out=[];
+    const line=(x1,y1,x2,y2,sw)=>`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#1c1712" stroke-width="${(sw||stroke).toFixed(1)}" stroke-linecap="round"/>`;
+    for(const e of spec.edges){
+      const [ax,ay]=spec.verts[e.a], [bx,by]=spec.verts[e.b];
+      out.push(line(toX(ax),toY(ay),toX(bx),toY(by)));
+    }
+    if(asCircle){
+      const [rcx,rcy]=spec.centers[0];
+      const rad = scale*0.58;
+      out.push(`<circle cx="${toX(rcx).toFixed(1)}" cy="${toY(rcy).toFixed(1)}" r="${rad.toFixed(1)}" fill="none" stroke="#1c1712" stroke-width="${stroke.toFixed(1)}"/>`);
+    } else {
+      for(const e of spec.edges){
+        if(!e.dbl) continue;
+        const [ax,ay]=spec.verts[e.a], [bx,by]=spec.verts[e.b];
+        const Ax=toX(ax),Ay=toY(ay),Bx=toX(bx),By=toY(by);
+        const mx=(Ax+Bx)/2, my=(Ay+By)/2;
+        const rcx=toX(e.ring[0]), rcy=toY(e.ring[1]);
+        let nx=rcx-mx, ny=rcy-my; const nl=Math.hypot(nx,ny)||1; nx/=nl; ny/=nl;
+        const off = scale*0.16;
+        const inset = 0.18;
+        const ix1=Ax+(Bx-Ax)*inset, iy1=Ay+(By-Ay)*inset;
+        const ix2=Bx-(Bx-Ax)*inset, iy2=By-(By-Ay)*inset;
+        out.push(line(ix1+nx*off, iy1+ny*off, ix2+nx*off, iy2+ny*off));
+      }
+    }
+    return out.join("\n  ");
+  }
+
+  const PH=1000;
+  if(showMeso){
+    const PW=900, GAP=120, totalW=PW*2+GAP;
+    const left = panel(0, PW, PH, false);
+    const right = panel(PW+GAP, PW, PH, true);
+    const lblY = PH-40;
+    return { svg:
+`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW} ${PH}" width="${totalW}" height="${PH}" preserveAspectRatio="xMidYMid meet">
+  <rect width="${totalW}" height="${PH}" fill="#ffffff"/>
+  ${left}
+  ${right}
+  <text x="${PW/2}" y="${lblY}" font-size="44" font-family="'Helvetica Neue',sans-serif" text-anchor="middle" fill="#6c6358">Kekulé</text>
+  <text x="${PW+GAP+PW/2}" y="${lblY}" font-size="44" font-family="'Helvetica Neue',sans-serif" text-anchor="middle" fill="#6c6358">mesomer</text>
+</svg>`, bondLen:0, atomCount: spec.verts.length };
+  }
+  const PW=1000;
+  const body = panel(0, PW, PH, false);
+  return { svg:
+`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${PW} ${PH}" width="${PW}" height="${PH}" preserveAspectRatio="xMidYMid meet">
+  <rect width="${PW}" height="${PH}" fill="#ffffff"/>
+  ${body}
+</svg>`, bondLen:0, atomCount: spec.verts.length };
+}
+
 function sub(n){ const m="₀₁₂₃₄₅₆₇₈₉"; return String(n).split('').map(d=>m[+d]).join(''); }
 
 /* ---------- Summenformel aus Struktur ableiten (Punkt I) ---------- */
@@ -1682,11 +1877,25 @@ const SUBSTANCES = [
 
 // Aromaten
 SUBSTANCES.push({
-  key:"benzol", name:"Benzol",
+  key:"benzol", name:"Benzol", en:"Benzene",
   aliases:["benzol","benzene","c6h6"],
-  klass:"organ", sub:"aromat",
+  klass:"organ", sub:"aromat", aromaticKind:"benzene",
   full: benzeneStruct,
   skeletal: benzeneSkeletal
+});
+SUBSTANCES.push({
+  key:"naphthalin", name:"Naphthalin", en:"Naphthalene",
+  formula:"C₁₀H₈", aliases:["naphthalin","naphthalene","naphtalin","c10h8","mottenkugel"],
+  klass:"organ", sub:"aromat", aromaticKind:"naphthalene",
+  full: () => aromaticFull("naphthalene", "Naphthalin", "C₁₀H₈"),
+  skeletal: () => ({atoms:[], bonds:[], name:"Naphthalin", formula:"C₁₀H₈"})
+});
+SUBSTANCES.push({
+  key:"anthracen", name:"Anthracen", en:"Anthracene",
+  formula:"C₁₄H₁₀", aliases:["anthracen","anthracene","c14h10"],
+  klass:"organ", sub:"aromat", aromaticKind:"anthracene",
+  full: () => aromaticFull("anthracene", "Anthracen", "C₁₄H₁₀"),
+  skeletal: () => ({atoms:[], bonds:[], name:"Anthracen", formula:"C₁₄H₁₀"})
 });
 
 // Alkane (Methan…Decan)
@@ -2045,20 +2254,7 @@ function addHsRadial(atoms, bonds, cIdx, cx, cy, neighborIdxs, count) {
 
 /* Isobutan: (CH3)3CH — zentrales C mit 3 Methylresten und 1 H */
 function isobutaneFull() {
-  // Zentrales C bei (0,0). 4 Substituenten tetraedrisch projiziert:
-  // 3 CH3 bei 90°/210°/330° (gleichmäßig), 1 H bei der 4. Position (oben).
-  const atoms = [], bonds = [];
-  atoms.push({e:"C", x:0, y:0, lp:0});                  // 0 zentral
-  // H nach oben
-  atoms.push({e:"H", x:0, y:-1, lp:0});                 // 1 H oben
-  bonds.push({a:0,b:1,o:1});
-  // 3 Methyle bei 30°, 150°, 270° (also unten-rechts, unten-links, unten) — gefächert
-  const methylAngles = [Math.PI/6, 5*Math.PI/6, 3*Math.PI/2];  // 30°,150°,270°
-  for (const ang of methylAngles) {
-    const mx = Math.cos(ang), my = Math.sin(ang);
-    attachMethylRadial(atoms, bonds, 0, 0, 0, mx, my);
-  }
-  return {atoms, bonds, name:"2-Methylpropan (Isobutan)", formula:"C₄H₁₀"};
+  return branchedAlkaneFull(3, [{at:1, up:true}], "2-Methylpropan (Isobutan)", "C₄H₁₀");
 }
 function isobutaneSkeletal() {
   // Y-förmig
@@ -2089,45 +2285,12 @@ function methylbutaneSkeletal() {
   };
 }
 function methylbutaneFull() {
-  // 2-Methylbutan: Zickzack-Hauptkette C0-C1-C2-C3, Methyl an C1.
-  // Wir nutzen denselben Renderer-tauglichen Ansatz: Kette im Zickzack,
-  // Hs radial nach außen gefächert für saubere Trennung.
-  const atoms = [], bonds = [];
-  // Hauptkette als Zickzack
-  const chain = [
-    {x:0,        y:0},        // C0 (CH3)
-    {x:SIN60,    y:COS60},    // C1 (CH, Verzweigung)
-    {x:2*SIN60,  y:0},        // C2 (CH2)
-    {x:3*SIN60,  y:COS60}     // C3 (CH3)
-  ];
-  for (const c of chain) atoms.push({e:"C", x:c.x, y:c.y, lp:0});
-  bonds.push({a:0,b:1,o:1},{a:1,b:2,o:1},{a:2,b:3,o:1});
-  // Methyl-Verzweigung an C1, nach oben (freie 120°-Richtung)
-  const cBr = atoms.length;
-  atoms.push({e:"C", x:SIN60, y:COS60-1, lp:0});  // nach oben
-  bonds.push({a:1, b:cBr, o:1});
-
-  addHsRadial(atoms, bonds, 0, chain[0].x, chain[0].y, [1], 3);          // C0: 3 Hs
-  addHsRadial(atoms, bonds, 1, chain[1].x, chain[1].y, [0,2,cBr], 1);    // C1: 1 H
-  addHsRadial(atoms, bonds, 2, chain[2].x, chain[2].y, [1,3], 2);        // C2: 2 Hs
-  addHsRadial(atoms, bonds, 3, chain[3].x, chain[3].y, [2], 3);          // C3: 3 Hs
-  addHsRadial(atoms, bonds, cBr, atoms[cBr].x, atoms[cBr].y, [1], 3);    // Methyl: 3 Hs
-  return {atoms, bonds, name:"2-Methylbutan (Isopentan)", formula:"C₅H₁₂"};
+  return branchedAlkaneFull(4, [{at:1, up:true}], "2-Methylbutan (Isopentan)", "C₅H₁₂");
 }
 
 /* Neopentan: C(CH3)4 — zentrales C mit 4 Methylresten im Kreuz, Hs radial gefächert */
 function neopentaneFull() {
-  const atoms = [], bonds = [];
-  atoms.push({e:"C", x:0, y:0, lp:0});  // 0 zentral
-  // 4 Methyle bei 45°, 135°, 225°, 315° (diagonales Kreuz). Methyl-C etwas weiter
-  // außen (1.5) und H-Fächer enger (95°), damit die nach innen zeigenden H-Atome
-  // nicht ins Zentrum ragen.
-  const angles = [Math.PI/4, 3*Math.PI/4, 5*Math.PI/4, 7*Math.PI/4];
-  for (const ang of angles) {
-    const mx = Math.cos(ang)*1.5, my = Math.sin(ang)*1.5;
-    attachMethylRadial(atoms, bonds, 0, 0, 0, mx, my, 95*Math.PI/180);
-  }
-  return {atoms, bonds, name:"2,2-Dimethylpropan (Neopentan)", formula:"C₅H₁₂"};
+  return branchedAlkaneFull(3, [{at:1, up:true}, {at:1, up:false}], "2,2-Dimethylpropan (Neopentan)", "C₅H₁₂");
 }
 function neopentaneSkeletal() {
   return {
@@ -2162,6 +2325,180 @@ function skeletalToFull(skel, name) {
     if (nH > 0) addHsRadial(atoms, bonds, i, atoms[i].x, atoms[i].y, neighbors[i], nH);
   }
   return {atoms, bonds, name, formula: skel.formula};
+}
+
+/* ============================================================
+   VSEPR-H-Ergänzung (für Aromaten-Strukturformeln)
+   sp²-C: trigonal (120°); sp³-C: global kollisionsfrei.
+   Nutzt computeLPAngles/wrapPi (weiter unten definiert, gehoistet).
+   ============================================================ */
+function trigonalFreeSlots(hb, nH) {
+  if (hb.length === 0) { const b = -Math.PI/2; return [b, b+2*Math.PI/3, b+4*Math.PI/3].slice(0, nH); }
+  const anchor = hb[0];
+  const slots = [anchor, anchor + 2*Math.PI/3, anchor + 4*Math.PI/3];
+  const free = slots.filter(s => !hb.some(h => Math.abs(wrapPi(s - h)) < 0.35));
+  if (free.length < nH) return computeLPAngles(hb, 3, nH);
+  return free.slice(0, nH);
+}
+function freeAngleGlobal(cx, cy, atoms) {
+  let best = 0, bestScore = -1;
+  for (let deg = 0; deg < 360; deg += 3) {
+    const a = deg*Math.PI/180, hx = cx + Math.cos(a), hy = cy + Math.sin(a);
+    let mind = Infinity;
+    for (let k = 0; k < atoms.length; k++) { const d = Math.hypot(atoms[k].x - hx, atoms[k].y - hy); if (d < mind) mind = d; }
+    if (mind > bestScore) { bestScore = mind; best = a; }
+  }
+  return best;
+}
+function addVseprHs(atoms, bonds) {
+  const n0 = atoms.length;
+  const order = new Array(atoms.length).fill(0);
+  const nbrAng = Array.from({length: atoms.length}, () => []);
+  const maxO = new Array(atoms.length).fill(1);
+  for (const b of bonds) {
+    order[b.a] += b.o; order[b.b] += b.o;
+    nbrAng[b.a].push(Math.atan2(atoms[b.b].y - atoms[b.a].y, atoms[b.b].x - atoms[b.a].x));
+    nbrAng[b.b].push(Math.atan2(atoms[b.a].y - atoms[b.b].y, atoms[b.a].x - atoms[b.b].x));
+    if (b.o > maxO[b.a]) maxO[b.a] = b.o;
+    if (b.o > maxO[b.b]) maxO[b.b] = b.o;
+  }
+  for (let i=0; i<n0; i++) {              // sp²-H (trigonal)
+    if (atoms[i].e !== "C" || maxO[i] !== 2) continue;
+    const nH = 4 - order[i]; if (nH <= 0) continue;
+    for (const a of trigonalFreeSlots(nbrAng[i], nH)) {
+      atoms.push({e:"H", x: atoms[i].x + Math.cos(a), y: atoms[i].y + Math.sin(a), lp:0});
+      bonds.push({a:i, b: atoms.length-1, o:1});
+    }
+  }
+  for (let i=0; i<n0; i++) {              // sp³-H (global kollisionsfrei)
+    if (atoms[i].e !== "C" || maxO[i] === 2) continue;
+    const nH = 4 - order[i]; if (nH <= 0) continue;
+    for (let h=0; h<nH; h++) {
+      const a = freeAngleGlobal(atoms[i].x, atoms[i].y, atoms);
+      atoms.push({e:"H", x: atoms[i].x + Math.cos(a), y: atoms[i].y + Math.sin(a), lp:0});
+      bonds.push({a:i, b: atoms.length-1, o:1});
+    }
+  }
+}
+
+/* Vollständige Strukturformel der Aromaten (Naphthalin/Anthracen):
+   Kekulé-Gerüst aus aromaticSpec + explizite H außen — wie bei Benzol. */
+function aromaticFull(kind, name, formula) {
+  const spec = aromaticSpec(kind);
+  const atoms = spec.verts.map(([x,y]) => ({e:"C", x, y, lp:0}));
+  const bonds = spec.edges.map(e => ({a:e.a, b:e.b, o: e.dbl ? 2 : 1}));
+  addVseprHs(atoms, bonds);
+  return {atoms, bonds, name, formula};
+}
+
+/* Verzweigte ALKANE: Hauptkette waagerecht (180°), Methyle rechtwinklig.
+   C–C-Abstand = 2 BE (Platz für die Methyl-H), C–H = 1 BE → kollisionsfrei. */
+function branchedAlkaneFull(mainN, methyls, name, formula) {
+  const SP = 2;
+  const atoms = [], bonds = [], mIdx = [];
+  for (let i=0; i<mainN; i++) { mIdx.push(atoms.length); atoms.push({e:"C", x:i*SP, y:0, lp:0}); }
+  for (let i=0; i<mainN-1; i++) bonds.push({a:mIdx[i], b:mIdx[i+1], o:1});
+  const upUsed = {}, downUsed = {};
+  for (const m of methyls) {
+    const cx = m.at*SP, dir = m.up ? -1 : 1, mc = atoms.length;
+    atoms.push({e:"C", x:cx, y:dir, lp:0}); bonds.push({a:mIdx[m.at], b:mc, o:1});
+    if (dir < 0) upUsed[m.at] = 1; else downUsed[m.at] = 1;
+    atoms.push({e:"H", x:cx,   y:dir*2, lp:0}); bonds.push({a:mc, b:atoms.length-1, o:1});
+    atoms.push({e:"H", x:cx-1, y:dir,   lp:0}); bonds.push({a:mc, b:atoms.length-1, o:1});
+    atoms.push({e:"H", x:cx+1, y:dir,   lp:0}); bonds.push({a:mc, b:atoms.length-1, o:1});
+  }
+  for (let i=0; i<mainN; i++) {
+    const cx = i*SP;
+    if (!upUsed[i])   { atoms.push({e:"H", x:cx, y:-1, lp:0}); bonds.push({a:mIdx[i], b:atoms.length-1, o:1}); }
+    if (!downUsed[i]) { atoms.push({e:"H", x:cx, y: 1, lp:0}); bonds.push({a:mIdx[i], b:atoms.length-1, o:1}); }
+    if (i===0)        { atoms.push({e:"H", x:cx-1, y:0, lp:0}); bonds.push({a:mIdx[i], b:atoms.length-1, o:1}); }
+    if (i===mainN-1)  { atoms.push({e:"H", x:cx+1, y:0, lp:0}); bonds.push({a:mIdx[i], b:atoms.length-1, o:1}); }
+  }
+  return {atoms, bonds, name, formula};
+}
+
+/* Verzweigte ALKENE — Strukturformel: Hauptkette waagerecht (sp²-C auf 180°
+   in der Kette, für Übersichtlichkeit), Methyle rechtwinklig.
+   Doppelbindungs-H: terminales =CH₂ trigonal bei ±120°, internes =CH−
+   senkrecht zur Kette. (Die Skelettformel bleibt davon unberührt: 120°.) */
+function branchedAlkeneFull(mainN, dbPos, methyls, name, formula) {
+  const SP = 2;
+  const atoms = [], bonds = [], mIdx = [];
+  for (let i=0; i<mainN; i++) { mIdx.push(atoms.length); atoms.push({e:"C", x:i*SP, y:0, lp:0}); }
+  for (let i=0; i<mainN-1; i++) bonds.push({a:mIdx[i], b:mIdx[i+1], o: (i===dbPos-1 ? 2 : 1)});
+  const upUsed = {}, downUsed = {};
+  for (const m of methyls) {
+    const cx = m.at*SP, dir = m.up ? -1 : 1, mc = atoms.length;
+    atoms.push({e:"C", x:cx, y:dir, lp:0}); bonds.push({a:mIdx[m.at], b:mc, o:1});
+    if (dir < 0) upUsed[m.at] = 1; else downUsed[m.at] = 1;
+    atoms.push({e:"H", x:cx,   y:dir*2, lp:0}); bonds.push({a:mc, b:atoms.length-1, o:1});
+    atoms.push({e:"H", x:cx-1, y:dir,   lp:0}); bonds.push({a:mc, b:atoms.length-1, o:1});
+    atoms.push({e:"H", x:cx+1, y:dir,   lp:0}); bonds.push({a:mc, b:atoms.length-1, o:1});
+  }
+  const order = new Array(mainN).fill(0);
+  for (let i=0; i<mainN-1; i++) { const o = (i===dbPos-1 ? 2 : 1); order[i] += o; order[i+1] += o; }
+  for (const m of methyls) order[m.at] += 1;
+  for (let i=0; i<mainN; i++) {
+    const cx = i*SP, nH = 4 - order[i]; if (nH <= 0) continue;
+    const isSp2 = (i===dbPos-1 || i===dbPos);
+    const heavy = (i>0?1:0) + (i<mainN-1?1:0) + ((upUsed[i]||downUsed[i]) ? 1 : 0);
+    if (isSp2 && heavy === 1) {
+      const baseAng = (i===0) ? 0 : Math.PI;     // Richtung zum Doppelbindungspartner
+      for (const off of [ +2*Math.PI/3, -2*Math.PI/3 ]) {
+        const a = baseAng + off;
+        atoms.push({e:"H", x: cx + Math.cos(a), y: Math.sin(a), lp:0});
+        bonds.push({a:mIdx[i], b:atoms.length-1, o:1});
+      }
+    } else if (isSp2) {
+      const dir = upUsed[i] ? 1 : -1;            // internes =CH−: H senkrecht
+      atoms.push({e:"H", x:cx, y:dir, lp:0}); bonds.push({a:mIdx[i], b:atoms.length-1, o:1});
+    } else {
+      const slots = [];
+      if (!upUsed[i]) slots.push([cx,-1]);
+      if (!downUsed[i]) slots.push([cx,1]);
+      if (i===0) slots.push([cx-1,0]);
+      if (i===mainN-1) slots.push([cx+1,0]);
+      for (let h=0; h<nH && h<slots.length; h++) { atoms.push({e:"H", x:slots[h][0], y:slots[h][1], lp:0}); bonds.push({a:mIdx[i], b:atoms.length-1, o:1}); }
+    }
+  }
+  return {atoms, bonds, name, formula};
+}
+
+/* Verzweigte ALKINE — Strukturformel: Hauptkette waagerecht (sp-C ohnehin
+   linear/180°), Methyle rechtwinklig. Terminales ≡C–H liegt in der Achse. */
+function branchedAlkyneFull(mainN, triplePos, methyls, name, formula) {
+  const SP = 2;
+  const atoms = [], bonds = [], mIdx = [];
+  for (let i=0; i<mainN; i++) { mIdx.push(atoms.length); atoms.push({e:"C", x:i*SP, y:0, lp:0}); }
+  for (let i=0; i<mainN-1; i++) bonds.push({a:mIdx[i], b:mIdx[i+1], o: (i===triplePos-1 ? 3 : 1)});
+  const upUsed = {}, downUsed = {};
+  for (const m of methyls) {
+    const cx = m.at*SP, dir = m.up ? -1 : 1, mc = atoms.length;
+    atoms.push({e:"C", x:cx, y:dir, lp:0}); bonds.push({a:mIdx[m.at], b:mc, o:1});
+    if (dir < 0) upUsed[m.at] = 1; else downUsed[m.at] = 1;
+    atoms.push({e:"H", x:cx,   y:dir*2, lp:0}); bonds.push({a:mc, b:atoms.length-1, o:1});
+    atoms.push({e:"H", x:cx-1, y:dir,   lp:0}); bonds.push({a:mc, b:atoms.length-1, o:1});
+    atoms.push({e:"H", x:cx+1, y:dir,   lp:0}); bonds.push({a:mc, b:atoms.length-1, o:1});
+  }
+  const order = new Array(mainN).fill(0);
+  for (let i=0; i<mainN-1; i++) { const o = (i===triplePos-1 ? 3 : 1); order[i] += o; order[i+1] += o; }
+  for (const m of methyls) order[m.at] += 1;
+  for (let i=0; i<mainN; i++) {
+    const cx = i*SP, nH = 4 - order[i]; if (nH <= 0) continue;
+    const isSp = (i===triplePos-1 || i===triplePos);
+    if (isSp) {
+      const dx = (i===0) ? -1 : 1;             // terminales ≡C–H in der Achse
+      atoms.push({e:"H", x:cx+dx, y:0, lp:0}); bonds.push({a:mIdx[i], b:atoms.length-1, o:1});
+    } else {
+      const slots = [];
+      if (!upUsed[i]) slots.push([cx,-1]);
+      if (!downUsed[i]) slots.push([cx,1]);
+      if (i===0) slots.push([cx-1,0]);
+      if (i===mainN-1) slots.push([cx+1,0]);
+      for (let h=0; h<nH && h<slots.length; h++) { atoms.push({e:"H", x:slots[h][0], y:slots[h][1], lp:0}); bonds.push({a:mIdx[i], b:atoms.length-1, o:1}); }
+    }
+  }
+  return {atoms, bonds, name, formula};
 }
 
 /* 2-Methylpentan (Isohexan) — Skelett */
@@ -2219,14 +2556,14 @@ SUBSTANCES.push({
   key:"2methylpentane", name:"2-Methylpentan (Isohexan)", en:"2-Methylpentane (Isohexane)",
   formula:"C₆H₁₄", aliases:["isohexan","2-methylpentan"],
   klass:"organ", sub:"alkan_iso",
-  full: () => skeletalToFull(methylpentaneSkeletal(), "2-Methylpentan (Isohexan)"),
+  full: () => branchedAlkaneFull(5, [{at:1, up:true}], "2-Methylpentan (Isohexan)", "C₆H₁₄"),
   skeletal: methylpentaneSkeletal
 });
 SUBSTANCES.push({
   key:"3methylpentane", name:"3-Methylpentan", en:"3-Methylpentane",
   formula:"C₆H₁₄", aliases:["3-methylpentan"],
   klass:"organ", sub:"alkan_iso",
-  full: () => skeletalToFull(methylpentane3Skeletal(), "3-Methylpentan"),
+  full: () => branchedAlkaneFull(5, [{at:2, up:true}], "3-Methylpentan", "C₆H₁₄"),
   skeletal: methylpentane3Skeletal
 });
 
@@ -2263,15 +2600,16 @@ function methylbut1ene_Skeletal() {
 }
 function methylbut2ene_Skeletal() {
   // 2-Methylbut-2-en: (CH3)2C=CH-CH3
-  // zentral C1 (=C<) mit zwei Methyl (C0 links-oben, C_extra links-unten) und DB zu C2
-  // C1 ist ein Verzweigungspunkt mit 3 Bindungen im 120°-Abstand: zwei nach links, DB nach rechts
+  // Zentrales C2 hat drei Bindungen im idealen 120°-Abstand: zwei Methyle
+  // und die Doppelbindung. Die Doppelbindung zeigt nach unten-rechts (Zickzack),
+  // die Methyle nach unten-links (150°) und senkrecht nach oben (270°).
   return {
     atoms:[
-      {e:"C", x:0,        y:0,        lp:0, hidden:true},  // 0 CH3 links-oben
-      {e:"C", x:0,        y:1,        lp:0, hidden:true},  // 1 CH3 links-unten
-      {e:"C", x:SIN60,    y:COS60,    lp:0, hidden:true},  // 2 zentral =C<
-      {e:"C", x:2*SIN60,  y:0,        lp:0, hidden:true},  // 3 =CH-
-      {e:"C", x:3*SIN60,  y:COS60,    lp:0, hidden:true}   // 4 CH3 rechts
+      {e:"C", x:-SIN60,   y:COS60,   lp:0, hidden:true},  // 0 CH3 unten-links (150°)
+      {e:"C", x:0,        y:-1,      lp:0, hidden:true},  // 1 CH3 oben (270°)
+      {e:"C", x:0,        y:0,       lp:0, hidden:true},  // 2 zentral =C<
+      {e:"C", x:SIN60,    y:COS60,   lp:0, hidden:true},  // 3 =CH- (30°)
+      {e:"C", x:2*SIN60,  y:0,       lp:0, hidden:true}   // 4 CH3 (Zickzack weiter)
     ],
     bonds:[{a:0,b:2,o:1},{a:1,b:2,o:1},{a:2,b:3,o:2},{a:3,b:4,o:1}],
     name:"2-Methylbut-2-en", formula:"C₅H₁₀"
@@ -2298,25 +2636,29 @@ SUBSTANCES.push({
   key:"isobutene", name:"2-Methylpropen (Isobuten)", en:"2-Methylpropene (Isobutene)",
   formula:"C₄H₈", aliases:["isobuten","2-methylpropen"],
   klass:"organ", sub:"alken_iso",
-  full: () => null, skeletal: isobuteneSkeletal
+  full: () => branchedAlkeneFull(3, 1, [{at:1, up:true}], "2-Methylpropen (Isobuten)", "C₄H₈"),
+  skeletal: isobuteneSkeletal
 });
 SUBSTANCES.push({
   key:"2methylbut1ene", name:"2-Methylbut-1-en", en:"2-Methylbut-1-ene",
   formula:"C₅H₁₀", aliases:["2-methylbut-1-en"],
   klass:"organ", sub:"alken_iso",
-  full: () => null, skeletal: methylbut1ene_Skeletal
+  full: () => branchedAlkeneFull(4, 1, [{at:1, up:true}], "2-Methylbut-1-en", "C₅H₁₀"),
+  skeletal: methylbut1ene_Skeletal
 });
 SUBSTANCES.push({
   key:"2methylbut2ene", name:"2-Methylbut-2-en", en:"2-Methylbut-2-ene",
   formula:"C₅H₁₀", aliases:["2-methylbut-2-en"],
   klass:"organ", sub:"alken_iso",
-  full: () => null, skeletal: methylbut2ene_Skeletal
+  full: () => branchedAlkeneFull(4, 2, [{at:1, up:true}], "2-Methylbut-2-en", "C₅H₁₀"),
+  skeletal: methylbut2ene_Skeletal
 });
 SUBSTANCES.push({
   key:"4methylpent1ene", name:"4-Methylpent-1-en", en:"4-Methylpent-1-ene",
   formula:"C₆H₁₂", aliases:["4-methylpent-1-en"],
   klass:"organ", sub:"alken_iso",
-  full: () => null, skeletal: methylpent1eneSkeletal
+  full: () => branchedAlkeneFull(5, 1, [{at:3, up:true}], "4-Methylpent-1-en", "C₆H₁₂"),
+  skeletal: methylpent1eneSkeletal
 });
 
 /* Verzweigte Alkine — Skelett */
@@ -2371,24 +2713,144 @@ function methylhex1yneSkeletal() {
     name:"5-Methylhex-1-in", formula:"C₇H₁₂"
   };
 }
+function methylpent1yne3Skeletal() {
+  // 3-Methylpent-1-in: HC≡C-CH(CH3)-CH2-CH3
+  // C0≡C1 linear (horizontal), C2 sp³-Verzweigung (Tal-Vertex):
+  // Methyl senkrecht nach unten, Kette weiter im Zickzack.
+  return {
+    atoms:[
+      {e:"C", x:0,          y:0,        lp:0, hidden:true},  // 0  HC≡
+      {e:"C", x:1,          y:0,        lp:0, hidden:true},  // 1  ≡C-
+      {e:"C", x:1+SIN60,    y:COS60,    lp:0, hidden:true},  // 2  CH< (Verzweigung, Tal)
+      {e:"C", x:1+SIN60,    y:COS60+1,  lp:0, hidden:true},  // 3  CH3 senkrecht nach unten
+      {e:"C", x:1+2*SIN60,  y:0,        lp:0, hidden:true},  // 4  CH2 (Zickzack hoch)
+      {e:"C", x:1+3*SIN60,  y:COS60,    lp:0, hidden:true}   // 5  CH3
+    ],
+    bonds:[{a:0,b:1,o:3},{a:1,b:2,o:1},{a:2,b:3,o:1},{a:2,b:4,o:1},{a:4,b:5,o:1}],
+    name:"3-Methylpent-1-in", formula:"C₆H₁₀"
+  };
+}
+/* Vollständige Strukturformel 3-Methylpent-1-in — komplett rechtwinklig:
+   Alkin zeigt nach links, Methyl senkrecht nach oben, Ethyl-Rest senkrecht
+   nach unten. Alle Bindungen waagerecht/senkrecht, alle H auf eigenen
+   Gitterplätzen → keine Kollisionen. */
+function methylpent1yne3Full() {
+  return {
+    atoms:[
+      {e:"H", x:-1, y:0,  lp:0},   // 0
+      {e:"C", x:0,  y:0,  lp:0},   // 1  HC≡
+      {e:"C", x:1,  y:0,  lp:0},   // 2  ≡C-
+      {e:"C", x:2,  y:0,  lp:0},   // 3  CH< (Verzweigung)
+      {e:"C", x:2,  y:-1, lp:0},   // 4  CH3 (oben)
+      {e:"C", x:2,  y:1,  lp:0},   // 5  CH2 (unten)
+      {e:"C", x:2,  y:2,  lp:0},   // 6  CH3 (ganz unten)
+      {e:"H", x:3,  y:0,  lp:0},   // 7  H an C3 (rechts)
+      // Methyl C4 (oben): H oben/links/rechts
+      {e:"H", x:2,  y:-2, lp:0},   // 8
+      {e:"H", x:1,  y:-1, lp:0},   // 9
+      {e:"H", x:3,  y:-1, lp:0},   // 10
+      // CH2 C5 (unten): H links/rechts
+      {e:"H", x:1,  y:1,  lp:0},   // 11
+      {e:"H", x:3,  y:1,  lp:0},   // 12
+      // CH3 C6 (ganz unten): H unten/links/rechts
+      {e:"H", x:2,  y:3,  lp:0},   // 13
+      {e:"H", x:1,  y:2,  lp:0},   // 14
+      {e:"H", x:3,  y:2,  lp:0}    // 15
+    ],
+    bonds:[
+      {a:0,b:1,o:1},{a:1,b:2,o:3},{a:2,b:3,o:1},
+      {a:3,b:4,o:1},{a:3,b:5,o:1},{a:5,b:6,o:1},{a:3,b:7,o:1},
+      {a:4,b:8,o:1},{a:4,b:9,o:1},{a:4,b:10,o:1},
+      {a:5,b:11,o:1},{a:5,b:12,o:1},
+      {a:6,b:13,o:1},{a:6,b:14,o:1},{a:6,b:15,o:1}
+    ],
+    name:"3-Methylpent-1-in", formula:"C₆H₁₀"
+  };
+}
 SUBSTANCES.push({
   key:"3methylbut1yne", name:"3-Methylbut-1-in", en:"3-Methylbut-1-yne",
   formula:"C₅H₈", aliases:["3-methylbut-1-in"],
   klass:"organ", sub:"alkin_iso",
-  full: () => null, skeletal: methylbut1yneSkeletal
+  full: () => branchedAlkyneFull(4, 1, [{at:2, up:true}], "3-Methylbut-1-in", "C₅H₈"),
+  skeletal: methylbut1yneSkeletal
+});
+SUBSTANCES.push({
+  key:"3methylpent1yne", name:"3-Methylpent-1-in", en:"3-Methylpent-1-yne",
+  formula:"C₆H₁₀", aliases:["3-methylpent-1-in"],
+  klass:"organ", sub:"alkin_iso",
+  full: () => branchedAlkyneFull(5, 1, [{at:2, up:true}], "3-Methylpent-1-in", "C₆H₁₀"),
+  skeletal: methylpent1yne3Skeletal
 });
 SUBSTANCES.push({
   key:"4methylpent1yne", name:"4-Methylpent-1-in", en:"4-Methylpent-1-yne",
   formula:"C₆H₁₀", aliases:["4-methylpent-1-in"],
   klass:"organ", sub:"alkin_iso",
-  full: () => null, skeletal: methylpent1yneSkeletal
+  full: () => branchedAlkyneFull(5, 1, [{at:3, up:true}], "4-Methylpent-1-in", "C₆H₁₀"),
+  skeletal: methylpent1yneSkeletal
 });
 SUBSTANCES.push({
   key:"5methylhex1yne", name:"5-Methylhex-1-in", en:"5-Methylhex-1-yne",
   formula:"C₇H₁₂", aliases:["5-methylhex-1-in"],
   klass:"organ", sub:"alkin_iso",
-  full: () => null, skeletal: methylhex1yneSkeletal
+  full: () => branchedAlkyneFull(6, 1, [{at:4, up:true}], "5-Methylhex-1-in", "C₇H₁₂"),
+  skeletal: methylhex1yneSkeletal
 });
+
+/* ===========================================================
+   ENGLISCHE NAMEN — für den DE/EN-Toggle (Punkt III)
+   Alle Substanzen erhalten einen englischen Namen, sodass der
+   Sprachumschalter überall greift (nicht nur bei den Salzen).
+   =========================================================== */
+const EN_NAMES = {
+  // Elemente
+  h2:"Hydrogen", o2:"Oxygen", n2:"Nitrogen", f2:"Fluorine", cl2:"Chlorine",
+  br2:"Bromine", i2:"Iodine", o3:"Ozone", He:"Helium", Ne:"Neon", Ar:"Argon",
+  C_atom:"Carbon (atom)", P_atom:"Phosphorus (atom)", S_atom:"Sulfur (atom)",
+  // Anorganische Molekülverbindungen
+  h2o:"Water", h2o2:"Hydrogen peroxide", h2s:"Hydrogen sulfide", nh3:"Ammonia",
+  hf:"Hydrogen fluoride", hcl:"Hydrogen chloride (Hydrochloric acid)",
+  hbr:"Hydrogen bromide", hi:"Hydrogen iodide",
+  co:"Carbon monoxide", co2:"Carbon dioxide", so2:"Sulfur dioxide", so3:"Sulfur trioxide",
+  no:"Nitrogen monoxide", no2:"Nitrogen dioxide", n2o:"Dinitrogen monoxide (Laughing gas)",
+  // Säuren / Laugen
+  hcn:"Hydrogen cyanide (Prussic acid)", hno3:"Nitric acid",
+  h2so4:"Sulfuric acid", h3po4:"Phosphoric acid",
+  naoh:"Sodium hydroxide", nacl:"Sodium chloride",
+  // Aromaten
+  benzol:"Benzene",
+  // Alkane
+  alkan_1:"Methane", alkan_2:"Ethane", alkan_3:"Propane", alkan_4:"Butane",
+  alkan_5:"Pentane", alkan_6:"Hexane", alkan_7:"Heptane", alkan_8:"Octane",
+  alkan_9:"Nonane", alkan_10:"Decane",
+  // Alkene
+  alken_2:"Ethene", alken_3:"Propene", alken_4:"But-1-ene", alken_5:"Pent-1-ene",
+  alken_6:"Hex-1-ene", alken_7:"Hept-1-ene", alken_8:"Oct-1-ene",
+  // Alkine
+  alkin_2:"Ethyne", alkin_3:"Propyne", alkin_4:"But-1-yne", alkin_5:"Pent-1-yne",
+  alkin_6:"Hex-1-yne", alkin_4_2:"But-2-yne",
+  // Alkanale
+  alkanal_1:"Methanal (Formaldehyde)", alkanal_2:"Ethanal (Acetaldehyde)",
+  alkanal_3:"Propanal", alkanal_4:"Butanal", alkanal_5:"Pentanal", alkanal_6:"Hexanal",
+  // Alkanone
+  alkanon_3:"Propan-2-one (Acetone)", alkanon_4:"Butan-2-one",
+  alkanon_5_2:"Pentan-2-one", alkanon_5_3:"Pentan-3-one",
+  // Carbonsäuren
+  alkansaeure_1:"Methanoic acid (Formic acid)", alkansaeure_2:"Ethanoic acid (Acetic acid)",
+  alkansaeure_3:"Propanoic acid", alkansaeure_4:"Butanoic acid",
+  alkansaeure_5:"Pentanoic acid", alkansaeure_6:"Hexanoic acid",
+  // Alkanole
+  alkanol_1_1:"Methanol", alkanol_2_1:"Ethanol", alkanol_3_1:"Propan-1-ol",
+  alkanol_3_2:"Propan-2-ol (Isopropanol)", alkanol_4_1:"Butan-1-ol",
+  alkanol_4_2:"Butan-2-ol", alkanol_5_1:"Pentan-1-ol", alkanol_5_3:"Pentan-3-ol",
+  alkanol_6_1:"Hexan-1-ol",
+  // Ester
+  ester_1_1:"Methyl formate", ester_1_2:"Ethyl formate",
+  ester_2_1:"Methyl acetate", ester_2_2:"Ethyl acetate",
+  ester_3_1:"Methyl propanoate"
+};
+for (const s of SUBSTANCES) {
+  if (!s.en && EN_NAMES[s.key]) s.en = EN_NAMES[s.key];
+}
 
 /* Lookup-Index Name/Alias → Substanz */
 const LOOKUP = new Map();
@@ -3032,6 +3494,8 @@ const TR = {
     backToSetup: "Zurück zur Auswahl",
     toTask: "Zur Aufgabe",
     clickToReveal: "Klicken zum Aufdecken",
+    contextTitle: "Wusstest du schon?",
+    contextHint: "Tippen für Alltags- & Technik-Wissen",
     selfAssessTitle: "Wie viele waren richtig?",
     score2: "Alle richtig",
     score1: "Teils richtig",
@@ -3094,6 +3558,8 @@ const TR = {
     backToSetup: "Back to selection",
     toTask: "To the task",
     clickToReveal: "Click to reveal",
+    contextTitle: "Did you know?",
+    contextHint: "Tap for everyday & tech facts",
     selfAssessTitle: "How many were correct?",
     score2: "All correct",
     score1: "Partly correct",
@@ -3136,6 +3602,7 @@ let STATE = {
   currentSubst: null,
   currentRep: null,         // "name", "formula", "skeletal", "structural"
   revealedTiles: new Set(),
+  contextRevealed: false,   // Kontext-Info aufgedeckt?
   scored: false,
   scoreSelected: null,
   usedSubstances: [],       // Memory: bereits gezogene Substanz-keys (keine Wiederholung)
@@ -3214,10 +3681,19 @@ function renderRep(subst, rep) {
       });
     }
     const struct = subst.full ? subst.full() : null;
+    // Aromaten ohne vollständige Lewis-Struktur (Naphthalin/Anthracen):
+    // Ringskelett auch als "Strukturformel" zeigen
+    if (!struct && subst.aromaticKind) {
+      return renderAromatic(subst.aromaticKind, subst.name, subst.formula);
+    }
     if (!struct) return null;
     return render(struct, { showLP: true, showH: true, lpStyle: "lines", mode: "lewis" });
   }
   if (rep === "skeletal") {
+    // Aromaten: dedizierter Kekulé-/Mesomerie-Renderer
+    if (subst.aromaticKind) {
+      return renderAromatic(subst.aromaticKind, subst.name, subst.formula);
+    }
     const struct = subst.skeletal ? subst.skeletal() : null;
     if (!struct) return null;
     return render(struct, { showLP: false, showH: false, lpStyle: "lines", mode: "skeletal" });
@@ -3318,13 +3794,22 @@ function renderForExport(subst, rep, lang) {
   const r = renderRep(subst, rep);
   if (!r) return null;
   let svg = r.svg;
+  const vb = svg.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/);
+  const W = vb ? parseFloat(vb[1]) : 1000;
+  const H = vb ? parseFloat(vb[2]) : 1000;
+  const extra = 160;
+  const newH = H + extra;
+  // Canvas nach unten erweitern (viewBox, svg-Höhe, Hintergrund-Rect),
+  // damit die zweite Zeile (Summenformel) NICHT mehr abgeschnitten wird.
+  svg = svg.replace(/viewBox="0 0 [\d.]+ [\d.]+"/, `viewBox="0 0 ${W} ${newH}"`);
+  svg = svg.replace(/height="[\d.]+"/, `height="${newH}"`);          // svg-Tag
+  svg = svg.replace(/<rect width="[\d.]+" height="[\d.]+" fill="#ffffff"\/>/,
+                    `<rect width="${W}" height="${newH}" fill="#ffffff"/>`);
   const name = substanceName(subst, lang);
-  // Beschriftung als <text> am unteren Rand einfügen
-  // Wir fügen <text> direkt vor </svg> ein
-  const labelY = 970;
   const formula = formulaWithState(subst) || subst.formula || "";
-  const label = `<text x="500" y="${labelY}" font-size="36" font-family="Helvetica,Arial,sans-serif" font-weight="500" text-anchor="middle" fill="#1c1712">${escapeXml(name)}</text>` +
-                (formula ? `<text x="500" y="${labelY+44}" font-size="28" font-family="Helvetica,Arial,sans-serif" font-style="italic" text-anchor="middle" fill="#6c6358">${escapeXml(formula)}</text>` : "");
+  const cx = W/2, nameY = H + 66, formulaY = H + 118;
+  const label = `<text x="${cx}" y="${nameY}" font-size="40" font-family="Helvetica,Arial,sans-serif" font-weight="600" text-anchor="middle" fill="#1c1712">${escapeXml(name)}</text>` +
+                (formula ? `<text x="${cx}" y="${formulaY}" font-size="30" font-family="Helvetica,Arial,sans-serif" font-style="italic" text-anchor="middle" fill="#6c6358">${escapeXml(formula)}</text>` : "");
   svg = svg.replace(/<\/svg>/, label + "</svg>");
   return svg;
 }
@@ -3402,9 +3887,8 @@ function renderModeSelect() {
 /* === CLASS MODE === */
 function renderClassMode() {
   const hasNames = STATE.playerNames.length > 0;
-  const hasYear = STATE.year !== null;
   const hasClasses = STATE.activeClasses.length > 0;
-  const trainingActive = hasNames && hasYear && hasClasses && STATE.currentSubst;
+  const trainingActive = hasNames && hasClasses && STATE.currentSubst;
 
   // Punkt 0a: Wenn eine Aufgabe läuft, eigene "Seite" mit Rückkehr-Option
   // statt langem Scrollen.
@@ -3443,28 +3927,19 @@ function renderClassMode() {
     </div>
   </section>`;
 
-  // Phase 2: Year
-  if (!hasYear) {
-    h += `<section>
-      <div class="section-title">🎓 ${T("yearTitle")} <span style="color:var(--dim);font-weight:400;font-size:0.8rem;margin-left:0.4em">${T("yearHint")}</span></div>
-      <div class="panel">
-        <div class="year-btns">
-          ${[7,8,9,10].map(y => `<button class="year-btn" data-action="set-year" data-year="${y}">${y}</button>`).join("")}
-        </div>
-      </div>
-    </section>`;
-    return h;
-  }
-
-  // Year done
+  // Jahrgang: OPTIONAL — trifft KEINE Klassen-Vorwahl mehr, dient nur als Hinweis.
   h += `<section>
-    <div class="section-title">🎓 ${T("yearTitle")} <button class="change-mode" data-action="reset-year" style="margin-left:auto">✕</button></div>
-    <div class="panel" style="padding:0.7rem 1rem;">
-      <span class="name-chip" style="background:rgba(93,216,200,0.15);border-color:rgba(93,216,200,0.4);color:var(--accent3)">🎓 ${STATE.year}. Jahrgang</span>
+    <div class="section-title">🎓 ${T("yearTitle")} <span style="color:var(--dim);font-weight:400;font-size:0.8rem;margin-left:0.4em">${T("yearHint")}</span>
+      ${STATE.year ? `<button class="change-mode" data-action="reset-year" style="margin-left:auto">✕</button>` : ""}
+    </div>
+    <div class="panel">
+      <div class="year-btns">
+        ${[7,8,9,10].map(y => `<button class="year-btn ${STATE.year===y?"active":""}" data-action="set-year" data-year="${y}">${y}</button>`).join("")}
+      </div>
     </div>
   </section>`;
 
-  // Phase 3: Class selection
+  // Stoffklassen: IMMER frei wählbar, unabhängig vom Jahrgang.
   h += `<section>
     <div class="section-title">🧪 ${T("classesTitle")} <span style="color:var(--dim);font-weight:400;font-size:0.78rem;margin-left:0.4em">${T("classesHint")}</span></div>
     <div class="panel">
@@ -3573,6 +4048,11 @@ const TILE_ECONFIG = { id: "econfig", emoji: "🪙", labelKey: "tile_econfig" };
    - Übergangsmetalle: Name, Summenformel, Elektronenkonfiguration (kein Lewis/Skelett)
    - Substanzen ohne sinnvolle Skelettformel: Skelett-Kachel entfällt (Punkt 0e)
    - sonst: alle vier */
+/* Skelettformeln für Aliphaten (Alkane/Alkene/Alkine + Verzweigte), Aromaten
+   sowie die funktionellen Klassen Alkanale, Alkanone, Carbonsäuren und Ester.
+   Die Skelett-Kachel erscheint nur, wenn skeletal() tatsächlich etwas liefert. */
+const SKELETAL_CLASSES = ["alkan","alkan_iso","alken","alken_iso","alkin","alkin_iso",
+                          "aromat","alkanal","alkanon","alkansaeure","ester"];
 function taskTypesFor(subst) {
   if (!subst) return TASK_TYPES;
   if (subst.klass === "transition") {
@@ -3582,9 +4062,9 @@ function taskTypesFor(subst) {
       TILE_ECONFIG
     ];
   }
-  // hat die Substanz eine sinnvolle Skelettformel?
+  // Skelett nur bei Aliphaten/Aromaten UND wenn eine sinnvolle Skelettformel existiert
   let hasSkeletal = false;
-  if (typeof subst.skeletal === "function") {
+  if (SKELETAL_CLASSES.includes(subst.sub) && typeof subst.skeletal === "function") {
     try { hasSkeletal = !!subst.skeletal(); } catch(e) { hasSkeletal = false; }
   }
   if (!hasSkeletal) {
@@ -3592,6 +4072,177 @@ function taskTypesFor(subst) {
   }
   return TASK_TYPES;
 }
+
+/* ============================================================
+   KONTEXT-INFOS — alltags-/technikrelevantes Wissen je Substanz
+   (aufdeckbar im Klassen- und Übungsmodus). Trivialnamen werden,
+   wo vorhanden, in der Erläuterung genannt.
+   key → { emoji, de, en }
+   ============================================================ */
+const CONTEXT_INFO = {
+  // ---- Elemente ----
+  h2:  {emoji:"🎈", de:"Leichtestes aller Gase – trägt Wetterballons und gilt als sauberer Energieträger (Brennstoffzelle). Die winzigen, unpolaren H₂-Moleküle haben kaum Van-der-Waals-Kräfte, daher die geringe Dichte.", en:"The lightest of all gases – lifts weather balloons and is a clean fuel (fuel cells). The tiny, non-polar H₂ molecules barely attract one another (weak Van-der-Waals forces), hence the low density."},
+  o2:  {emoji:"🫁", de:"Wir atmen es ständig ein; in Medizin und beim Schweißen unverzichtbar. Die Doppelbindung im O₂ ist relativ stabil – nur deshalb verbrennen wir nicht spontan an der Luft.", en:"We breathe it constantly; vital in medicine and welding. The O₂ double bond is fairly stable – only that keeps us from spontaneously combusting in air."},
+  n2:  {emoji:"🌫️", de:"78 % der Luft. Die sehr starke Dreifachbindung macht N₂ extrem reaktionsträge – deshalb ist Luftstickstoff für Pflanzen unbrauchbar und muss energieaufwendig gespalten werden.", en:"78 % of air. Its very strong triple bond makes N₂ extremely unreactive – which is why plants cannot use atmospheric nitrogen until it is split with great energy."},
+  f2:  {emoji:"🦷", de:"Extrem reaktives Gas; als Fluorid härtet es den Zahnschmelz. Fluor zieht Bindungselektronen am stärksten von allen Elementen an (höchste Elektronegativität) – daher seine Aggressivität.", en:"Extremely reactive gas; as fluoride it hardens enamel. Fluorine pulls bonding electrons more strongly than any other element (highest electronegativity) – hence its aggressiveness."},
+  cl2: {emoji:"🏊", de:"Grünliches Giftgas, das in Spuren Schwimmbäder keimfrei hält. Es reißt Elektronen aus Zellbausteinen von Keimen und zerstört sie dadurch.", en:"Greenish toxic gas that disinfects pools in trace amounts. It rips electrons from microbes' building blocks, destroying them."},
+  br2: {emoji:"📷", de:"Eine der wenigen bei Raumtemperatur flüssigen Substanzen; die schweren Br₂-Moleküle haben starke Van-der-Waals-Kräfte. Silberbromid war das Herz des Analogfilms.", en:"One of few liquids at room temperature; the heavy Br₂ molecules have strong Van-der-Waals forces. Silver bromide was the heart of photographic film."},
+  i2:  {emoji:"🩹", de:"Violette Kristalle; als Iodtinktur ein Wunddesinfektionsmittel, lebenswichtig für die Schilddrüse. Die sehr großen, leicht polarisierbaren I₂-Moleküle ziehen sich so stark an, dass Iod sogar fest ist.", en:"Violet crystals; iodine tincture is a disinfectant, vital for the thyroid. The very large, easily polarisable I₂ molecules attract so strongly that iodine is even solid."},
+  He:  {emoji:"🎈", de:"Edelgas, das Ballons schweben lässt und MRT-Magnete auf −269 °C kühlt. Die volle Außenschale macht Helium reaktionslos, die winzigen Atome verflüchtigen sich extrem leicht.", en:"Noble gas that floats balloons and cools MRI magnets to −269 °C. Its full outer shell makes helium inert; the tiny atoms escape extremely easily."},
+  Ne:  {emoji:"💡", de:"Lässt Leuchtreklamen rot-orange glühen. Angeregte Neon-Atome geben beim Zurückfallen der Elektronen Licht genau dieser Farbe ab.", en:"Makes signs glow red-orange. Excited neon atoms emit light of exactly this colour as their electrons fall back."},
+  Ar:  {emoji:"🪟", de:"Träges Edelgas; füllt Glühlampen und Isolierglasfenster. Volle Außenschale = keine Reaktion, schwere Atome leiten Wärme schlecht – ideal als Dämmgas.", en:"Inert noble gas; fills bulbs and insulating windows. Full outer shell = no reaction, and the heavy atoms conduct heat poorly – ideal insulation gas."},
+  C_atom: {emoji:"💎", de:"Baustein allen Lebens – je nach Verknüpfung weicher Graphit (Schichten gleiten) oder härtester Diamant (lückenloses 3D-Netz aus Atombindungen).", en:"Building block of all life – soft graphite (sliding layers) or hardest diamond (a seamless 3-D network of covalent bonds), depending on how the atoms link."},
+  P_atom: {emoji:"🔥", de:"Weißer Phosphor entzündet Streichholzköpfe; als Phosphat zentral in Dünger und DNA. Die gespannten P₄-Tetraeder reagieren schon bei geringer Wärme heftig mit Sauerstoff.", en:"White phosphorus ignites match heads; as phosphate it is central to fertilizer and DNA. The strained P₄ tetrahedra react violently with oxygen at low warmth."},
+  S_atom: {emoji:"🌋", de:"Gelber Feststoff aus Vulkanen; Grundstoff für Schwefelsäure. Schwefel bildet ringförmige S₈-Moleküle, deren Van-der-Waals-Kräfte ihn bei Raumtemperatur fest machen.", en:"Yellow solid from volcanoes; raw material for sulfuric acid. Sulfur forms ring-shaped S₈ molecules whose Van-der-Waals forces keep it solid at room temperature."},
+
+  // ---- Molekülverbindungen ----
+  o3:  {emoji:"🛡️", de:"Ozon hoch oben filtert die UV-Strahlung; in Bodennähe ein Reizgas. Das gewinkelte, elektronenreiche Molekül absorbiert UV-Licht besonders gut.", en:"Ozone high up filters UV radiation; near the ground an irritant. The bent, electron-rich molecule absorbs UV light especially well."},
+  h2o: {emoji:"💧", de:"Lösungsmittel des Lebens. Die stark polaren Moleküle bilden Wasserstoffbrücken – deshalb ist Wasser trotz geringer Molekülmasse flüssig und löst Salze und Zucker so gut.", en:"The solvent of life. The strongly polar molecules form hydrogen bonds – which is why water is liquid despite its small mass and dissolves salts and sugars so well."},
+  h2o2:{emoji:"💇", de:"Bleicht Haare und desinfiziert Wunden. Die schwache O–O-Bindung zerfällt leicht und setzt aggressiven Sauerstoff frei, der Farbstoffe und Keime zerlegt.", en:"Bleaches hair and disinfects wounds. The weak O–O bond breaks easily, releasing aggressive oxygen that destroys dyes and germs."},
+  h2s: {emoji:"🥚", de:"Riecht nach faulen Eiern, schon in kleinen Mengen giftig. Weil Schwefel kaum Wasserstoffbrücken bildet (anders als Wasser), ist H₂S ein Gas und kein Flüssigkeit.", en:"Smells of rotten eggs, toxic even in small amounts. Because sulfur barely forms hydrogen bonds (unlike water), H₂S is a gas, not a liquid."},
+  co:  {emoji:"⚠️", de:"Farb- und geruchlos, daher tückisch. CO bindet ~200× fester als O₂ an das Eisen im Hämoglobin und blockiert so den Sauerstofftransport.", en:"Colourless and odourless, hence treacherous. CO binds ~200× more tightly than O₂ to the iron in haemoglobin, blocking oxygen transport."},
+  co2: {emoji:"🫧", de:"Macht Limo sprudelig und ist das wichtigste Treibhausgas. Die linearen Moleküle lassen Sonnenlicht durch, fangen aber Wärmestrahlung der Erde durch ihre Schwingungen ein.", en:"Makes soda fizzy and is the main greenhouse gas. The linear molecules let sunlight through but trap the Earth's heat radiation via their vibrations."},
+  so2: {emoji:"🍷", de:"Konserviert Trockenobst und Wein, in der Luft Mitverursacher von saurem Regen. Mit Wasser bildet es Säure, deren H⁺-Ionen Mikroben hemmen.", en:"Preserves dried fruit and wine; a cause of acid rain. With water it forms acid whose H⁺ ions inhibit microbes."},
+  so3: {emoji:"🏭", de:"Reagiert begierig mit Wasser – Zwischenstufe der Schwefelsäure-Herstellung. Das stark positiv polarisierte S-Atom zieht die O-Atome des Wassers heftig an.", en:"Reacts eagerly with water – an intermediate in making sulfuric acid. Its strongly positive S atom violently attracts the water's oxygen."},
+  no:  {emoji:"🫀", de:"Im Körper ein Botenstoff, der Blutgefäße weitet (Prinzip der Nitro-Sprays). Das ungepaarte Elektron (Radikal) macht NO sehr reaktiv und kurzlebig.", en:"A messenger in the body that widens blood vessels (the nitro-spray principle). Its unpaired electron (radical) makes NO very reactive and short-lived."},
+  no2: {emoji:"🚗", de:"Braunes Reizgas aus Motorabgasen, Leitwert der Luftverschmutzung. Auch NO₂ ist ein Radikal und greift Atemwege und Pflanzen an.", en:"Brown irritant gas from exhaust, a marker of air pollution. NO₂ is also a radical and attacks airways and plants."},
+  n2o: {emoji:"😴", de:"Lachgas – mildes Narkosemittel beim Zahnarzt und Treibgas für Sahne. Es löst sich gut im Fett der Sahne und entweicht beim Sprühen schlagartig, das schäumt sie auf.", en:"Laughing gas – a mild anaesthetic at the dentist and whipped-cream propellant. It dissolves well in the cream's fat and escapes abruptly when sprayed, foaming it up."},
+
+  // ---- Basen/Laugen ----
+  nh3: {emoji:"🧼", de:"Grundstoff für Dünger (Welternährung!) und stechender Reiniger. Das freie Elektronenpaar am Stickstoff schnappt sich H⁺ – darum reagiert Ammoniak basisch.", en:"Basis of fertilizer (feeding the world!) and a pungent cleaner. The lone pair on nitrogen grabs H⁺ – which is why ammonia is basic."},
+  naoh:{emoji:"🧴", de:"Natronlauge löst Fett und Eiweiß – Kern von Rohrreinigern. Die freien OH⁻-Ionen knacken die Bindungen in Fettmolekülen (Verseifung).", en:"Caustic soda dissolves fat and protein – core of drain cleaners. The free OH⁻ ions break the bonds in fat molecules (saponification)."},
+  koh: {emoji:"🪥", de:"Kalilauge wird zu weicher Schmierseife und dient als Batterie-Elektrolyt. Die beweglichen K⁺- und OH⁻-Ionen leiten den Strom.", en:"Potassium hydroxide becomes soft soap and a battery electrolyte. The mobile K⁺ and OH⁻ ions carry the current."},
+  caoh2:{emoji:"🧱", de:"Gelöschter Kalk steckt in Mörtel und macht saure Böden fruchtbar. Die OH⁻-Ionen neutralisieren überschüssige H⁺-Ionen im Boden.", en:"Slaked lime is in mortar and makes acidic soils fertile. Its OH⁻ ions neutralise excess H⁺ ions in the soil."},
+
+  // ---- Säuren ----
+  hf:  {emoji:"🔬", de:"Ätzt sogar Glas – zum Mattieren und für Mikrochips. Das kleine, hart anziehende Fluorid bindet das Silicium aus dem Glas heraus. Sehr gefährlich.", en:"Even etches glass – for frosting and microchips. The small, strongly attracting fluoride pulls silicon out of the glass. Very dangerous."},
+  hcl: {emoji:"🍽️", de:"Bildet unsere Magensäure und reinigt Metall vor dem Verzinken. In Wasser spaltet die polare H–Cl-Bindung vollständig in H⁺ und Cl⁻ – darum eine starke Säure.", en:"Forms our stomach acid and cleans metal before galvanizing. In water the polar H–Cl bond splits completely into H⁺ and Cl⁻ – hence a strong acid."},
+  hbr: {emoji:"⚗️", de:"Starke Säure für Bromverbindungen. Die H–Br-Bindung ist noch leichter spaltbar als bei HCl, da Brom größer ist und das Elektron schwächer hält.", en:"A strong acid for bromine compounds. The H–Br bond splits even more easily than HCl, as the larger bromine holds the electron more loosely."},
+  hi:  {emoji:"⚗️", de:"Sehr starke Säure und kräftiges Reduktionsmittel. Die lange, schwache H–I-Bindung gibt H⁺ am leichtesten ab.", en:"A very strong acid and powerful reducing agent. The long, weak H–I bond releases H⁺ most readily."},
+  hcn: {emoji:"☠️", de:"Riecht nach Bittermandeln, hochgiftig (in Spuren in Apfelkernen). Das Cyanid-Ion blockiert das Eisen in der Atmungskette der Zellen.", en:"Smells of bitter almonds, highly toxic (traces in apple seeds). The cyanide ion blocks the iron in cells' respiratory chain."},
+  hno3:{emoji:"💥", de:"Grundstoff für Dünger und Sprengstoffe (TNT). Die leicht abspaltbaren O-reichen Nitro-Gruppen liefern bei der Explosion blitzschnell viel Gas.", en:"Basis for fertilizers and explosives (TNT). The readily released, oxygen-rich nitro groups deliver a lot of gas in a flash during an explosion."},
+  h2so4:{emoji:"🔋", de:"Die meistproduzierte Chemikalie der Welt – Säure in Autobatterien. Sie gibt zwei H⁺-Ionen ab und entzieht Stoffen gierig Wasser (stark hygroskopisch).", en:"The world's most-produced chemical – the acid in car batteries. It releases two H⁺ ions and greedily strips water from substances (strongly hygroscopic)."},
+  h3po4:{emoji:"🥤", de:"Gibt Cola den herben Geschmack, steckt in Rostumwandlern. Die drei sauren OH-Gruppen können nacheinander H⁺ abgeben.", en:"Gives cola its tang, used in rust converters. Its three acidic OH groups can release H⁺ one after another."},
+  h2co3:{emoji:"🫧", de:"Entsteht, wenn CO₂ sich in Wasser löst – das Prickeln im Sprudel. Sie zerfällt leicht zurück zu CO₂ und Wasser, daher entweicht die Kohlensäure.", en:"Forms when CO₂ dissolves in water – the fizz in sparkling drinks. It readily decomposes back to CO₂ and water, so the carbonic acid escapes."},
+
+  // ---- Salze ----
+  nacl:{emoji:"🧂", de:"Kochsalz – Würze und Streusalz. Das starke Ionengitter aus Na⁺ und Cl⁻ macht es fest; Wasser-Dipole reißen die Ionen heraus, daher löst es sich gut.", en:"Table salt – seasoning and road grit. The strong ionic lattice of Na⁺ and Cl⁻ makes it solid; water dipoles tear the ions out, so it dissolves well."},
+  kcl: {emoji:"🧂", de:"Diät-Speisesalz und Kaliumdünger. Wie alle Salze ein hartes, sprödes Ionengitter, das in Wasser in K⁺ und Cl⁻ zerfällt.", en:"Diet salt and potassium fertilizer. Like all salts a hard, brittle ionic lattice that dissociates into K⁺ and Cl⁻ in water."},
+  kbr: {emoji:"😌", de:"War früher Beruhigungsmittel und Fotochemikalie. Das große Bromid-Ion bildet mit K⁺ ein leicht lösliches Gitter.", en:"Once a sedative and photo chemical. The large bromide ion forms an easily soluble lattice with K⁺."},
+  ki:  {emoji:"🧂", de:"Macht Speisesalz zu Jodsalz und schützt die Schilddrüse. Das große Iodid-Ion ist gut wasserlöslich und vom Körper rasch aufnehmbar.", en:"Makes iodized salt and protects the thyroid. The large iodide ion is very water-soluble and quickly absorbed."},
+  naf: {emoji:"🦷", de:"Härtet als Zahnpasta-Zusatz den Zahnschmelz. Die kleinen Fluorid-Ionen werden ins Schmelz-Mineral eingebaut und machen es säurefester.", en:"As a toothpaste additive it hardens enamel. The small fluoride ions get built into the enamel mineral, making it more acid-resistant."},
+  nabr:{emoji:"⚗️", de:"Diente in Beruhigungsmitteln und als Bohrspülung. Das dichte Ionengitter macht gesättigte Lösungen schwer – ideal als schwere Spülflüssigkeit.", en:"Used in sedatives and as drilling fluid. The dense ionic lattice makes saturated solutions heavy – ideal as a weighting fluid."},
+  mgo: {emoji:"🧗", de:"Hitzebeständig (Schamotte) und „Chalk“ beim Klettern. Die doppelt geladenen Mg²⁺/O²⁻-Ionen ziehen sich sehr stark an → extrem hoher Schmelzpunkt.", en:"Heat-resistant (firebrick) and climbers' 'chalk'. The doubly charged Mg²⁺/O²⁻ ions attract very strongly → extremely high melting point."},
+  cao: {emoji:"🔥", de:"Branntkalk wird mit Wasser sehr heiß (selbsterhitzende Dosen, Mörtel). Beim Einbau der Wasser-Dipole ins Ca²⁺/O²⁻-Gitter wird viel Energie frei.", en:"Quicklime gets very hot with water (self-heating cans, mortar). Inserting water dipoles into the Ca²⁺/O²⁻ lattice releases a lot of energy."},
+
+  // ---- Aromaten ----
+  benzol:{emoji:"⚠️", de:"Baustein vieler Kunststoffe und Farbstoffe, zugleich krebserregend. Die sechs Elektronen sind ringförmig „verschmiert“ (delokalisiert) – das macht den Ring ungewöhnlich stabil.", en:"A building block of many plastics and dyes, but carcinogenic. Its six electrons are 'smeared' around the ring (delocalised) – making it unusually stable."},
+  naphthalin:{emoji:"🦋", de:"Der typische Geruch alter Mottenkugeln. Die unpolaren Moleküle verdampfen langsam (Sublimation) und vertreiben Motten – ganz ohne zu schmelzen.", en:"The typical smell of old mothballs. The non-polar molecules slowly evaporate (sublimation) and repel moths – without even melting."},
+  anthracen:{emoji:"🌈", de:"Ausgangsstoff leuchtender Farbstoffe, in der OLED-Forschung untersucht. Das ausgedehnte delokalisierte Elektronensystem kann Licht aufnehmen und wieder abstrahlen.", en:"A precursor for bright dyes, studied for OLEDs. Its extended delocalised electron system can absorb light and emit it again."},
+
+  // ---- Alkane ----
+  alkan_1:{emoji:"🔥", de:"Hauptbestandteil von Erdgas, zugleich starkes Treibhausgas. Die winzigen, unpolaren Moleküle haben kaum Van-der-Waals-Kräfte – darum ist Methan ein Gas.", en:"Main component of natural gas, also a potent greenhouse gas. The tiny, non-polar molecules have barely any Van-der-Waals forces – so methane is a gas."},
+  alkan_2:{emoji:"⛽", de:"Im Erdgas; wird zu Ethen für Kunststoffe gespalten. Etwas längere Kette als Methan, aber die schwachen Van-der-Waals-Kräfte halten es noch gasförmig.", en:"In natural gas; cracked into ethene for plastics. A slightly longer chain than methane, but weak Van-der-Waals forces keep it gaseous."},
+  alkan_3:{emoji:"🏕️", de:"Füllt Camping- und Grillflaschen, weil es sich unter mildem Druck verflüssigen lässt – die Van-der-Waals-Kräfte reichen dafür schon fast aus.", en:"Fills camping and barbecue bottles because it liquefies under mild pressure – its Van-der-Waals forces almost suffice on their own."},
+  alkan_4:{emoji:"🔥", de:"Das Gas in Feuerzeugen. Mit vier C-Atomen ist Butan das längste noch gasförmige Standard-Alkan; etwas mehr Van-der-Waals-Kräfte als Propan.", en:"The gas in lighters. With four carbons, butane is the longest still-gaseous standard alkane; slightly more Van-der-Waals attraction than propane."},
+  alkan_5:{emoji:"🧪", de:"Sehr flüchtige Flüssigkeit, Treibmittel für Schäume. Ab fünf C-Atomen reichen die Van-der-Waals-Kräfte gerade für den flüssigen Zustand.", en:"A very volatile liquid, a blowing agent for foams. From five carbons on, Van-der-Waals forces just suffice for the liquid state."},
+  alkan_6:{emoji:"🫒", de:"Löst Fette und gewinnt Pflanzenöl aus Saaten. Die unpolaren Hexan-Moleküle ziehen die ebenfalls unpolaren, langen Fettketten über Van-der-Waals-Kräfte heraus – „Gleiches löst Gleiches“.", en:"Dissolves fats and extracts vegetable oil from seeds. The non-polar hexane molecules pull out the equally non-polar fat chains via Van-der-Waals forces – 'like dissolves like'."},
+  alkan_7:{emoji:"⛽", de:"Referenzsubstanz mit Oktanzahl 0: unverzweigtes Heptan bildet bei der Verbrennung leicht reaktive Radikale, die zu vorzeitigem „Klopfen“ führen.", en:"Reference with octane number 0: straight-chain heptane easily forms reactive radicals during combustion, causing premature 'knocking'."},
+  alkan_8:{emoji:"🏎️", de:"Iso-Octan (verzweigt) definiert die Oktanzahl 100: seine Verbrennungs-Radikale sind durch die Verzweigung stabiler und zünden erst beim Funken – kein Klopfen.", en:"Iso-octane (branched) defines octane number 100: its combustion radicals are stabilised by the branching and ignite only at the spark – no knocking."},
+  alkan_9:{emoji:"⛽", de:"Bestandteil von Kerosin. Die langen Ketten ziehen sich über viele Van-der-Waals-Kontakte stark an → flüssig und lagerfähig im Flugzeugflügel statt zu verdampfen.", en:"A component of kerosene. The long chains attract strongly via many Van-der-Waals contacts → liquid and storable in the wing tanks instead of evaporating."},
+  alkan_10:{emoji:"🛢️", de:"Gehört zur Kerosin-/Dieselfraktion. Noch längere Ketten = noch stärkere Van-der-Waals-Kräfte, daher höherer Siedepunkt als die kürzeren Alkane.", en:"Belongs to the kerosene/diesel fraction. Even longer chains = even stronger Van-der-Waals forces, hence a higher boiling point than shorter alkanes."},
+
+  // ---- Alkene ----
+  alken_2:{emoji:"🍌", de:"Reifegas der Pflanzen (lässt Bananen nachreifen) und Rohstoff für Polyethylen. Die reaktive Doppelbindung lässt sich aufknüpfen und zu langen Ketten verbinden.", en:"The plant ripening gas (ripens bananas) and raw material for polyethylene. Its reactive double bond can be opened and linked into long chains."},
+  alken_3:{emoji:"♳", de:"Baustein von Polypropylen (Verpackungen, Autoteile). Die Doppelbindung ist die „Sollbruchstelle“, an der die Moleküle zu Ketten verknüpft werden.", en:"The basis of polypropylene (packaging, car parts). The double bond is the 'weak point' where molecules link into chains."},
+  alken_4:{emoji:"🏭", de:"Comonomer zum Einstellen der Eigenschaften von Polyethylen. Die Seitenkette stört die regelmäßige Packung der Polymerketten und macht den Kunststoff weicher.", en:"A comonomer for tuning polyethylene. Its side chain disturbs the regular packing of the polymer chains, making the plastic softer."},
+  alken_5:{emoji:"⚗️", de:"Reaktives Alken aus dem Crackprozess. Die Doppelbindung ist elektronenreich und wird gern von Säuren oder Brom angegriffen.", en:"A reactive alkene from cracking. The electron-rich double bond is readily attacked by acids or bromine."},
+  alken_6:{emoji:"⚗️", de:"Baustein für spezielle Polyethylen-Sorten. Längere Kette = mehr Van-der-Waals-Kräfte, daher schon flüssig statt gasförmig.", en:"A building block for special polyethylene grades. A longer chain = more Van-der-Waals forces, so it is liquid rather than gaseous."},
+  alken_7:{emoji:"⚗️", de:"Längeres α-Alken für Feinchemikalien. Die endständige Doppelbindung ist der bevorzugte Reaktionsort.", en:"A longer α-olefin for fine chemicals. The terminal double bond is the preferred reaction site."},
+  alken_8:{emoji:"🧴", de:"Wird zu Tensiden und Weichmachern verarbeitet. Der lange unpolare Schwanz + reaktive Doppelbindung machen es zum idealen Waschmittel-Vorprodukt.", en:"Processed into surfactants and plasticizers. Its long non-polar tail + reactive double bond make it an ideal detergent precursor."},
+
+  // ---- Alkine ----
+  alkin_2:{emoji:"🔥", de:"Ethin (Acetylen) liefert die heißeste gängige Schweißflamme (>3000 °C). In der Dreifachbindung steckt sehr viel Energie, die beim Verbrennen schlagartig frei wird.", en:"Ethyne (acetylene) gives the hottest common welding flame (>3000 °C). Its triple bond stores a lot of energy, released abruptly on burning."},
+  alkin_3:{emoji:"⚗️", de:"Reaktives Gas und Synthesebaustein. Die elektronenreiche Dreifachbindung lässt sich vielseitig weiter verknüpfen.", en:"A reactive gas and synthesis building block. The electron-rich triple bond links versatilely."},
+  alkin_4:{emoji:"⚗️", de:"Endständiges Alkin für Kupplungsreaktionen. Das ≡C–H ist schwach sauer und lässt sich gezielt abspalten.", en:"A terminal alkyne for coupling reactions. The ≡C–H is weakly acidic and can be removed deliberately."},
+  alkin_5:{emoji:"⚗️", de:"Reaktives Zwischenprodukt. Die hohe Elektronendichte der Dreifachbindung macht es zum guten Anknüpfungspunkt.", en:"A reactive intermediate. The high electron density of the triple bond makes it a good attachment point."},
+  alkin_6:{emoji:"🔗", de:"Aha: Das ≡C–H-Wasserstoffatom am Kettenende ist – ungewöhnlich für Kohlenwasserstoffe – schwach sauer und abspaltbar. Mit starken Basen entsteht ein „Acetylid“, mit dem man Kohlenstoffketten gezielt verlängern kann. Grund auf Teilchenebene: das sp-Hybridorbital hält die Bindungselektronen dicht am C und lockert so das H.", en:"Aha: the terminal ≡C–H is – unusually for a hydrocarbon – weakly acidic and removable. With strong bases it forms an 'acetylide' that lets chemists deliberately lengthen carbon chains. Particle level: the sp-hybrid orbital holds the bonding electrons close to carbon, loosening the H."},
+  alkin_4_2:{emoji:"⚗️", de:"But-2-in trägt die Dreifachbindung mittig – ein symmetrisches inneres Alkin ohne saures ≡C–H, daher reaktionsträger als die endständigen.", en:"But-2-yne has its triple bond in the middle – a symmetric internal alkyne with no acidic ≡C–H, hence less reactive than terminal ones."},
+
+  // ---- Alkanale ----
+  alkanal_1:{emoji:"🧬", de:"Formaldehyd konserviert Präparate und steckt in Klebharzen. Das stark positiv polarisierte Carbonyl-C reagiert mit Eiweißen und vernetzt sie (Härtung/Fixierung).", en:"Formaldehyde preserves specimens and is in adhesive resins. Its strongly positive carbonyl C reacts with proteins and cross-links them (curing/fixing)."},
+  alkanal_2:{emoji:"🍷", de:"Acetaldehyd entsteht beim Alkoholabbau und verursacht den Kater. Das reaktive Carbonyl-C reizt die Zellen, bis Enzyme es weiter abbauen.", en:"Acetaldehyde forms when alcohol is broken down and causes hangovers. Its reactive carbonyl C irritates cells until enzymes break it down further."},
+  alkanal_3:{emoji:"👃", de:"Stechend riechende Flüssigkeit, Zwischenprodukt für Kunststoffe. Die polare C=O-Gruppe macht es flüssig, obwohl die Kette kurz ist.", en:"A pungent liquid, an intermediate for plastics. The polar C=O group keeps it liquid despite the short chain."},
+  alkanal_4:{emoji:"🌰", de:"Baustein für Lacke und Aromen. Das Carbonyl-C ist der reaktive „Angriffspunkt“, an dem viele Synthesen ansetzen.", en:"A building block for coatings and flavours. The carbonyl C is the reactive 'attack point' for many syntheses."},
+  alkanal_5:{emoji:"🌸", de:"In Duft- und Aromastoffen. Die polare Carbonylgruppe macht den Geruch flüchtig und durchdringend.", en:"In fragrances and flavourings. The polar carbonyl group makes the scent volatile and penetrating."},
+  alkanal_6:{emoji:"🌿", de:"Riecht nach frisch geschnittenem Gras. Pflanzen bilden Hexanal, wenn Zellwände verletzt werden – ein typischer „Gründuft“.", en:"Smells of freshly cut grass. Plants form hexanal when cell walls are injured – a typical 'green' scent."},
+
+  // ---- Alkanone ----
+  alkanon_3:{emoji:"💅", de:"Aceton im Nagellackentferner, ein starkes Lösungsmittel. Die polare C=O-Gruppe UND der unpolare Rest lösen sowohl Wasser- als auch fettartige Stoffe.", en:"Acetone in nail-polish remover, a strong solvent. Its polar C=O group AND non-polar part dissolve both water-like and fat-like substances."},
+  alkanon_4:{emoji:"🪣", de:"Butanon (MEK) löst Lacke und Kleber. Wie Aceton ein vielseitiges Lösungsmittel dank polarer Carbonylgruppe plus unpolarem Rest.", en:"Butanone (MEK) dissolves paints and glues. Like acetone, a versatile solvent thanks to a polar carbonyl group plus a non-polar part."},
+  alkanon_5_2:{emoji:"⚗️", de:"Fruchtig riechendes Lösungsmittel und Aromastoff. Die Carbonylgruppe sitzt nahe dem Kettenende (unsymmetrisch).", en:"A fruity-smelling solvent and flavour. The carbonyl group sits near the chain end (asymmetric)."},
+  alkanon_5_3:{emoji:"⚗️", de:"Symmetrisches Keton: die Carbonylgruppe liegt genau in der Mitte – daher links und rechts gleich lange Ethyl-Reste.", en:"A symmetric ketone: the carbonyl group lies exactly in the middle – so equal ethyl groups left and right."},
+
+  // ---- Alkansäuren ----
+  alkansaeure_1:{emoji:"🐜", de:"Ameisensäure ist das Wehrsekret von Ameisen und Brennnesseln. Die kleine, sehr polare Säure dringt leicht in die Haut und reizt durch ihre H⁺-Ionen.", en:"Formic acid is the defence secretion of ants and nettles. The small, very polar acid penetrates skin easily and irritates via its H⁺ ions."},
+  alkansaeure_2:{emoji:"🍶", de:"Essigsäure gibt Essig den sauren Geschmack und konserviert. Die abgegebenen H⁺-Ionen senken den pH so weit, dass Mikroben nicht überleben.", en:"Acetic acid gives vinegar its sour taste and preserves food. The released H⁺ ions lower the pH so far that microbes cannot survive."},
+  alkansaeure_3:{emoji:"🧀", de:"Propansäure (Propionat) hemmt Schimmel in Brot und Käse. Die Säuregruppe stört den Stoffwechsel der Pilzzellen.", en:"Propanoic acid (propionate) inhibits mould in bread and cheese. Its acid group disrupts the metabolism of fungal cells."},
+  alkansaeure_4:{emoji:"🧈", de:"Butansäure verleiht ranziger Butter den Geruch. Sie wird frei, wenn Van-der-Waals-gebundene Fettmoleküle zerfallen – die kurze Säure ist flüchtig und stinkt.", en:"Butanoic acid gives rancid butter its smell. It is freed when fat molecules break down; the short acid is volatile and reeks."},
+  alkansaeure_5:{emoji:"👃", de:"Pentansäure (Valeriansäure) riecht unangenehm, steckt in Baldrian. Kurze Kette = flüchtig, polare Säuregruppe = durchdringender Geruch.", en:"Pentanoic acid (valeric acid) smells unpleasant, occurs in valerian. Short chain = volatile, polar acid group = penetrating odour."},
+  alkansaeure_6:{emoji:"🐐", de:"Hexansäure (Capronsäure) prägt den Geruch von Ziegenkäse. Die mittellange Kette ist gerade noch flüchtig genug, um in die Nase zu steigen.", en:"Hexanoic acid (caproic acid) shapes the smell of goat cheese. Its medium chain is just volatile enough to reach the nose."},
+
+  // ---- Alkanole ----
+  alkanol_1_1:{emoji:"⚠️", de:"Methanol ist wichtiger Industriealkohol, aber giftig. Enzyme bauen ihn zu Formaldehyd/Ameisensäure ab, die den Sehnerv schädigen.", en:"Methanol is an important industrial alcohol but toxic. Enzymes turn it into formaldehyde/formic acid, which damage the optic nerve."},
+  alkanol_2_1:{emoji:"🍺", de:"Ethanol – Alkohol in Getränken, Desinfektionsmittel, Biokraftstoff. Die OH-Gruppe bildet Wasserstoffbrücken, daher mit Wasser in jedem Verhältnis mischbar.", en:"Ethanol – the alcohol in drinks, a disinfectant, a biofuel. Its OH group forms hydrogen bonds, so it mixes with water in any ratio."},
+  alkanol_3_1:{emoji:"🧴", de:"Lösungs- und Desinfektionsmittel. Die OH-Gruppe (wasserliebend) und die C-Kette (fettliebend) lösen beides – Schmutz wie Keime.", en:"A solvent and disinfectant. Its OH group (water-loving) and C chain (fat-loving) dissolve both – grime and germs."},
+  alkanol_3_2:{emoji:"🧽", de:"Isopropanol reinigt Elektronik und desinfiziert Haut. Es verdunstet schnell (schwächere Wasserstoffbrücken als Wasser) und lässt keine Rückstände.", en:"Isopropanol cleans electronics and disinfects skin. It evaporates quickly (weaker hydrogen bonds than water) and leaves no residue."},
+  alkanol_4_1:{emoji:"🎨", de:"Lösungsmittel für Lacke. Mit der längeren Kette nimmt die Wasserlöslichkeit ab – der unpolare Teil überwiegt zunehmend.", en:"A solvent for coatings. With the longer chain water-solubility drops – the non-polar part increasingly dominates."},
+  alkanol_4_2:{emoji:"🧪", de:"Lösungsmittel und Zwischenprodukt. Sekundäre OH-Gruppe (am inneren C) – etwas reaktionsträger als primäre Alkohole.", en:"A solvent and intermediate. A secondary OH group (on an inner C) – slightly less reactive than primary alcohols."},
+  alkanol_5_1:{emoji:"🍌", de:"Bildet mit Säuren fruchtig riechende Ester. Die lange Kette macht es kaum noch wasserlöslich, aber gut fettlöslich.", en:"Forms fruity esters with acids. The long chain makes it barely water-soluble but readily fat-soluble."},
+  alkanol_5_3:{emoji:"⚗️", de:"Sekundärer Alkohol und Lösungsmittel; OH genau in Kettenmitte (symmetrisch).", en:"A secondary alcohol and solvent; OH exactly in the middle of the chain (symmetric)."},
+  alkanol_6_1:{emoji:"🌹", de:"Riecht blumig, in Parfüms. Die lange unpolare Kette dominiert nun klar über die OH-Gruppe – kaum noch wasserlöslich.", en:"Smells floral, used in perfumes. The long non-polar chain now clearly dominates over the OH group – barely water-soluble."},
+
+  // ---- Ester ----
+  ester_1_1:{emoji:"🍏", de:"Methylformiat riecht fruchtig, dient als Lösungs-/Treibmittel. Ester haben keine freie OH-Gruppe → kaum Wasserstoffbrücken → flüchtig und angenehm duftend.", en:"Methyl formate smells fruity, used as solvent/blowing agent. Esters have no free OH → barely any hydrogen bonds → volatile and pleasantly scented."},
+  ester_1_2:{emoji:"🍑", de:"Ethylformiat hat ein rum-/pfirsichartiges Aroma. Wie alle Ester ohne H-Brücken-Donor – daher flüchtig und intensiv riechend.", en:"Ethyl formate has a rum/peach aroma. Like all esters it lacks a hydrogen-bond donor – hence volatile and intensely scented."},
+  ester_2_1:{emoji:"🍎", de:"Methylacetat – süßlich riechendes Lösungsmittel (z. B. in Klebstoffen). Die polare Estergruppe löst viele Kunststoffe an.", en:"Methyl acetate – a sweet-smelling solvent (e.g. in glues). Its polar ester group softens many plastics."},
+  ester_2_2:{emoji:"💅", de:"Ethylacetat riecht fruchtig, häufiges Lösungsmittel (Nagellackentferner). Ohne OH-Gruppe sehr flüchtig, daher rascher Geruch und schnelles Trocknen.", en:"Ethyl acetate smells fruity, a common solvent (nail-polish remover). Without an OH group it is very volatile – quick scent and fast drying."},
+  ester_3_1:{emoji:"🍓", de:"Methylpropanoat hat ein fruchtiges Aroma (Aromastoff). Typisch für Ester: angenehmer Duft, weil keine stinkende freie Säuregruppe mehr vorliegt.", en:"Methyl propanoate has a fruity aroma (flavouring). Typical of esters: a pleasant scent, as no smelly free acid group remains."},
+
+  // ---- Metalle ----
+  li_metal:{emoji:"🔋", de:"Leichtestes Metall – Herz moderner Akkus. Das eine locker gebundene Außenelektron gibt Lithium leicht ab und wandert als Ion durch die Batterie.", en:"The lightest metal – the heart of modern batteries. Its single loosely bound outer electron is given up easily and the ion shuttles through the battery."},
+  na_metal:{emoji:"💡", de:"So reaktiv, dass es unter Petroleum lagern muss; Dampf leuchtet gelb in Lampen. Das eine Außenelektron wird blitzschnell abgegeben (heftige Reaktion mit Wasser).", en:"So reactive it must be stored under oil; its vapour glows yellow in lamps. The single outer electron is shed in a flash (violent reaction with water)."},
+  k_metal:{emoji:"🌱", de:"Reagiert noch heftiger mit Wasser als Natrium; als Ion lebenswichtiger Pflanzennährstoff. Das Außenelektron sitzt weiter vom Kern entfernt und löst sich noch leichter.", en:"Reacts even more violently with water than sodium; as an ion a vital plant nutrient. Its outer electron sits farther from the nucleus and detaches even more easily."},
+  mg_metal:{emoji:"🎆", de:"Verbrennt blendend hell – in Feuerwerk und Leichtbau. Beim Verbrennen geben die Atome zwei Elektronen ab, dabei wird enorm viel Lichtenergie frei.", en:"Burns dazzlingly bright – in fireworks and lightweight construction. On burning, the atoms shed two electrons, releasing enormous light energy."},
+  ca_metal:{emoji:"🦴", de:"In Verbindungen in Knochen, Zähnen und Kalkstein. Als zweifach geladenes Ca²⁺-Ion bildet es besonders feste Ionengitter (z. B. mit Phosphat im Knochen).", en:"In compounds in bones, teeth and limestone. As the doubly charged Ca²⁺ ion it forms especially firm ionic lattices (e.g. with phosphate in bone)."},
+  al_metal:{emoji:"✈️", de:"Leicht und rostfrei – für Flugzeuge, Dosen, Folie. Eine hauchdünne, dichte Oxidschicht versiegelt die Oberfläche und schützt das Metall darunter.", en:"Light and rust-free – for aircraft, cans, foil. An ultra-thin, dense oxide layer seals the surface and protects the metal beneath."},
+
+  // ---- Übergangsmetalle ----
+  fe_tm:{emoji:"🏗️", de:"Als Stahl das wichtigste Konstruktionsmetall; im Hämoglobin trägt es den Sauerstoff. Frei bewegliche Elektronen im Metallgitter leiten Strom und machen es verformbar.", en:"As steel the most important structural metal; in haemoglobin it carries oxygen. Free-moving electrons in the metal lattice conduct current and make it malleable."},
+  cu_tm:{emoji:"🔌", de:"Leitet Strom hervorragend – Standard für Kabel. Sehr viele frei bewegliche Elektronen im Metallgitter transportieren die Ladung nahezu verlustfrei.", en:"Conducts electricity superbly – standard for cables. A large 'sea' of free electrons in the metal lattice carries charge almost loss-free."},
+  zn_tm:{emoji:"🛡️", de:"Schützt Stahl vor Rost (Verzinken). Zink gibt seine Elektronen lieber ab als Eisen und „opfert“ sich dadurch zuerst (Opferanode).", en:"Protects steel from rust (galvanizing). Zinc gives up its electrons more readily than iron and 'sacrifices' itself first (sacrificial anode)."},
+  ag_tm:{emoji:"🥈", de:"Leitet am besten von allen Metallen und wirkt antibakteriell. Die freien Elektronen bewegen sich besonders ungehindert; Silber-Ionen schädigen Keime.", en:"Conducts best of all metals and is antibacterial. Its free electrons move especially unhindered; silver ions harm germs."},
+  au_tm:{emoji:"🥇", de:"Läuft nie an und leitet zuverlässig – Schmuck und Edel-Elektronik. Gold gibt seine Elektronen kaum ab, daher keine Reaktion mit Luft (kein Anlaufen).", en:"Never tarnishes and conducts reliably – jewellery and premium electronics. Gold barely gives up its electrons, so it does not react with air."},
+
+  // ---- verzweigte Alkane ----
+  isobutane:{emoji:"❄️", de:"Umweltfreundlicheres Kältemittel und Sprühdosen-Treibgas. Die kompakte verzweigte Form lässt sich leicht verflüssigen und wieder verdampfen.", en:"A greener refrigerant and spray-can propellant. Its compact branched shape liquefies and re-evaporates easily."},
+  isopentane:{emoji:"🧴", de:"Sehr flüchtig, Treibmittel für Schäume. Die Verzweigung verringert die Van-der-Waals-Kontaktfläche → niedrigerer Siedepunkt als das gerade Pentan.", en:"Very volatile, a foam blowing agent. Branching reduces the Van-der-Waals contact area → lower boiling point than straight pentane."},
+  neopentane:{emoji:"🔮", de:"Das kompakteste C₅-Alkan – fast kugelförmig. Wegen der minimalen Kontaktfläche (schwächste Van-der-Waals-Kräfte) ist es als einziges C₅-Alkan gasförmig.", en:"The most compact C₅ alkane – almost spherical. Due to the minimal contact area (weakest Van-der-Waals forces) it is the only C₅ alkane that is a gas."},
+  "2methylpentane":{emoji:"⛽", de:"Bestandteil von Benzin. Die Verzweigung erhöht die Klopffestigkeit (stabilere Verbrennungs-Radikale) gegenüber dem geraden Hexan.", en:"A component of petrol. Branching raises knock resistance (more stable combustion radicals) compared with straight hexane."},
+  "3methylpentane":{emoji:"⛽", de:"Verzweigtes Hexan-Isomer im Benzin. Gleiche Summenformel wie Hexan, aber durch die Verzweigung niedrigerer Siedepunkt und höhere Klopffestigkeit.", en:"A branched hexane isomer in petrol. Same formula as hexane, but branching lowers the boiling point and raises knock resistance."},
+
+  // ---- verzweigte Alkene ----
+  isobutene:{emoji:"🛞", de:"Baustein von Butyl-Kautschuk (luftdichte Schläuche) und klopffestem Benzin. Die Doppelbindung verknüpft die Moleküle zu dichten, gasundurchlässigen Ketten.", en:"A building block of butyl rubber (airtight tubes) and anti-knock petrol. The double bond links molecules into dense, gas-tight chains."},
+  "2methylbut1ene":{emoji:"⚗️", de:"Reaktives verzweigtes Alken aus der Raffinerie. Die endständige Doppelbindung ist gut zugänglich und reaktionsfreudig.", en:"A reactive branched alkene from the refinery. The terminal double bond is accessible and reactive."},
+  "2methylbut2ene":{emoji:"⚗️", de:"Höher substituiertes, stabileres Alken-Isomer. Je mehr Alkylgruppen an der Doppelbindung sitzen, desto stabiler ist sie (Schulregel der Alken-Stabilität).", en:"A more substituted, more stable alkene isomer. The more alkyl groups on the double bond, the more stable it is (the basic rule of alkene stability)."},
+  "4methylpent1ene":{emoji:"⚗️", de:"Comonomer für spezielle Kunststoffe. Die Verzweigung weit weg von der Doppelbindung stört die Polymerisation kaum, beeinflusst aber die Materialeigenschaften.", en:"A comonomer for special plastics. The branch far from the double bond barely hinders polymerisation but tunes the material properties."},
+
+  // ---- verzweigte Alkine ----
+  "3methylbut1yne":{emoji:"⚗️", de:"Verzweigtes endständiges Alkin. Das ≡C–H ist schwach sauer (sp-C zieht Elektronen an) und lässt sich für Synthesen abspalten.", en:"A branched terminal alkyne. The ≡C–H is weakly acidic (sp carbon pulls electrons) and can be removed for syntheses."},
+  "3methylpent1yne":{emoji:"⚗️", de:"Verzweigtes Alkin mit der Dreifachbindung am Kettenanfang. Endständig = reaktives, abspaltbares ≡C–H.", en:"A branched alkyne with the triple bond at the chain start. Terminal = a reactive, removable ≡C–H."},
+  "4methylpent1yne":{emoji:"⚗️", de:"Trägt die Verzweigung weiter von der Dreifachbindung entfernt – die reaktive endständige Dreifachbindung bleibt gut zugänglich.", en:"Carries its branch further from the triple bond – the reactive terminal triple bond stays accessible."},
+  "5methylhex1yne":{emoji:"⚗️", de:"Längeres verzweigtes endständiges Alkin. Die längere Kette bringt mehr Van-der-Waals-Kräfte → flüssig statt gasförmig.", en:"A longer branched terminal alkyne. The longer chain adds Van-der-Waals forces → liquid rather than gaseous."}
+};
 
 function renderTaskCard(showPlayer) {
   const s = STATE.currentSubst;
@@ -3614,12 +4265,15 @@ function renderTaskCard(showPlayer) {
     </div>`;
   }
 
-  // Im Klassenmodus: Substanzname direkt als Überschrift (nicht aufdecken müssen)
+  // Im Klassenmodus: Substanzname direkt als Überschrift (nicht aufdecken müssen).
+  // Primärname in der gewählten Sprache, der andere Name als Untertitel.
   const classMode = (STATE.mode === "class");
+  const primaryName = substanceName(s, LANG);
+  const otherName = (LANG === "de") ? s.en : s.name;
   const nameHeader = classMode
     ? `<div class="subst-headline">
-         <div class="subst-name-de">${escapeXml(s.name)}</div>
-         ${s.en && s.en !== s.name ? `<div class="subst-name-en">${escapeXml(s.en)}</div>` : ""}
+         <div class="subst-name-de">${escapeXml(primaryName)}</div>
+         ${otherName && otherName !== primaryName ? `<div class="subst-name-en">${escapeXml(otherName)}</div>` : ""}
        </div>`
     : "";
 
@@ -3640,9 +4294,11 @@ function renderTaskCard(showPlayer) {
     let content = "";
     if (revealed) {
       if (tt.id === "name") {
+        const pName = substanceName(s, LANG);
+        const oName = (LANG === "de") ? s.en : s.name;
         content = `<div class="tile-content">
-          <div class="name-de">${escapeXml(s.name)}</div>
-          ${s.en && s.en !== s.name ? `<div class="name-en">${escapeXml(s.en)}</div>` : ""}
+          <div class="name-de">${escapeXml(pName)}</div>
+          ${oName && oName !== pName ? `<div class="name-en">${escapeXml(oName)}</div>` : ""}
         </div>`;
       } else if (tt.id === "formula") {
         content = `<div class="tile-content"><div class="formula">${formulaDisplay(s)}</div></div>`;
@@ -3667,6 +4323,24 @@ function renderTaskCard(showPlayer) {
 
   h += `</div>`;
 
+  // Kontext-Info (aufdeckbar) — alltags-/technikrelevantes Wissen, mit Emoji.
+  // Erscheint in Klassen- und Übungsmodus, sofern Daten vorhanden sind.
+  const ci = CONTEXT_INFO[s.key];
+  if (ci) {
+    const ciText = (LANG === "de") ? ci.de : ci.en;
+    if (STATE.contextRevealed) {
+      h += `<div class="context-box revealed" data-action="reveal-context">
+        <div class="context-title">${ci.emoji} ${T("contextTitle")}</div>
+        <div class="context-text">${escapeXml(ciText)}</div>
+      </div>`;
+    } else {
+      h += `<div class="context-box" data-action="reveal-context">
+        <div class="context-title">${ci.emoji} ${T("contextTitle")}</div>
+        <div class="context-hint">${T("contextHint")}</div>
+      </div>`;
+    }
+  }
+
   // Self-assessment (alle Kacheln aufgedeckt + noch nicht gescored)
   const allRevealed = tiles.every(t => STATE.revealedTiles.has(t.id));
   if (allRevealed && !STATE.scored) {
@@ -3686,15 +4360,24 @@ function renderTaskCard(showPlayer) {
     </div>`;
   } else if (allRevealed && STATE.scored) {
     // Show next button after scoring
-    const nextLabel = STATE.mode === "class" && STATE.playerNames.length > 1 ? T("nextStudent") : T("nextTask");
-    h += `<div class="score-area">
-      <div class="score-prompt">
-        ${STATE.scoreSelected === 2 ? "✅ +2" : STATE.scoreSelected === 1 ? "⚠️ +1" : "❌ +0"}
-      </div>
-      <div class="score-btns">
-        <button class="btn" data-action="next-task">🎲 ${nextLabel}</button>
-      </div>
-    </div>`;
+    const scoreLine = STATE.scoreSelected === 2 ? "✅ +2" : STATE.scoreSelected === 1 ? "⚠️ +1" : "❌ +0";
+    if (poolExhausted()) {
+      const doneMsg = LANG === "de" ? "🎉 Alle Substanzen dieser Auswahl geübt!" : "🎉 All substances of this selection practised!";
+      h += `<div class="score-area">
+        <div class="score-prompt">${scoreLine} · ${doneMsg}</div>
+        <div class="score-btns">
+          <button class="btn" data-action="finish-round">🏁 ${T("backToSetup")}</button>
+        </div>
+      </div>`;
+    } else {
+      const nextLabel = STATE.mode === "class" && STATE.playerNames.length > 1 ? T("nextStudent") : T("nextTask");
+      h += `<div class="score-area">
+        <div class="score-prompt">${scoreLine}</div>
+        <div class="score-btns">
+          <button class="btn" data-action="next-task">🎲 ${nextLabel}</button>
+        </div>
+      </div>`;
+    }
   }
 
   h += `</div>`;
@@ -3754,6 +4437,9 @@ function renderExportMode() {
 
   // Darstellung & Sprache & Vorschau
   if (subst) {
+    // Skelett-Option nur anbieten, wenn die Substanz eine Skelettformel hat
+    const hasSkel = taskTypesFor(subst).some(t => t.id === "skeletal");
+    if (!hasSkel && STATE.exportRep === "skeletal") STATE.exportRep = "structural";
     h += `<section>
       <div class="section-title">🎨 ${T("exportRepresentation")} & ${T("exportLang")}</div>
       <div class="panel">
@@ -3762,7 +4448,7 @@ function renderExportMode() {
             <div style="font-size:0.78rem;color:var(--dim);margin-bottom:0.4rem">${T("exportRepresentation")}</div>
             <div class="export-radio-group">
               <button class="export-radio ${STATE.exportRep==="structural"?"active":""}" data-action="export-rep" data-rep="structural">${T("repLewis")}</button>
-              <button class="export-radio ${STATE.exportRep==="skeletal"?"active":""}" data-action="export-rep" data-rep="skeletal">${T("repSkeletal")}</button>
+              ${hasSkel ? `<button class="export-radio ${STATE.exportRep==="skeletal"?"active":""}" data-action="export-rep" data-rep="skeletal">${T("repSkeletal")}</button>` : ""}
             </div>
           </div>
           <div>
@@ -3774,8 +4460,11 @@ function renderExportMode() {
           </div>
         </div>
         <div class="export-preview">${preview}</div>
-        <div class="btn-row" style="justify-content:center">
-          <button class="btn" data-action="export-download" ${canDownload?"":"disabled"}>📥 ${T("download")}</button>
+        <div class="btn-row" style="justify-content:center;gap:0.5rem;flex-wrap:wrap">
+          <button class="btn" data-action="export-download" ${canDownload?"":"disabled"}>📥 SVG</button>
+          <button class="btn small ghost" data-action="export-png" data-size="800"  ${canDownload?"":"disabled"}>🖼️ PNG ${LANG==="de"?"klein":"small"}</button>
+          <button class="btn small ghost" data-action="export-png" data-size="1600" ${canDownload?"":"disabled"}>🖼️ PNG ${LANG==="de"?"mittel":"medium"}</button>
+          <button class="btn small ghost" data-action="export-png" data-size="3200" ${canDownload?"":"disabled"}>🖼️ PNG ${LANG==="de"?"groß":"large"}</button>
         </div>
       </div>
     </section>`;
@@ -3830,6 +4519,7 @@ function handleAction(e) {
         currentSubst: null,
         currentPlayer: null,
         revealedTiles: new Set(),
+        contextRevealed: false,
         scored: false
       };
       renderApp();
@@ -3856,7 +4546,7 @@ function handleAction(e) {
     case "set-year": {
       const y = parseInt(el.dataset.year);
       STATE.year = y;
-      STATE.activeClasses = [...YEAR_CLASSES[y]];
+      // KEINE automatische Klassen-Vorwahl mehr — Klassen bleiben frei wählbar
       renderApp();
       break;
     }
@@ -3885,9 +4575,18 @@ function handleAction(e) {
     case "start-training":
       newTask();
       break;
-    case "back-to-setup":      // Punkt 0a: zurück zur Setup-Ansicht
+    case "back-to-setup":      // Punkt 0a: zurück zur Setup-Ansicht (mit Reset → frische Randomisierung)
       STATE.trainingPage = false;
+      STATE.currentSubst = null;
+      STATE.revealedTiles = new Set();
+      STATE.contextRevealed = false;
+      STATE.scored = false;
+      STATE.scoreSelected = null;
+      STATE.spinning = false;
       renderApp();
+      break;
+    case "finish-round":       // alle Substanzen geübt → zurück ins Stoffklassenmenü
+      finishRound();
       break;
     case "resume-task":        // zurück zur laufenden Aufgabe
       STATE.trainingPage = true;
@@ -3896,6 +4595,11 @@ function handleAction(e) {
     case "reveal-tile": {
       const t = el.dataset.tile;
       STATE.revealedTiles.add(t);
+      renderApp();
+      break;
+    }
+    case "reveal-context": {
+      STATE.contextRevealed = true;
       renderApp();
       break;
     }
@@ -3914,6 +4618,8 @@ function handleAction(e) {
       renderApp();
       // Confetti for 2-point answers
       if (s === 2) spawnConfetti();
+      // Punkt: alle Substanzen der Auswahl geübt → automatisch zurück ins Menü
+      if (poolExhausted()) setTimeout(finishRound, 2800);
       break;
     }
     case "next-task":
@@ -3941,6 +4647,9 @@ function handleAction(e) {
     case "export-download":
       doExport();
       break;
+    case "export-png":
+      doExportPNG(parseInt(el.dataset.size));
+      break;
   }
 }
 
@@ -3957,6 +4666,25 @@ function handleCSV(e) {
     renderApp();
   };
   r.readAsText(file);
+}
+
+/* Alle Substanzen der aktuellen Auswahl bereits gezogen? */
+function poolExhausted() {
+  const subs = availableSubstances();
+  return subs.length > 0 && subs.every(s => STATE.usedSubstances.includes(s.key));
+}
+/* Runde sauber beenden: Memory + aktuelle Aufgabe zurücksetzen,
+   damit beim nächsten Start frisch randomisiert wird. */
+function finishRound() {
+  STATE.usedSubstances = [];
+  STATE.currentSubst = null;
+  STATE.revealedTiles = new Set();
+  STATE.contextRevealed = false;
+  STATE.scored = false;
+  STATE.scoreSelected = null;
+  STATE.spinning = false;
+  STATE.trainingPage = false;
+  renderApp();
 }
 
 function newTask() {
@@ -3986,12 +4714,13 @@ function newTask() {
   STATE.currentSubst = chosen;
   STATE.usedSubstances.push(chosen.key);
   STATE.revealedTiles = new Set();
+  STATE.contextRevealed = false;
   STATE.scored = false;
   STATE.scoreSelected = null;
   STATE.trainingPage = true;          // auf die Aufgaben-Seite wechseln (Punkt 0a)
 
   // Klassenmodus: Spinning-Wheel-Animation, dann Name direkt sichtbar (Punkt 0c)
-  if (STATE.mode === "class") {
+  if (STATE.mode === "class" || STATE.mode === "practice") {
     startSpin(subs, chosen);
   } else {
     STATE.spinning = false;
@@ -4033,6 +4762,44 @@ function doExport() {
   const baseName = (STATE.exportLang === "en" && s.en) ? s.en : s.name;
   const fname = slugify(baseName) + "-" + STATE.exportRep + ".svg";
   downloadSVG(svg, fname);
+}
+
+/* PNG-Rasterexport (offline, ohne Bibliothek) in wählbarer Pixelbreite. */
+function downloadPNG(svgString, filename, targetW) {
+  const vb = svgString.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/);
+  const W = vb ? parseFloat(vb[1]) : 1000;
+  const H = vb ? parseFloat(vb[2]) : 1000;
+  const scale = targetW / W;
+  const cw = Math.round(W*scale), ch = Math.round(H*scale);
+  const img = new Image();
+  img.onload = function() {
+    const canvas = document.createElement("canvas");
+    canvas.width = cw; canvas.height = ch;
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, cw, ch);
+    ctx.drawImage(img, 0, 0, cw, ch);
+    const finish = (url, revoke) => {
+      const a = document.createElement("a");
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click();
+      setTimeout(() => { document.body.removeChild(a); if (revoke) URL.revokeObjectURL(url); }, 100);
+    };
+    if (canvas.toBlob) {
+      canvas.toBlob(b => { if (b) finish(URL.createObjectURL(b), true); else finish(canvas.toDataURL("image/png"), false); }, "image/png");
+    } else {
+      finish(canvas.toDataURL("image/png"), false);
+    }
+  };
+  img.onerror = function() { alert(LANG === "de" ? "PNG-Export fehlgeschlagen." : "PNG export failed."); };
+  img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgString);
+}
+function doExportPNG(targetW) {
+  const s = STATE.exportSubst;
+  if (!s) return;
+  const svg = renderForExport(s, STATE.exportRep, STATE.exportLang);
+  if (!svg) return;
+  const baseName = (STATE.exportLang === "en" && s.en) ? s.en : s.name;
+  downloadPNG(svg, slugify(baseName) + "-" + STATE.exportRep + "-" + targetW + "px.png", targetW);
 }
 
 /* === CONFETTI === */
