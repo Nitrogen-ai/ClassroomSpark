@@ -1,16 +1,18 @@
 # ClassroomSpark
 
 ## Was das ist
-- Sammlung interaktiver HTML-Trainer für den Unterricht
-  (Grammatik, Chemie, Hypothesen u. a.).
-- Über GitHub Pages veröffentlicht; index.html ist die Startseite.
+- Landingpage für Lehrkräfte, die die interaktiven Trainer vorstellt.
+- Besteht nur aus index.html. Die Trainer selbst liegen im Repo `training`.
+
+## Zusammenspiel
+- Beide Buttons pro Trainer zeigen auf nitrogen-ai.github.io/training/:
+  "Play Online" öffnet, "Download" lädt herunter (gleiche Domain,
+  deshalb funktioniert das download-Attribut).
+- Trainer NIE hier ablegen oder bearbeiten — immer nur in `training`.
+- Neuer Trainer in `training` → hier eine Karte in index.html ergänzen.
 
 ## Konventionen
-- Jeder Trainer ist eine einzelne, offline lauffähige HTML-Datei
-  — keine CDN-Abhängigkeiten.
-- Oberflächensprache passend zum Fach (Englisch-Trainer auf Englisch).
-- Neue Trainer in index.html verlinken, damit sie von der
-  Startseite erreichbar sind.
+- Einzelne, offline lauffähige HTML-Datei — keine CDN-Abhängigkeiten.
 
 ## Öffentlich — Vorsicht
 - Public Repo mit GitHub Pages. Keine personenbezogenen Daten.
