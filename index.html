@@ -11,7 +11,7 @@
   --bg:#FFFDF7;--surface:#FFF9EE;--card:#FFFFFF;
   --ink:#1A1A2E;--ink2:#3D3D5C;--ink3:#7A7A9C;
   --spark:#F59E0B;--spark2:#D97706;--sparkGlow:#FEF3C7;
-  --coral:#EF4444;--ocean:#0EA5E9;--mint:#10B981;
+  --coral:#EF4444;--ocean:#0EA5E9;--mint:#10B981;--violet:#8B5CF6;--violet2:#7C3AED;
   --radius:16px;--shadow:0 4px 24px rgba(26,26,46,.06);
   --shadowHover:0 8px 40px rgba(26,26,46,.12);
 }
@@ -84,6 +84,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,253,247,
 .app-tag{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:600;width:fit-content;margin-bottom:14px}
 .tag-lang{background:rgba(14,165,233,.1);color:var(--ocean)}
 .tag-sci{background:rgba(16,185,129,.1);color:var(--mint)}
+.tag-general{background:rgba(139,92,246,.1);color:var(--violet2)}
 .app-info h3{font-size:1.5rem;font-weight:700;margin-bottom:10px}
 .app-info p{color:var(--ink2);margin-bottom:16px;font-size:.95rem}
 .app-features{list-style:none;margin-bottom:20px}
@@ -151,7 +152,7 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
 .subject-intro .section-label{margin-bottom:10px}
 .subject-intro h2{font-size:2rem;font-weight:700;margin-bottom:10px}
 .subject-intro p{color:var(--ink2);font-size:1.05rem}
-.subjects-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;max-width:1100px;margin:0 auto}
+.subjects-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;max-width:1100px;margin:0 auto}
 .subject-tile{
   position:relative;padding:56px 40px;border-radius:24px;text-align:center;
   cursor:pointer;transition:transform .4s cubic-bezier(.16,1,.3,1),box-shadow .4s;
@@ -167,6 +168,7 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
 .subject-tile > *{position:relative;z-index:1}
 .subject-tile.english{--tile-c1:var(--ocean);--tile-c2:#06b6d4}
 .subject-tile.chemistry{--tile-c1:var(--mint);--tile-c2:#14b8a6}
+.subject-tile.general{--tile-c1:var(--violet);--tile-c2:var(--violet2)}
 .subject-icon{font-size:4rem;margin-bottom:4px;display:block;transition:transform .5s cubic-bezier(.34,1.56,.64,1);filter:drop-shadow(0 4px 12px rgba(0,0,0,.08))}
 .subject-tile:hover .subject-icon{transform:scale(1.15) rotate(-6deg)}
 .subject-title{font-family:'Outfit',sans-serif;font-size:2.2rem;font-weight:800;color:var(--ink);margin:0}
@@ -270,6 +272,13 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
       <h3 class="subject-title" data-t="tileChTitle">Chemistry</h3>
       <p class="subject-subtitle" data-t="tileChSub">Periodic table quizzes, chemical communication, and an inquiry-based hypothesis trainer — three angles on the language and thinking of chemistry.</p>
       <span class="subject-count" data-t="tileChCount">3 apps</span>
+      <span class="subject-arrow">↓</span>
+    </a>
+    <a href="#cat-tools" class="subject-tile general reveal">
+      <span class="subject-icon">🪑</span>
+      <h3 class="subject-title" data-t="tileGenTitle">General Tools</h3>
+      <p class="subject-subtitle" data-t="tileGenSub">Cross-curricular classroom-management tools that don't belong to a single subject — starting with a seating-plan builder.</p>
+      <span class="subject-count" data-t="tileGenCount">1 app</span>
       <span class="subject-arrow">↓</span>
     </a>
   </div>
@@ -634,6 +643,53 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
         </div>
       </div>
 
+      <!-- ══════════ GENERAL TOOLS CATEGORY ══════════ -->
+      <div class="category-header reveal" id="cat-tools">
+        <span class="category-icon">🪑</span>
+        <h3 class="category-name" data-t="catGenTitle">General Tools</h3>
+        <span class="category-meta" data-t="catGenMeta">1 app</span>
+      </div>
+
+      <!-- Sitzplan-Werkzeug -->
+      <div class="app-card reveal">
+        <div class="app-preview" style="background:linear-gradient(135deg,#1c1428,#2a1f3d)">
+          <div class="app-preview-mock" style="background:#211a30">
+            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#a78bfa"></div></div>
+            <div class="mock-line" style="width:40%;background:#ffffff18;height:10px;margin-bottom:10px"></div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-bottom:10px">
+              <div style="background:#8b5cf6;height:16px;border-radius:3px;opacity:.75"></div>
+              <div style="background:#a78bfa;height:16px;border-radius:3px;opacity:.6"></div>
+              <div style="background:#8b5cf6;height:16px;border-radius:3px;opacity:.75"></div>
+              <div style="background:#a78bfa;height:16px;border-radius:3px;opacity:.6"></div>
+              <div style="background:#a78bfa;height:16px;border-radius:3px;opacity:.6"></div>
+              <div style="background:#8b5cf6;height:16px;border-radius:3px;opacity:.75"></div>
+              <div style="background:#a78bfa;height:16px;border-radius:3px;opacity:.6"></div>
+              <div style="background:#8b5cf6;height:16px;border-radius:3px;opacity:.75"></div>
+            </div>
+            <div class="mock-line" style="width:60%;background:#ffd700;opacity:.4"></div>
+            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#8b5cf6,#a78bfa)"></div><div class="mock-btn" style="background:#ffffff10"></div></div>
+            <div class="mock-label" style="color:#ffffff40">🪑 Sitzplan</div>
+          </div>
+        </div>
+        <div class="app-info">
+          <div class="app-tag tag-general">🪑 <span data-t="tagGen">Classroom Management</span></div>
+          <h3 data-t="appSPTitle">Seating Plan Builder <span class="skill-badge sb-hypo" data-t="spDeBadge">🇩🇪 DE only</span></h3>
+          <p data-t="appSPDesc">A privacy-first seating-plan builder: import your class list and student seating wishes (via a simple Google Form), model your actual classroom layout, and let an optimiser find a fair arrangement — or arrange seats by hand.</p>
+          <ul class="app-features">
+            <li data-t="appSPf1">CSV import for class rosters and Google-Form wish surveys — no manual typing</li>
+            <li data-t="appSPf2">Automatic solver (simulated annealing) balances seating wishes fairly, or arrange manually / shuffle</li>
+            <li data-t="appSPf3">Two-page vector PDF export: student view + point-mirrored teacher view, text always upright</li>
+            <li data-t="appSPf4">100% offline, no accounts, no server — all data stays in your browser</li>
+            <li data-t="appSPf5">Fulfilment report with a fairness safeguard against pile-up negative wishes</li>
+          </ul>
+          <div class="download-row">
+            <a href="https://nitrogen-ai.github.io/tools/sitzplan.html" download class="btn btn-primary">⬇ Download</a>
+            <a href="https://nitrogen-ai.github.io/tools/sitzplan.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnPlay">▶ Play Online</a>
+            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -740,10 +796,14 @@ en:{
   tileChTitle:"Chemistry",
   tileChSub:"Periodic table quizzes, chemical communication, and an inquiry-based hypothesis trainer — three angles on the language and thinking of chemistry.",
   tileChCount:"3 apps",
+  tileGenTitle:"General Tools",
+  tileGenSub:"Cross-curricular classroom-management tools that don't belong to a single subject — starting with a seating-plan builder.",
+  tileGenCount:"1 app",
   secTools:"Tools",secToolsTitle:"Learning Apps",
   secToolsSub:"Each app works entirely offline — no accounts, no tracking, no ads. Just download the HTML file and open it in any browser.",
   catEnTitle:"English",catEnMeta:"7 apps · Year 5 → 10",
   catChTitle:"Chemistry",catChMeta:"3 apps",
+  catGenTitle:"General Tools",catGenMeta:"1 app",
   btnPlay:"▶ Play Online",btnTip:"☕ Tip",
   appY5Title:'Verb Conjugation Trainer <span class="year-badge yb-5">Year 5</span>',
   appY5Desc:"First-steps trainer focused on the two foundational tenses every Year 5 learner needs — gentle, focused, and confidence-building.",
@@ -818,6 +878,14 @@ en:{
   app4f3:"Built-in name wheel for random student selection",
   app4f4:"Bilingual (German / English) with language toggle",
   app4f5:"Works offline on any device — phone, tablet, laptop",
+  tagGen:"Classroom Management",spDeBadge:"🇩🇪 DE only",
+  appSPTitle:'Seating Plan Builder <span class="skill-badge sb-hypo">🇩🇪 DE only</span>',
+  appSPDesc:"A privacy-first seating-plan builder: import your class list and student seating wishes (via a simple Google Form), model your actual classroom layout, and let an optimiser find a fair arrangement — or arrange seats by hand.",
+  appSPf1:"CSV import for class rosters and Google-Form wish surveys — no manual typing",
+  appSPf2:"Automatic solver (simulated annealing) balances seating wishes fairly, or arrange manually / shuffle",
+  appSPf3:"Two-page vector PDF export: student view + point-mirrored teacher view, text always upright",
+  appSPf4:"100% offline, no accounts, no server — all data stays in your browser",
+  appSPf5:"Fulfilment report with a fairness safeguard against pile-up negative wishes",
   secHow:"Process",secHowTitle:"How It Works",secHowSub:"Three simple steps. No sign-up, no paywall, no strings attached.",
   how1T:"1. Download",how1P:"Grab any tool as a single HTML file. It's yours to keep, share, and adapt for your classroom.",
   how2T:"2. Open & Use",how2P:"Open the file in any browser — Chrome, Firefox, Safari. Works offline, on any device.",
@@ -854,10 +922,14 @@ de:{
   tileChTitle:"Chemie",
   tileChSub:"Periodensystem-Quizze, chemische Kommunikation und ein hypothesengeleiteter Trainer — drei Zugänge zur Sprache und zum Denken der Chemie.",
   tileChCount:"3 Apps",
+  tileGenTitle:"Allgemeine Werkzeuge",
+  tileGenSub:"Fachübergreifende Werkzeuge zur Unterrichtsorganisation, die keinem einzelnen Fach zugeordnet sind — den Anfang macht ein Sitzplan-Werkzeug.",
+  tileGenCount:"1 App",
   secTools:"Tools",secToolsTitle:"Lern-Apps",
   secToolsSub:"Jede App funktioniert komplett offline — kein Konto, kein Tracking, keine Werbung. Einfach die HTML-Datei herunterladen und im Browser öffnen.",
   catEnTitle:"Englisch",catEnMeta:"7 Apps · Klasse 5 → 10",
   catChTitle:"Chemie",catChMeta:"3 Apps",
+  catGenTitle:"Allgemeine Werkzeuge",catGenMeta:"1 App",
   btnPlay:"▶ Online spielen",btnTip:"☕ Trinkgeld",
   appY5Title:'Verb Conjugation Trainer <span class="year-badge yb-5">Klasse 5</span>',
   appY5Desc:"Erste-Schritte-Trainer mit den zwei grundlegenden Zeitformen für Klasse 5 — sanft, fokussiert und vertrauensbildend.",
@@ -932,6 +1004,14 @@ de:{
   app4f3:"Eingebautes Namenrad für zufällige Schülerauswahl",
   app4f4:"Zweisprachig (Deutsch / Englisch) mit Sprachumschalter",
   app4f5:"Funktioniert offline auf jedem Gerät — Handy, Tablet, Laptop",
+  tagGen:"Unterrichtsorganisation",spDeBadge:"🇩🇪 Nur DE",
+  appSPTitle:'Sitzplan-Werkzeug <span class="skill-badge sb-hypo">🇩🇪 Nur DE</span>',
+  appSPDesc:"Ein datenschutzfreundliches Sitzplan-Werkzeug: Namensliste und Sitzwünsche der Klasse (per einfachem Google-Formular) importieren, den echten Klassenraum nachbilden und automatisch eine faire Sitzordnung berechnen lassen — oder von Hand anordnen.",
+  appSPf1:"CSV-Import für Namenslisten und Google-Formular-Wunschabfragen — kein manuelles Abtippen",
+  appSPf2:"Automatischer Solver (Simulated Annealing) verteilt Sitzwünsche fair, oder manuell anordnen / würfeln",
+  appSPf3:"Zweiseitiger Vektor-PDF-Export: Schüler:innenansicht + punktgespiegelte Lehrpersonenansicht, Text immer aufrecht",
+  appSPf4:"100 % offline, kein Konto, kein Server — alle Daten bleiben im Browser",
+  appSPf5:"Erfüllungsbericht mit Fairness-Schutz gegen Häufung von Negativwünschen bei einzelnen Personen",
   secHow:"Ablauf",secHowTitle:"So funktioniert's",secHowSub:"Drei einfache Schritte. Keine Anmeldung, keine Paywall, keine Haken.",
   how1T:"1. Herunterladen",how1P:"Jedes Tool als einzelne HTML-Datei speichern. Behalten, teilen und für den eigenen Unterricht anpassen.",
   how2T:"2. Öffnen & Nutzen",how2P:"Die Datei in einem beliebigen Browser öffnen — Chrome, Firefox, Safari. Funktioniert offline, auf jedem Gerät.",
