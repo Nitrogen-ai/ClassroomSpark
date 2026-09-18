@@ -480,7 +480,7 @@ const SUBJECTS=[
    items:["arduino"]},
   {id:"general",icon:"🪑",title:{en:"General Tools",de:"Allgemeine Werkzeuge"},
    sub:{en:"Cross-curricular helpers for planning and organising — seating plans, GoodNotes answer reveals and more.",de:"Fachübergreifende Helfer für Planung und Organisation — Sitzpläne, GoodNotes-Lösungsaufdecker und mehr."},
-   items:["kiprep","sitzplan","goodnotes","zugang","scan"]}
+   items:["kiprep","sitzplan","pdfsvg","goodnotes","zugang","scan"]}
 ];
 
 const ITEMS={
@@ -616,6 +616,14 @@ sitzplan:{type:"app",tag:{en:"Classroom Management",de:"Unterrichtsorganisation"
   features:{en:["CSV import for class rosters and Google-Form wish surveys — no manual typing","Automatic solver (simulated annealing) balances seating wishes fairly, or arrange manually / shuffle","Two-page vector PDF export: student view + point-mirrored teacher view, text always upright","100% offline, no accounts, no server — all data stays in your browser","Fulfilment report with a fairness safeguard against pile-up negative wishes"],de:["CSV-Import für Namenslisten und Google-Formular-Wunschabfragen — kein manuelles Abtippen","Automatischer Solver (Simulated Annealing) verteilt Sitzwünsche fair, oder manuell anordnen / würfeln","Zweiseitiger Vektor-PDF-Export: Schüler:innenansicht + punktgespiegelte Lehrpersonenansicht, Text immer aufrecht","100 % offline, kein Konto, kein Server — alle Daten bleiben im Browser","Erfüllungsbericht mit Fairness-Schutz gegen Häufung von Negativwünschen bei einzelnen Personen"]},
   url:TL+"sitzplan.html",online:"use",
   thumb:["linear-gradient(135deg,#1c1428,#2a1f3d)",mock("#a78bfa",ln("40%","#ffffff18","height:10px;margin-bottom:10px")+cells(4,[["#8b5cf6",.75],["#a78bfa",.6],["#8b5cf6",.75],["#a78bfa",.6],["#a78bfa",.6],["#8b5cf6",.75],["#a78bfa",.6],["#8b5cf6",.75]])+ln("60%","#ffd700","opacity:.4")+btns("linear-gradient(135deg,#8b5cf6,#a78bfa)"),"🪑 Sitzplan","#211a30")]},
+
+pdfsvg:{type:"app",tag:{en:"Classroom Management",de:"Unterrichtsorganisation"},
+  title:{en:"PDF to SVG Converter",de:"PDF-zu-SVG-Konverter"},
+  short:{en:"Turn a PDF page into a scalable vector SVG, right in your browser.",de:"Eine PDF-Seite direkt im Browser in eine skalierbare Vektor-SVG umwandeln."},
+  desc:{en:"Converts a PDF page into a vector SVG file right in your browser. Ideal for importing worksheets into documents, slides or note-taking apps that need a scalable, self-contained image.",de:"Wandelt eine PDF-Seite direkt im Browser in eine Vektor-SVG-Datei um. Ideal, um Arbeitsblätter in Dokumente, Präsentationen oder Notiz-Apps zu importieren, die ein skalierbares, eigenständiges Bild brauchen."},
+  features:{en:["Drag & drop a PDF, get a pixel-perfect vector SVG back in seconds","Text and graphics become real vector paths, not a scanned image","Multi-page PDFs supported: pick a page, or export every page at once","100% offline, no accounts, no server: nothing is ever uploaded"],de:["PDF per Drag & Drop ablegen, in Sekunden eine pixelgenaue Vektor-SVG erhalten","Text und Grafiken werden zu echten Vektorpfaden, kein eingescanntes Bild","Mehrseitige PDFs: einzelne Seite wählen oder alle auf einmal exportieren","100 % offline, kein Konto, kein Server: es wird nichts hochgeladen"]},
+  url:TL+"pdf-zu-svg.html",online:"use",
+  thumb:["linear-gradient(135deg,#1c1428,#2a1f3d)",mock("#a78bfa",`<div style="display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0"><div style="width:34px;height:44px;border-radius:4px;background:#ffffff14;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#ffffff60;font-weight:700">PDF</div><div style="color:#a78bfa;font-size:1.1rem">→</div><div style="width:34px;height:44px;border-radius:4px;background:linear-gradient(135deg,#8b5cf6,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#fff;font-weight:700">SVG</div></div>`+ln("70%","#ffffff18","height:10px;margin:0 auto 8px")+btns("linear-gradient(135deg,#8b5cf6,#a78bfa)"),"🖼️ PDF → SVG","#211a30")]},
 
 goodnotes:{type:"app",tag:{en:"Study Material",de:"Unterrichtsmaterial"},
   title:{en:"GoodNotes Answer-Reveal Generator",de:"GoodNotes-Antworten-Enthüller"},badge:[{en:"🇩🇪 DE guide",de:"🇩🇪 Nur DE"},"b-de"],
