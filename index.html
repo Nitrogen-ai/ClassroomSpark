@@ -11,7 +11,7 @@
   --bg:#FFFDF7;--surface:#FFF9EE;--card:#FFFFFF;
   --ink:#1A1A2E;--ink2:#3D3D5C;--ink3:#7A7A9C;
   --spark:#F59E0B;--spark2:#D97706;--sparkGlow:#FEF3C7;
-  --coral:#EF4444;--ocean:#0EA5E9;--mint:#10B981;--violet:#8B5CF6;--violet2:#7C3AED;
+  --coral:#EF4444;--ocean:#0EA5E9;--mint:#10B981;--violet:#8B5CF6;--violet2:#7C3AED;--slate:#0F766E;--slate2:#0D9488;
   --radius:16px;--shadow:0 4px 24px rgba(26,26,46,.06);
   --shadowHover:0 8px 40px rgba(26,26,46,.12);
 }
@@ -56,6 +56,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,253,247,
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(26,26,46,.2);color:#fff}
 .btn-secondary{background:transparent;color:var(--ink);border:2px solid rgba(26,26,46,.15)}
 .btn-secondary:hover{border-color:var(--spark);color:var(--spark);transform:translateY(-2px)}
+.btn-play{background:#fff;color:var(--ocean);border:2px solid var(--ocean)}
+.btn-play:hover{background:var(--ocean);color:#fff;transform:translateY(-2px);box-shadow:0 6px 20px rgba(14,165,233,.25)}
 .hero-sparks{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden}
 .hero-sparks span{position:absolute;color:var(--spark);opacity:.15;font-size:1.5rem;animation:float 6s ease-in-out infinite}
 @keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-20px) rotate(180deg)}}
@@ -67,10 +69,72 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,253,247,
 .section-title{font-size:2.4rem;font-weight:700;margin-bottom:16px}
 .section-subtitle{font-size:1.1rem;color:var(--ink2);max-width:600px;margin-bottom:48px}
 
-/* App Cards */
-.apps-grid{display:grid;gap:32px}
-.app-card{background:var(--card);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);transition:all .4s;border:1px solid rgba(0,0,0,.04);display:grid;grid-template-columns:1fr 1fr}
-.app-card:hover{box-shadow:var(--shadowHover);transform:translateY(-4px)}
+/* Subject chooser — the four big category tiles */
+.subject-chooser{padding:80px 32px 20px;background:linear-gradient(180deg,var(--bg) 0%,var(--surface) 100%)}
+.subject-intro{text-align:center;max-width:640px;margin:0 auto 40px}
+.subject-intro .section-label{margin-bottom:10px}
+.subject-intro h2{font-size:2rem;font-weight:700;margin-bottom:10px}
+.subject-intro p{color:var(--ink2);font-size:1.05rem}
+.subjects-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;max-width:1100px;margin:0 auto}
+.subject-tile{
+  position:relative;padding:40px 22px;border-radius:24px;text-align:center;
+  cursor:pointer;transition:transform .4s cubic-bezier(.16,1,.3,1),box-shadow .4s;
+  overflow:hidden;text-decoration:none;background:var(--card);
+  box-shadow:var(--shadow);border:2px solid rgba(0,0,0,.04);
+  min-height:330px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px;
+}
+.subject-tile:hover{transform:translateY(-6px);box-shadow:var(--shadowHover);border-color:var(--tile-c1)}
+.subject-tile::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--tile-c1) 0%,var(--tile-c2) 100%);opacity:.06;transition:opacity .4s;z-index:0}
+.subject-tile:hover::before{opacity:.12}
+.subject-tile::after{content:'';position:absolute;top:-40%;right:-40%;width:80%;height:80%;background:radial-gradient(circle,var(--tile-c1) 0%,transparent 65%);opacity:.08;transition:opacity .6s,transform .6s;z-index:0}
+.subject-tile:hover::after{opacity:.18;transform:scale(1.2)}
+.subject-tile > *{position:relative;z-index:1}
+.english{--tile-c1:var(--ocean);--tile-c2:#06b6d4}
+.chemistry{--tile-c1:var(--mint);--tile-c2:#14b8a6}
+.informatics{--tile-c1:var(--slate);--tile-c2:#0369a1}
+.general{--tile-c1:var(--violet);--tile-c2:var(--violet2)}
+.subject-icon{font-size:3.4rem;margin-bottom:2px;display:block;transition:transform .5s cubic-bezier(.34,1.56,.64,1);filter:drop-shadow(0 4px 12px rgba(0,0,0,.08))}
+.subject-tile:hover .subject-icon{transform:scale(1.15) rotate(-6deg)}
+.subject-title{font-family:'Outfit',sans-serif;font-size:1.7rem;font-weight:800;color:var(--ink);margin:0}
+.subject-subtitle{color:var(--ink2);font-size:.95rem;max-width:380px;margin:0;line-height:1.55}
+.subject-count{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:30px;background:var(--tile-c1);color:#fff;font-family:'Outfit',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.5px;box-shadow:0 4px 14px color-mix(in srgb,var(--tile-c1) 40%,transparent)}
+.subject-arrow{display:inline-block;font-size:1.6rem;color:var(--tile-c1);transition:transform .3s;font-family:'Outfit',sans-serif;font-weight:600}
+.subject-tile:hover .subject-arrow{transform:translateY(4px)}
+
+/* Category header inside the tools section */
+.category-header{display:flex;align-items:center;gap:14px;margin:64px 0 22px;padding-bottom:14px;border-bottom:2px solid rgba(0,0,0,.06);scroll-margin-top:80px}
+.category-header.first{margin-top:8px}
+.category-icon{font-size:2rem}
+.category-name{font-family:'Outfit',sans-serif;font-size:1.6rem;font-weight:700;margin:0}
+.category-meta{margin-left:auto;font-family:'Outfit',sans-serif;font-size:.82rem;color:var(--ink3);text-transform:uppercase;letter-spacing:1px}
+
+/* Tool tiles: clickable thumbnails in a grid */
+.tile-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:22px}
+.tool-tile{
+  position:relative;display:flex;flex-direction:column;text-align:left;cursor:pointer;
+  background:var(--card);border-radius:18px;border:2px solid rgba(0,0,0,.05);box-shadow:var(--shadow);
+  overflow:hidden;padding:0;margin-top:8px;font:inherit;color:inherit;transition:transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s,border-color .35s;
+}
+.tool-tile:hover,.tool-tile:focus-visible{transform:translateY(-5px);box-shadow:var(--shadowHover);border-color:var(--tile-c1);outline:none}
+.thumb{height:168px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.thumb .app-preview-mock{transform:scale(.78);transition:transform .45s cubic-bezier(.16,1,.3,1)}
+.tool-tile:hover .thumb .app-preview-mock{transform:scale(.84) rotate(-1deg)}
+.tt-body{padding:16px 18px 6px;flex:1;display:flex;flex-direction:column;gap:6px}
+.tt-tag{font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--tile-c1)}
+.tt-body h4{font-size:1.12rem;font-weight:700;color:var(--ink)}
+.tt-body p{font-size:.88rem;color:var(--ink2);line-height:1.5}
+.tt-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 18px 16px;font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:600;color:var(--ink3)}
+.tt-open{color:var(--tile-c1);transition:transform .3s}
+.tool-tile:hover .tt-open{transform:translateX(4px)}
+/* folders: stacked-card look + count chip */
+.tool-tile.folder{overflow:visible;margin-top:8px;isolation:isolate}
+.tool-tile.folder::before,.tool-tile.folder::after{content:'';position:absolute;left:12px;right:12px;height:12px;border-radius:14px 14px 0 0;background:var(--card);border:2px solid rgba(0,0,0,.05);border-bottom:none;z-index:-1}
+.tool-tile.folder::before{top:-8px}
+.tool-tile.folder::after{top:-15px;left:24px;right:24px;opacity:.7}
+.tool-tile.folder .thumb{border-radius:16px 16px 0 0}
+.folder-chip{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:20px;background:var(--tile-c1);color:#fff;font-size:.72rem;font-weight:700}
+
+/* Preview mock (thumbnail art) */
 .app-preview{padding:40px;display:flex;align-items:center;justify-content:center;min-height:280px;position:relative}
 .app-preview-mock{width:100%;max-width:260px;border-radius:12px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.4);padding:16px}
 .mock-bar{display:flex;gap:6px;margin-bottom:12px}
@@ -79,18 +143,49 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,253,247,
 .mock-btn-row{display:flex;gap:8px;margin-top:12px}
 .mock-btn{height:28px;border-radius:8px;flex:1}
 .mock-label{text-align:center;margin-top:10px;font-family:Outfit,sans-serif;font-size:.6rem;opacity:.4}
+.thumb .app-preview-mock{width:260px;max-width:none;flex-shrink:0}
 
-.app-info{padding:36px;display:flex;flex-direction:column;justify-content:center}
-.app-tag{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:600;width:fit-content;margin-bottom:14px}
-.tag-lang{background:rgba(14,165,233,.1);color:var(--ocean)}
-.tag-sci{background:rgba(16,185,129,.1);color:var(--mint)}
-.tag-general{background:rgba(139,92,246,.1);color:var(--violet2)}
-.app-info h3{font-size:1.5rem;font-weight:700;margin-bottom:10px}
+/* Badges */
+.skill-badge{display:inline-block;padding:2px 9px;border-radius:6px;font-family:'Outfit',sans-serif;font-size:.68rem;font-weight:700;vertical-align:middle;letter-spacing:.3px;white-space:nowrap}
+.b-en{background:rgba(14,165,233,.12);color:#0369a1}
+.b-ch{background:rgba(16,185,129,.12);color:#047857}
+.b-it{background:rgba(15,118,110,.12);color:var(--slate)}
+.b-gen{background:rgba(139,92,246,.12);color:var(--violet2)}
+.b-de{background:rgba(6,182,212,.12);color:#0891b2}
+
+/* Viewer dialog: app details or folder contents */
+#viewer{border:none;border-radius:24px;padding:0;width:min(960px,calc(100vw - 32px));max-height:calc(100vh - 48px);margin:auto;background:var(--bg);color:var(--ink);box-shadow:0 30px 90px rgba(26,26,46,.35);overflow:auto}
+#viewer::backdrop{background:rgba(26,26,46,.45);backdrop-filter:blur(4px)}
+#viewer[open]{animation:popUp .35s cubic-bezier(.16,1,.3,1)}
+@keyframes popUp{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
+.v-bar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(255,253,247,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(0,0,0,.06);font-family:'Outfit',sans-serif}
+.v-crumbs{flex:1;font-size:.85rem;color:var(--ink3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v-crumbs b{color:var(--ink)}
+.v-btn{border:none;background:var(--surface);color:var(--ink2);border-radius:10px;padding:8px 14px;cursor:pointer;font:600 .85rem 'Outfit',sans-serif;transition:background .2s}
+.v-btn:hover{background:var(--sparkGlow);color:var(--ink)}
+.v-close{width:38px;height:38px;padding:0;font-size:1.1rem}
+.v-folder{padding:28px 28px 34px}
+.v-folder-head{display:flex;gap:16px;align-items:flex-start;margin-bottom:24px}
+.v-folder-head .category-icon{font-size:2.6rem}
+.v-folder-head h3{font-size:1.7rem;font-weight:800;margin-bottom:6px}
+.v-folder-head p{color:var(--ink2);font-size:1rem;max-width:640px}
+.v-app{display:grid;grid-template-columns:1fr 1.15fr}
+.v-app .app-preview{min-height:100%;border-radius:0}
+.app-info{padding:32px;display:flex;flex-direction:column;justify-content:center}
+.app-info .tt-tag{margin-bottom:8px}
+.app-info h3{font-size:1.55rem;font-weight:700;margin-bottom:10px}
 .app-info p{color:var(--ink2);margin-bottom:16px;font-size:.95rem}
 .app-features{list-style:none;margin-bottom:20px}
 .app-features li{padding:5px 0;color:var(--ink2);font-size:.9rem;display:flex;align-items:flex-start;gap:10px}
 .app-features li::before{content:'✦';color:var(--spark);font-size:.65rem;margin-top:5px;flex-shrink:0}
 .download-row{display:flex;gap:10px;flex-wrap:wrap}
+.download-row .btn{padding:12px 22px;font-size:.95rem}
+.extras{margin-top:18px;padding-top:14px;border-top:1px dashed rgba(0,0,0,.1)}
+.extras h5{font-family:'Outfit',sans-serif;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;color:var(--ink3);margin-bottom:8px}
+.extras a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;background:var(--surface);color:var(--ink);font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:500;margin-bottom:6px}
+.extras a:hover{background:var(--sparkGlow);color:var(--ink)}
+.extras a small{margin-left:auto;color:var(--ink3);font-weight:400}
+.note{font-size:.8rem;color:var(--ink3);margin-top:12px}
 
 /* How */
 .how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
@@ -126,92 +221,36 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,253,247,
 /* Footer */
 footer{text-align:center;padding:40px 32px;border-top:1px solid rgba(0,0,0,.05);font-family:'Outfit',sans-serif;font-size:.8rem;color:var(--ink3)}
 footer .footer-brand{font-weight:700;color:var(--ink2)}
-.footer-credit{font-size:.65rem;color:var(--ink3);opacity:.4;margin-top:8px}
 
-/* Year badge */
-.year-badge{display:inline-block;padding:2px 10px;border-radius:6px;font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:700;margin-left:8px;vertical-align:middle}
-.yb-5{background:rgba(139,92,246,.12);color:#7c3aed}
-.yb-6{background:rgba(16,185,129,.12);color:var(--mint)}
-.yb-7{background:rgba(14,165,233,.12);color:var(--ocean)}
-.yb-8{background:rgba(245,158,11,.12);color:var(--spark2)}
-.yb-10{background:rgba(239,68,68,.12);color:var(--coral)}
-.skill-badge{display:inline-block;padding:2px 10px;border-radius:6px;font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:700;margin-left:8px;vertical-align:middle;letter-spacing:.3px}
-.sb-active{background:rgba(20,184,166,.12);color:#0d9488}
-.sb-indirect{background:rgba(244,114,182,.12);color:#db2777}
-.sb-comm{background:rgba(168,85,247,.12);color:#9333ea}
-.sb-hypo{background:rgba(6,182,212,.12);color:#0891b2}
-
-/* Play-online button (variant of secondary, with subtle glow) */
-.btn-play{background:#fff;color:var(--ocean);border:2px solid var(--ocean)}
-.btn-play:hover{background:var(--ocean);color:#fff;transform:translateY(-2px);box-shadow:0 6px 20px rgba(14,165,233,.25)}
-.download-row{flex-wrap:wrap}
-
-/* Subject Chooser — the two big category tiles */
-.subject-chooser{padding:80px 32px 20px;background:linear-gradient(180deg,var(--bg) 0%,var(--surface) 100%)}
-.subject-intro{text-align:center;max-width:640px;margin:0 auto 40px}
-.subject-intro .section-label{margin-bottom:10px}
-.subject-intro h2{font-size:2rem;font-weight:700;margin-bottom:10px}
-.subject-intro p{color:var(--ink2);font-size:1.05rem}
-.subjects-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;max-width:1100px;margin:0 auto}
-.subject-tile{
-  position:relative;padding:56px 40px;border-radius:24px;text-align:center;
-  cursor:pointer;transition:transform .4s cubic-bezier(.16,1,.3,1),box-shadow .4s;
-  overflow:hidden;text-decoration:none;background:var(--card);
-  box-shadow:var(--shadow);border:2px solid rgba(0,0,0,.04);
-  min-height:320px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px;
+@media(max-width:1000px){
+  .subjects-grid{grid-template-columns:repeat(2,1fr)}
 }
-.subject-tile:hover{transform:translateY(-6px);box-shadow:var(--shadowHover);border-color:var(--tile-c1)}
-.subject-tile::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--tile-c1) 0%,var(--tile-c2) 100%);opacity:.06;transition:opacity .4s;z-index:0}
-.subject-tile:hover::before{opacity:.12}
-.subject-tile::after{content:'';position:absolute;top:-40%;right:-40%;width:80%;height:80%;background:radial-gradient(circle,var(--tile-c1) 0%,transparent 65%);opacity:.08;transition:opacity .6s,transform .6s;z-index:0}
-.subject-tile:hover::after{opacity:.18;transform:scale(1.2)}
-.subject-tile > *{position:relative;z-index:1}
-.subject-tile.english{--tile-c1:var(--ocean);--tile-c2:#06b6d4}
-.subject-tile.chemistry{--tile-c1:var(--mint);--tile-c2:#14b8a6}
-.subject-tile.general{--tile-c1:var(--violet);--tile-c2:var(--violet2)}
-.subject-icon{font-size:4rem;margin-bottom:4px;display:block;transition:transform .5s cubic-bezier(.34,1.56,.64,1);filter:drop-shadow(0 4px 12px rgba(0,0,0,.08))}
-.subject-tile:hover .subject-icon{transform:scale(1.15) rotate(-6deg)}
-.subject-title{font-family:'Outfit',sans-serif;font-size:2.2rem;font-weight:800;color:var(--ink);margin:0}
-.subject-subtitle{color:var(--ink2);font-size:1.05rem;max-width:380px;margin:0}
-.subject-count{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;border-radius:30px;background:var(--tile-c1);color:#fff;font-family:'Outfit',sans-serif;font-weight:700;font-size:.85rem;letter-spacing:.5px;box-shadow:0 4px 14px color-mix(in srgb,var(--tile-c1) 40%,transparent)}
-.subject-arrow{display:inline-block;font-size:1.6rem;color:var(--tile-c1);transition:transform .3s;font-family:'Outfit',sans-serif;font-weight:600}
-.subject-tile:hover .subject-arrow{transform:translateY(4px)}
-
-/* Category sub-section inside apps */
-.category-header{display:flex;align-items:center;gap:14px;margin:56px 0 24px;padding-bottom:14px;border-bottom:2px solid rgba(0,0,0,.06);scroll-margin-top:80px}
-.category-header:first-of-type{margin-top:8px}
-.category-icon{font-size:2rem}
-.category-name{font-family:'Outfit',sans-serif;font-size:1.6rem;font-weight:700;margin:0}
-.category-meta{margin-left:auto;font-family:'Outfit',sans-serif;font-size:.82rem;color:var(--ink3);text-transform:uppercase;letter-spacing:1px}
-
-/* Lang/skill tag color variants */
-.tag-lang.tag-y5{background:rgba(139,92,246,.1);color:#7c3aed}
-.tag-lang.tag-y6{background:rgba(16,185,129,.1);color:var(--mint)}
-.tag-lang.tag-skill-active{background:rgba(20,184,166,.1);color:#0d9488}
-.tag-lang.tag-skill-indirect{background:rgba(244,114,182,.1);color:#db2777}
-.tag-sci.tag-comm{background:rgba(168,85,247,.1);color:#9333ea}
-.tag-sci.tag-hypo{background:rgba(6,182,212,.1);color:#0891b2}
-
 @media(max-width:768px){
   .hero h1{font-size:2.2rem}
   .hero p{font-size:1.05rem}
-  .app-card{grid-template-columns:1fr}
   .how-grid{grid-template-columns:1fr;gap:16px}
   .about-box{grid-template-columns:1fr;text-align:center}
   .about-avatar{margin:0 auto}
   .nav-links{display:none}
-  .section{padding:60px 20px}
-  .app-info{padding:24px}
+  .nav-inner{padding:14px 16px}
+  .section{padding:60px 16px}
   .tip-box{padding:32px 24px}
   .section-title{font-size:1.8rem}
-  .subjects-grid{grid-template-columns:1fr;gap:18px}
-  .subject-tile{padding:40px 28px;min-height:260px}
-  .subject-icon{font-size:3.2rem}
-  .subject-title{font-size:1.7rem}
-  .subject-chooser{padding:60px 20px 10px}
-  .category-header{flex-wrap:wrap;gap:10px;margin:40px 0 20px}
+  .subject-chooser{padding:60px 16px 10px}
+  .category-header{flex-wrap:wrap;gap:10px;margin:44px 0 18px}
   .category-name{font-size:1.3rem}
   .category-meta{margin-left:0;width:100%}
+  .v-app{grid-template-columns:1fr}
+  .v-app .app-preview{min-height:220px;padding:24px}
+  .app-info{padding:22px}
+  .v-folder{padding:20px 16px 26px}
+  .tile-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+}
+@media(max-width:560px){
+  .subjects-grid{grid-template-columns:1fr;gap:16px}
+  .subject-tile{min-height:0;padding:30px 22px}
+  .tile-grid{grid-template-columns:1fr}
+  #viewer{width:100vw;max-width:100vw;max-height:100vh;height:100vh;border-radius:0}
 }
 </style>
 </head>
@@ -245,7 +284,7 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
   <div class="hero-content reveal">
     <div class="hero-badge" data-t="heroBadge">Free &amp; Open for Educators</div>
     <h1 data-t="heroTitle">Teaching tools that <span class="spark-word">spark</span> learning</h1>
-    <p data-t="heroSub">Handcrafted, offline-ready web apps for language and science teachers. Free to download — powered by a tip-based honesty model.</p>
+    <p data-t="heroSub">Handcrafted, offline-ready web apps for language, science and computer-science teachers. Free to download — powered by a tip-based honesty model.</p>
     <div class="hero-buttons">
       <a href="#subjects" class="btn btn-primary" data-t="heroCTA">⬇ Choose a Subject</a>
       <a href="#support" class="btn btn-secondary" data-t="heroTip">☕ Leave a Tip</a>
@@ -257,551 +296,28 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
   <div class="subject-intro reveal">
     <div class="section-label" data-t="secSubjects">Subjects</div>
     <h2 data-t="secSubjectsTitle">Choose your subject</h2>
-    <p data-t="secSubjectsSub">Two subject areas, each with a set of focused training apps. Pick one to browse the available tools.</p>
+    <p data-t="secSubjectsSub">Four areas, each with a set of focused apps. Pick one to browse the tools at a glance.</p>
   </div>
-  <div class="subjects-grid">
-    <a href="#cat-english" class="subject-tile english reveal">
-      <span class="subject-icon">🌍</span>
-      <h3 class="subject-title" data-t="tileEnTitle">English</h3>
-      <p class="subject-subtitle" data-t="tileEnSub">Verb conjugation across six year-levels plus dedicated trainers for active/passive voice and direct/indirect speech.</p>
-      <span class="subject-count" data-t="tileEnCount">7 apps · Year 5 → 10</span>
-      <span class="subject-arrow">↓</span>
-    </a>
-    <a href="#cat-chemistry" class="subject-tile chemistry reveal">
-      <span class="subject-icon">🧪</span>
-      <h3 class="subject-title" data-t="tileChTitle">Chemistry</h3>
-      <p class="subject-subtitle" data-t="tileChSub">Periodic table quizzes, chemical communication, and an inquiry-based hypothesis trainer — three angles on the language and thinking of chemistry.</p>
-      <span class="subject-count" data-t="tileChCount">3 apps</span>
-      <span class="subject-arrow">↓</span>
-    </a>
-    <a href="#cat-tools" class="subject-tile general reveal">
-      <span class="subject-icon">🪑</span>
-      <h3 class="subject-title" data-t="tileGenTitle">General Tools</h3>
-      <p class="subject-subtitle" data-t="tileGenSub">Cross-curricular classroom-management tools that don't belong to a single subject — starting with a seating-plan builder.</p>
-      <span class="subject-count" data-t="tileGenCount">4 apps</span>
-      <span class="subject-arrow">↓</span>
-    </a>
-  </div>
+  <div class="subjects-grid" id="subjectsGrid"></div>
 </section>
 
 <section class="section" id="apps">
   <div class="section-inner">
     <div class="section-label reveal" data-t="secTools">Tools</div>
     <h2 class="section-title reveal" data-t="secToolsTitle">Learning Apps</h2>
-    <p class="section-subtitle reveal" data-t="secToolsSub">Each app works entirely offline — no accounts, no tracking, no ads. Just download the HTML file and open it in any browser.</p>
-
-    <div class="apps-grid">
-
-      <!-- ══════════ ENGLISH CATEGORY ══════════ -->
-      <div class="category-header reveal" id="cat-english">
-        <span class="category-icon">🌍</span>
-        <h3 class="category-name" data-t="catEnTitle">English</h3>
-        <span class="category-meta" data-t="catEnMeta">7 apps · Year 5 → 10</span>
-      </div>
-
-      <!-- Verb Conjugation Year 5 -->
-      <div class="app-card reveal">
-        <div class="app-preview" style="background:linear-gradient(135deg,#1a0f24,#2a1638)">
-          <div class="app-preview-mock" style="background:#1f1428">
-            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#a78bfa"></div></div>
-            <div class="mock-line" style="width:65%;background:linear-gradient(90deg,#8b5cf6,#a78bfa);height:14px;margin-bottom:14px"></div>
-            <div class="mock-line" style="width:45%;background:#fbbf24;opacity:.5"></div>
-            <div class="mock-line" style="width:100%;background:#ffffff10"></div>
-            <div class="mock-line" style="width:30%;background:#a78bfa;opacity:.4"></div>
-            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#8b5cf6,#a78bfa)"></div><div class="mock-btn" style="background:#ffffff10"></div></div>
-            <div class="mock-label" style="color:#ffffff40">🎯 Year 5</div>
-          </div>
-        </div>
-        <div class="app-info">
-          <div class="app-tag tag-lang tag-y5">🌍 English</div>
-          <h3 data-t="appY5Title">Verb Conjugation Trainer <span class="year-badge yb-5">Year 5</span></h3>
-          <p data-t="appY5Desc">First-steps trainer focused on the two foundational tenses every Year 5 learner needs — gentle, focused, and confidence-building.</p>
-          <ul class="app-features">
-            <li data-t="appY5f1">2 tenses: simple present &amp; present progressive</li>
-            <li data-t="appY5f2">Spinning wheel randomiser for verbs, persons &amp; sentence types</li>
-            <li data-t="appY5f3">85+ verbs with optional verb-form tips</li>
-            <li data-t="appY5f4">CSV import for student names — classroom ready</li>
-            <li data-t="appY5f5">Color-coded formation rules as a learning aid</li>
-          </ul>
-          <div class="download-row">
-            <a href="https://nitrogen-ai.github.io/training/verb_conjugation_trainer_year5.html" download class="btn btn-primary">⬇ Download</a>
-            <a href="https://nitrogen-ai.github.io/training/verb_conjugation_trainer_year5.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnPlay">▶ Play Online</a>
-            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Verb Conjugation Year 6 -->
-      <div class="app-card reveal">
-        <div class="app-preview" style="background:linear-gradient(135deg,#0a1a14,#14332a)">
-          <div class="app-preview-mock" style="background:#0f2419">
-            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#10b981"></div></div>
-            <div class="mock-line" style="width:75%;background:linear-gradient(90deg,#10b981,#34d399);height:14px;margin-bottom:14px"></div>
-            <div class="mock-line" style="width:50%;background:#4fc3f7;opacity:.5"></div>
-            <div class="mock-line" style="width:100%;background:#ffffff10"></div>
-            <div class="mock-line" style="width:35%;background:#ffd700;opacity:.4"></div>
-            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#10b981,#34d399)"></div><div class="mock-btn" style="background:#ffffff10"></div></div>
-            <div class="mock-label" style="color:#ffffff40">🎯 Year 6</div>
-          </div>
-        </div>
-        <div class="app-info">
-          <div class="app-tag tag-lang tag-y6">🌍 English</div>
-          <h3 data-t="appY6Title">Verb Conjugation Trainer <span class="year-badge yb-6">Year 6</span></h3>
-          <p data-t="appY6Desc">Entry-level conjugation trainer with 6 foundational tenses — ideal for Year 6 students taking their first steps into English grammar.</p>
-          <ul class="app-features">
-            <li data-t="appY6f1">6 tenses: simple present, present progressive, simple past, present perfect, will- &amp; going to-future</li>
-            <li data-t="appY6f2">Spinning wheel randomiser for each grammar category</li>
-            <li data-t="appY6f3">85+ irregular verbs with optional verb form tips</li>
-            <li data-t="appY6f4">CSV import for student names — classroom ready</li>
-            <li data-t="appY6f5">Color-coded formation rules as learning aid</li>
-          </ul>
-          <div class="download-row">
-            <a href="https://nitrogen-ai.github.io/training/verb_conjugation_trainer_year6.html" download class="btn btn-primary">⬇ Download</a>
-            <a href="https://nitrogen-ai.github.io/training/verb_conjugation_trainer_year6.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnPlay">▶ Play Online</a>
-            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Verb Conjugation Year 7 -->
-      <div class="app-card reveal">
-        <div class="app-preview" style="background:linear-gradient(135deg,#0f0f1a,#1a1a2e)">
-          <div class="app-preview-mock" style="background:#1a1a2e">
-            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#e94560"></div></div>
-            <div class="mock-line" style="width:80%;background:linear-gradient(90deg,#e94560,#ff6b9d);height:14px;margin-bottom:14px"></div>
-            <div class="mock-line" style="width:55%;background:#4fc3f7;opacity:.5"></div>
-            <div class="mock-line" style="width:100%;background:#ffffff10"></div>
-            <div class="mock-line" style="width:40%;background:#ffd700;opacity:.4"></div>
-            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#e94560,#ff6b9d)"></div><div class="mock-btn" style="background:#ffffff10"></div></div>
-            <div class="mock-label" style="color:#ffffff40">🎯 Year 7</div>
-          </div>
-        </div>
-        <div class="app-info">
-          <div class="app-tag tag-lang">🌍 English</div>
-          <h3 data-t="app1Title">Verb Conjugation Trainer <span class="year-badge yb-7">Year 7</span></h3>
-          <p data-t="app1Desc">Beginner-friendly conjugation trainer covering 7 essential tenses — perfect for Year 7 students building their grammar foundation.</p>
-          <ul class="app-features">
-            <li data-t="app1f1">7 tenses: simple present, present &amp; past progressive, present perfect, simple past, will- &amp; going to-future</li>
-            <li data-t="app1f2">Spinning wheel randomiser for each grammar category</li>
-            <li data-t="app1f3">85+ irregular verbs with optional verb form tips</li>
-            <li data-t="app1f4">CSV import for student names — classroom ready</li>
-            <li data-t="app1f5">Color-coded formation rules as learning aid</li>
-          </ul>
-          <div class="download-row">
-            <a href="https://nitrogen-ai.github.io/training/verb_conjugation_trainer_year7.html" download class="btn btn-primary">⬇ Download</a>
-            <a href="https://nitrogen-ai.github.io/training/verb_conjugation_trainer_year7.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnPlay">▶ Play Online</a>
-            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Active & Passive Trainer -->
-      <div class="app-card reveal">
-        <div class="app-preview" style="background:linear-gradient(135deg,#0a1a1f,#0f2933)">
-          <div class="app-preview-mock" style="background:#0e2228">
-            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#14b8a6"></div></div>
-            <div style="display:flex;gap:6px;margin-bottom:12px;align-items:center"><div style="background:#4fc3f7;width:38%;height:12px;border-radius:3px"></div><div style="color:#ffffff60;font-size:.7rem;font-family:monospace">⇄</div><div style="background:#f778ba;width:38%;height:12px;border-radius:3px"></div></div>
-            <div class="mock-line" style="width:60%;background:linear-gradient(90deg,#14b8a6,#5eead4);height:12px"></div>
-            <div class="mock-line" style="width:100%;background:#ffffff10"></div>
-            <div class="mock-line" style="width:45%;background:#ffd700;opacity:.4"></div>
-            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#14b8a6,#5eead4)"></div><div class="mock-btn" style="background:#ffffff10"></div></div>
-            <div class="mock-label" style="color:#ffffff40">🔄 Active ⇄ Passive</div>
-          </div>
-        </div>
-        <div class="app-info">
-          <div class="app-tag tag-lang tag-skill-active">🌍 English</div>
-          <h3 data-t="appAPTitle">Active &amp; Passive Trainer <span class="skill-badge sb-active" data-t="apSkillBadge">Year 7+</span></h3>
-          <p data-t="appAPDesc">Practise transforming sentences between active and passive voice across multiple tenses — with smart validation that accepts any grammatically valid version.</p>
-          <ul class="app-features">
-            <li data-t="appAPf1">Bidirectional: active → passive &amp; passive → active</li>
-            <li data-t="appAPf2">Multiple tenses with automatic auxiliary handling</li>
-            <li data-t="appAPf3">Spinning wheels for tense, polarity &amp; sentence type</li>
-            <li data-t="appAPf4">CSV import for student names &amp; streak tracking</li>
-            <li data-t="appAPf5">Bilingual UI (German / English) with language toggle</li>
-          </ul>
-          <div class="download-row">
-            <a href="https://nitrogen-ai.github.io/training/active_passive_trainer.html" download class="btn btn-primary">⬇ Download</a>
-            <a href="https://nitrogen-ai.github.io/training/active_passive_trainer.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnPlay">▶ Play Online</a>
-            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Verb Conjugation Year 8 -->
-      <div class="app-card reveal">
-        <div class="app-preview" style="background:linear-gradient(135deg,#0f0f1a,#16213e)">
-          <div class="app-preview-mock" style="background:#1a1a2e">
-            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#e94560"></div></div>
-            <div class="mock-line" style="width:85%;background:linear-gradient(90deg,#f59e0b,#fbbf24);height:14px;margin-bottom:14px"></div>
-            <div class="mock-line" style="width:65%;background:#b388ff;opacity:.5"></div>
-            <div class="mock-line" style="width:100%;background:#ffffff10"></div>
-            <div class="mock-line" style="width:50%;background:#4fc3f7;opacity:.4"></div>
-            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#f59e0b,#fbbf24)"></div><div class="mock-btn" style="background:#ffffff10"></div></div>
-            <div class="mock-label" style="color:#ffffff40">🎯 Year 8</div>
-          </div>
-        </div>
-        <div class="app-info">
-          <div class="app-tag tag-lang">🌍 English</div>
-          <h3 data-t="app2Title">Verb Conjugation Trainer <span class="year-badge yb-8">Year 8</span></h3>
-          <p data-t="app2Desc">Intermediate level with 9 tenses — adding present perfect progressive and past perfect for deeper grammar practice.</p>
-          <ul class="app-features">
-            <li data-t="app2f1">9 tenses: all Year 7 tenses + present perfect progressive &amp; past perfect</li>
-            <li data-t="app2f2">Positive &amp; negative polarity with contraction support</li>
-            <li data-t="app2f3">Smart predicate checker — accepts any valid sentence</li>
-            <li data-t="app2f4">3-attempt system with progressive hints</li>
-            <li data-t="app2f5">Sentence type validation (statement, Wh- &amp; Yes/No-question)</li>
-          </ul>
-          <div class="download-row">
-            <a href="https://nitrogen-ai.github.io/training/verb_conjugation_trainer_year8.html" download class="btn btn-primary">⬇ Download</a>
-            <a href="https://nitrogen-ai.github.io/training/verb_conjugation_trainer_year8.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnPlay">▶ Play Online</a>
-            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Direct & Indirect Speech Trainer -->
-      <div class="app-card reveal">
-        <div class="app-preview" style="background:linear-gradient(135deg,#1a0f1a,#2e1626)">
-          <div class="app-preview-mock" style="background:#241420">
-            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#f472b6"></div></div>
-            <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center"><div style="color:#4fc3f7;font-size:.8rem;font-family:monospace">"…"</div><div style="background:#f472b6;width:50%;height:10px;border-radius:3px"></div></div>
-            <div style="color:#f472b6;font-size:.7rem;font-family:monospace;margin-bottom:8px">→ said that …</div>
-            <div class="mock-line" style="width:80%;background:linear-gradient(90deg,#ec4899,#f472b6);height:12px"></div>
-            <div class="mock-line" style="width:55%;background:#ffd700;opacity:.4"></div>
-            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#ec4899,#f472b6)"></div><div class="mock-btn" style="background:#ffffff10"></div></div>
-            <div class="mock-label" style="color:#ffffff40">💬 Indirect Speech</div>
-          </div>
-        </div>
-        <div class="app-info">
-          <div class="app-tag tag-lang tag-skill-indirect">🌍 English</div>
-          <h3 data-t="appISTitle">Direct &amp; Indirect Speech Trainer <span class="skill-badge sb-indirect" data-t="isSkillBadge">Year 8+</span></h3>
-          <p data-t="appISDesc">Convert between direct quotes and reported speech with full backshift handling — across statements, questions, and modal verbs.</p>
-          <ul class="app-features">
-            <li data-t="appISf1">8 tense/modal forms with proper backshift rules</li>
-            <li data-t="appISf2">Statements, Wh-questions, Yes/No-questions &amp; advice</li>
-            <li data-t="appISf3">Reporting verbs: said, told, asked, advised, suggested</li>
-            <li data-t="appISf4">Pronoun &amp; possessive shift handled automatically</li>
-            <li data-t="appISf5">Bilingual UI with smart sentence-level validation</li>
-          </ul>
-          <div class="download-row">
-            <a href="https://nitrogen-ai.github.io/training/indirect_speech_trainer.html" download class="btn btn-primary">⬇ Download</a>
-            <a href="https://nitrogen-ai.github.io/training/indirect_speech_trainer.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnPlay">▶ Play Online</a>
-            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Verb Conjugation Year 10 -->
-      <div class="app-card reveal">
-        <div class="app-preview" style="background:linear-gradient(135deg,#1a0f1a,#2e1a2e)">
-          <div class="app-preview-mock" style="background:#1a1a2e">
-            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#e94560"></div></div>
-            <div class="mock-line" style="width:90%;background:linear-gradient(90deg,#ef4444,#f97316);height:14px;margin-bottom:14px"></div>
-            <div class="mock-line" style="width:70%;background:#ffd700;opacity:.5"></div>
-            <div class="mock-line" style="width:100%;background:#ffffff10"></div>
-            <div class="mock-line" style="width:45%;background:#b388ff;opacity:.4"></div>
-            <div class="mock-line" style="width:80%;background:#ffffff08"></div>
-            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#ef4444,#f97316)"></div><div class="mock-btn" style="background:#ffffff10"></div></div>
-            <div class="mock-label" style="color:#ffffff40">🎯 Year 10</div>
-          </div>
-        </div>
-        <div class="app-info">
-          <div class="app-tag tag-lang">🌍 English</div>
-          <h3 data-t="app3Title">Verb Conjugation Trainer <span class="year-badge yb-10">Year 10</span></h3>
-          <p data-t="app3Desc">Complete edition covering all 13 English tenses — including future progressive, future perfect, and all progressive forms.</p>
-          <ul class="app-features">
-            <li data-t="app3f1">All 13 tenses including future progressive, future perfect &amp; future perfect progressive</li>
-            <li data-t="app3f2">Full tense tracking — every tense gets practised before recycling</li>
-            <li data-t="app3f3">Streaks, scores &amp; confetti rewards</li>
-            <li data-t="app3f4">Color-coded formation rules with examples using a different verb</li>
-            <li data-t="app3f5">100% offline — single HTML file, no install needed</li>
-          </ul>
-          <div class="download-row">
-            <a href="https://nitrogen-ai.github.io/training/verb_conjugation_trainer_year10.html" download class="btn btn-primary">⬇ Download</a>
-            <a href="https://nitrogen-ai.github.io/training/verb_conjugation_trainer_year10.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnPlay">▶ Play Online</a>
-            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- ══════════ CHEMISTRY CATEGORY ══════════ -->
-      <div class="category-header reveal" id="cat-chemistry">
-        <span class="category-icon">🧪</span>
-        <h3 class="category-name" data-t="catChTitle">Chemistry</h3>
-        <span class="category-meta" data-t="catChMeta">3 apps</span>
-      </div>
-
-      <!-- Periodic Table Trainer -->
-      <div class="app-card reveal">
-        <div class="app-preview" style="background:linear-gradient(135deg,#0a1628,#0f2440)">
-          <div class="app-preview-mock" style="background:#0f1a2e">
-            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#0ea5e9"></div></div>
-            <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:3px;margin-bottom:10px">
-              <div style="background:#ef4444;height:16px;border-radius:3px;opacity:.7"></div>
-              <div style="background:#f59e0b;height:16px;border-radius:3px;opacity:.7"></div>
-              <div style="background:#10b981;height:16px;border-radius:3px;opacity:.7"></div>
-              <div style="background:#0ea5e9;height:16px;border-radius:3px;opacity:.7"></div>
-              <div style="background:#8b5cf6;height:16px;border-radius:3px;opacity:.7"></div>
-              <div style="background:#ec4899;height:16px;border-radius:3px;opacity:.7"></div>
-              <div style="background:#0ea5e9;height:16px;border-radius:3px;opacity:.5"></div>
-              <div style="background:#10b981;height:16px;border-radius:3px;opacity:.5"></div>
-              <div style="background:#f59e0b;height:16px;border-radius:3px;opacity:.5"></div>
-              <div style="background:#ef4444;height:16px;border-radius:3px;opacity:.5"></div>
-              <div style="background:#8b5cf6;height:16px;border-radius:3px;opacity:.5"></div>
-              <div style="background:#ec4899;height:16px;border-radius:3px;opacity:.5"></div>
-            </div>
-            <div class="mock-line" style="width:60%;background:#ffd700;opacity:.4"></div>
-            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#0ea5e9,#06b6d4)"></div><div class="mock-btn" style="background:#ffffff10"></div></div>
-            <div class="mock-label" style="color:#ffffff40">🧪 Periodensystem</div>
-          </div>
-        </div>
-        <div class="app-info">
-          <div class="app-tag tag-sci">🧪 <span data-t="tagSci">Science / Chemistry</span></div>
-          <h3 data-t="app4Title">Periodic Table Trainer</h3>
-          <p data-t="app4Desc">Interactive periodic table quiz — practise element names, symbols, and atomic numbers with a spinning name wheel for classroom use.</p>
-          <ul class="app-features">
-            <li data-t="app4f1">Interactive periodic table with clickable elements</li>
-            <li data-t="app4f2">Quiz mode: name, symbol &amp; atomic number</li>
-            <li data-t="app4f3">Built-in name wheel for random student selection</li>
-            <li data-t="app4f4">Bilingual (German / English) with language toggle</li>
-            <li data-t="app4f5">Works offline on any device — phone, tablet, laptop</li>
-          </ul>
-          <div class="download-row">
-            <a href="https://nitrogen-ai.github.io/training/periodensystem_trainer.html" download class="btn btn-primary">⬇ Download</a>
-            <a href="https://nitrogen-ai.github.io/training/periodensystem_trainer.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnPlay">▶ Play Online</a>
-            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Chemical Communication Trainer -->
-      <div class="app-card reveal">
-        <div class="app-preview" style="background:linear-gradient(135deg,#160d24,#241638)">
-          <div class="app-preview-mock" style="background:#1c1230">
-            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#a855f7"></div></div>
-            <div style="font-family:'Fredoka','Outfit',sans-serif;font-size:1.4rem;text-align:center;color:#c084fc;margin:8px 0;letter-spacing:2px">H₂O · NaCl · CO₂</div>
-            <div class="mock-line" style="width:70%;background:linear-gradient(90deg,#a855f7,#c084fc);height:12px;margin-bottom:10px"></div>
-            <div class="mock-line" style="width:50%;background:#ffd700;opacity:.4"></div>
-            <div class="mock-line" style="width:90%;background:#ffffff10"></div>
-            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#a855f7,#c084fc)"></div><div class="mock-btn" style="background:#ffffff10"></div></div>
-            <div class="mock-label" style="color:#ffffff40">⚗️ Chemical Communication</div>
-          </div>
-        </div>
-        <div class="app-info">
-          <div class="app-tag tag-sci tag-comm">🧪 <span data-t="tagSci2">Science / Chemistry</span></div>
-          <h3 data-t="appCCTitle">Chemical Communication Trainer <span class="skill-badge sb-comm" data-t="ccSkillBadge">v2</span></h3>
-          <p data-t="appCCDesc">A gamified trainer for the visual language of chemistry — practise names, sum formulas, skeletal formulas and full structural formulas for the key substances of years 7–10. Built with VSEPR-correct rendering and a powerful graphics export.</p>
-          <ul class="app-features">
-            <li data-t="appCCf1">4 representations trained side-by-side: name · sum formula · skeletal · structural</li>
-            <li data-t="appCCf2">120+ substances across years 7–10 — noble gases, halogens, metals, acids, bases, molecules, alkanes/-enes/-ynes (incl. branched), alcohols, aromatics &amp; esters</li>
-            <li data-t="appCCf3">Class mode (with student names &amp; calling-up) and Practice mode with 0–2 point self-assessment</li>
-            <li data-t="appCCf4">Export Mode: download any structure as <strong>SVG</strong> or <strong>PNG</strong> in three sizes (small / medium / large) — perfect for slides, worksheets &amp; tests</li>
-            <li data-t="appCCf5">Bilingual UI (German / English) — works fully offline</li>
-          </ul>
-          <div class="download-row">
-            <a href="https://nitrogen-ai.github.io/training/chemical_communication_trainer.html" download class="btn btn-primary">⬇ Download</a>
-            <a href="https://nitrogen-ai.github.io/training/chemical_communication_trainer.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnPlay">▶ Play Online</a>
-            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Hypothesentrainer Chemie -->
-      <div class="app-card reveal">
-        <div class="app-preview" style="background:linear-gradient(135deg,#0a1f24,#0f3338)">
-          <div class="app-preview-mock" style="background:#0d2a30">
-            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#06b6d4"></div></div>
-            <div style="font-family:'Fredoka','Outfit',sans-serif;font-size:1.05rem;text-align:center;color:#67e8f9;margin:6px 0 4px;font-weight:600">🧪 Phänomen → Hypothese</div>
-            <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;margin-bottom:10px">
-              <span style="background:rgba(6,182,212,.25);color:#67e8f9;padding:2px 8px;border-radius:6px;font-size:.62rem">Kl. 7</span>
-              <span style="background:rgba(6,182,212,.18);color:#67e8f9;padding:2px 8px;border-radius:6px;font-size:.62rem;opacity:.85">Kl. 8</span>
-              <span style="background:rgba(6,182,212,.18);color:#67e8f9;padding:2px 8px;border-radius:6px;font-size:.62rem;opacity:.7">Kl. 9</span>
-              <span style="background:rgba(6,182,212,.18);color:#67e8f9;padding:2px 8px;border-radius:6px;font-size:.62rem;opacity:.55">Kl. 10–12</span>
-            </div>
-            <div class="mock-line" style="width:90%;background:#ffffff10;height:14px;margin-bottom:6px"></div>
-            <div class="mock-line" style="width:75%;background:#ffffff10;height:14px"></div>
-            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#06b6d4,#67e8f9)"></div><div class="mock-btn" style="background:#ffffff10"></div></div>
-            <div class="mock-label" style="color:#ffffff40">⚛️ Auf Teilchenebene</div>
-          </div>
-        </div>
-        <div class="app-info">
-          <div class="app-tag tag-sci tag-hypo">🧪 <span data-t="tagSci3">Science / Chemistry</span></div>
-          <h3 data-t="appHTTitle">Hypothesentrainer Chemie <span class="skill-badge sb-hypo" data-t="htDeBadge">🇩🇪 DE only</span></h3>
-          <p data-t="appHTDesc">Inquiry-based chemistry trainer for grades 7–12 — students explore phenomena, formulate their own hypotheses on the particle level, and reveal explanations to self-assess their scientific reasoning.</p>
-          <ul class="app-features">
-            <li data-t="appHTf1">Grades 7–12 with phenomena tailored to each level</li>
-            <li data-t="appHTf2">Write-your-own hypothesis input (min. 10 characters)</li>
-            <li data-t="appHTf3">Optional thinking prompts before revealing explanations</li>
-            <li data-t="appHTf4">Particle-level explanations + "deep dive" for advanced students</li>
-            <li data-t="appHTf5">Self-assessment system (correct / needs revision)</li>
-          </ul>
-          <div class="download-row">
-            <a href="https://nitrogen-ai.github.io/training/hypothesentrainer.html" download class="btn btn-primary">⬇ Download</a>
-            <a href="https://nitrogen-ai.github.io/training/hypothesentrainer.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnPlay">▶ Play Online</a>
-            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- ══════════ GENERAL TOOLS CATEGORY ══════════ -->
-      <div class="category-header reveal" id="cat-tools">
-        <span class="category-icon">🪑</span>
-        <h3 class="category-name" data-t="catGenTitle">General Tools</h3>
-        <span class="category-meta" data-t="catGenMeta">4 apps</span>
-      </div>
-
-      <!-- Sitzplan-Werkzeug -->
-      <div class="app-card reveal">
-        <div class="app-preview" style="background:linear-gradient(135deg,#1c1428,#2a1f3d)">
-          <div class="app-preview-mock" style="background:#211a30">
-            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#a78bfa"></div></div>
-            <div class="mock-line" style="width:40%;background:#ffffff18;height:10px;margin-bottom:10px"></div>
-            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-bottom:10px">
-              <div style="background:#8b5cf6;height:16px;border-radius:3px;opacity:.75"></div>
-              <div style="background:#a78bfa;height:16px;border-radius:3px;opacity:.6"></div>
-              <div style="background:#8b5cf6;height:16px;border-radius:3px;opacity:.75"></div>
-              <div style="background:#a78bfa;height:16px;border-radius:3px;opacity:.6"></div>
-              <div style="background:#a78bfa;height:16px;border-radius:3px;opacity:.6"></div>
-              <div style="background:#8b5cf6;height:16px;border-radius:3px;opacity:.75"></div>
-              <div style="background:#a78bfa;height:16px;border-radius:3px;opacity:.6"></div>
-              <div style="background:#8b5cf6;height:16px;border-radius:3px;opacity:.75"></div>
-            </div>
-            <div class="mock-line" style="width:60%;background:#ffd700;opacity:.4"></div>
-            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#8b5cf6,#a78bfa)"></div><div class="mock-btn" style="background:#ffffff10"></div></div>
-            <div class="mock-label" style="color:#ffffff40">🪑 Sitzplan</div>
-          </div>
-        </div>
-        <div class="app-info">
-          <div class="app-tag tag-general">🪑 <span data-t="tagGen">Classroom Management</span></div>
-          <h3 data-t="appSPTitle">Seating Plan Builder <span class="skill-badge sb-hypo" data-t="spDeBadge">🇩🇪 DE only</span></h3>
-          <p data-t="appSPDesc">A privacy-first seating-plan builder: import your class list and student seating wishes (via a simple Google Form), model your actual classroom layout, and let an optimiser find a fair arrangement — or arrange seats by hand.</p>
-          <ul class="app-features">
-            <li data-t="appSPf1">CSV import for class rosters and Google-Form wish surveys — no manual typing</li>
-            <li data-t="appSPf2">Automatic solver (simulated annealing) balances seating wishes fairly, or arrange manually / shuffle</li>
-            <li data-t="appSPf3">Two-page vector PDF export: student view + point-mirrored teacher view, text always upright</li>
-            <li data-t="appSPf4">100% offline, no accounts, no server — all data stays in your browser</li>
-            <li data-t="appSPf5">Fulfilment report with a fairness safeguard against pile-up negative wishes</li>
-          </ul>
-          <div class="download-row">
-            <a href="https://nitrogen-ai.github.io/tools/sitzplan.html" download class="btn btn-primary">⬇ Download</a>
-            <a href="https://nitrogen-ai.github.io/tools/sitzplan.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnUseOnline">▶ Use Online</a>
-            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- GoodNotes-Präsentationsgenerator -->
-      <div class="app-card reveal">
-        <div class="app-preview" style="background:linear-gradient(135deg,#1c1428,#2a1f3d)">
-          <div class="app-preview-mock" style="background:#211a30">
-            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#a78bfa"></div></div>
-            <div class="mock-line" style="width:80%;background:#ffffff18"></div>
-            <div style="position:relative;margin-bottom:8px">
-              <div class="mock-line" style="width:55%;background:#ffffff18;margin:0"></div>
-              <div style="position:absolute;inset:0;width:70%;background:#ffffff;border-radius:4px;opacity:.92"></div>
-            </div>
-            <div class="mock-line" style="width:70%;background:#ffffff18"></div>
-            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#8b5cf6,#a78bfa);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;font-family:'Outfit',sans-serif;font-weight:700">🖍️ erase</div><div class="mock-btn" style="background:#ffffff10"></div></div>
-            <div class="mock-label" style="color:#ffffff40">🖍️ GoodNotes Reveal</div>
-          </div>
-        </div>
-        <div class="app-info">
-          <div class="app-tag tag-general">🖍️ <span data-t="tagGN">Study Material</span></div>
-          <h3 data-t="appGNTitle">GoodNotes Answer-Reveal Generator <span class="skill-badge sb-hypo" data-t="gnDeBadge">🇩🇪 DE guide</span></h3>
-          <p data-t="appGNDesc">Turn a blank worksheet and its solution sheet (two PDFs) into a ready-to-use GoodNotes file: the solution becomes the background, every answer hides under an erasable white stroke you wipe away live in class to compare results.</p>
-          <ul class="app-features">
-            <li data-t="appGNf1">Works for typed-text answers and hand-drawn/vector answers alike (sketches, structural formulas, orbital diagrams)</li>
-            <li data-t="appGNf2">No coding needed — a free AI chat with code execution (or a one-time local Python install) runs it for you</li>
-            <li data-t="appGNf3">Python command-line tool, not a browser app — the download includes a full walkthrough page</li>
-            <li data-t="appGNf4">Free-tier AI compatibility and a plain-language legal note included on the guide page</li>
-            <li data-t="appGNf5">Open every freshly generated file once in GoodNotes to confirm it before relying on it in class</li>
-          </ul>
-          <div class="download-row">
-            <a href="https://nitrogen-ai.github.io/tools/goodnotes-praesentation-generator.zip" download class="btn btn-primary">⬇ Download</a>
-            <a href="https://nitrogen-ai.github.io/tools/goodnotes-praesentation-generator.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnUseOnline">▶ Use Online</a>
-            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Zugangsdaten-Mappe -->
-      <div class="app-card reveal">
-        <div class="app-preview" style="background:linear-gradient(135deg,#1c1428,#2a1f3d)">
-          <div class="app-preview-mock" style="background:#211a30">
-            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#a78bfa"></div></div>
-            <div style="display:flex;height:5px;border-radius:3px;overflow:hidden;margin-bottom:10px"><div style="flex:1;background:#2563eb"></div><div style="flex:1;background:#0f766e"></div><div style="flex:1;background:#c2410c"></div></div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:10px">
-              <div style="border:1px solid #ffffff20;border-left:3px solid #2563eb;border-radius:4px;padding:5px"><div class="mock-line" style="width:70%;background:#ffffff30;margin:0 0 5px"></div><div style="height:9px;border:1px dashed #2563eb;border-radius:3px"></div></div>
-              <div style="border:1px solid #ffffff20;border-left:3px solid #0f766e;border-radius:4px;padding:5px"><div class="mock-line" style="width:55%;background:#ffffff30;margin:0 0 5px"></div><div style="height:9px;border:1px dashed #0f766e;border-radius:3px"></div></div>
-              <div style="border:1px solid #ffffff20;border-left:3px solid #c2410c;border-radius:4px;padding:5px"><div class="mock-line" style="width:60%;background:#ffffff30;margin:0 0 5px"></div><div style="height:9px;border:1px dashed #c2410c;border-radius:3px"></div></div>
-              <div style="border:1px solid #ffffff20;border-left:3px solid #c2410c;border-radius:4px;padding:5px"><div class="mock-line" style="width:75%;background:#ffffff30;margin:0 0 5px"></div><div style="height:9px;border:1px dashed #c2410c;border-radius:3px"></div></div>
-            </div>
-            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#8b5cf6,#a78bfa);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;font-family:'Outfit',sans-serif;font-weight:700">⬇ PDF</div><div class="mock-btn" style="background:#ffffff10"></div></div>
-            <div class="mock-label" style="color:#ffffff40">🔐 Zugangsdaten</div>
-          </div>
-        </div>
-        <div class="app-info">
-          <div class="app-tag tag-general">🔐 <span data-t="tagZD">Personal Organisation</span></div>
-          <h3 data-t="appZDTitle">Password Binder Builder <span class="skill-badge sb-hypo" data-t="zdDeBadge">🇩🇪 DE only</span></h3>
-          <p data-t="appZDDesc">Bring order to scattered logins: describe what each account is for, the tool sorts it automatically into email accounts, bank cards or general logins and lays everything out as a printable master overview — the passwords themselves are only ever written in by hand.</p>
-          <ul class="app-features">
-            <li data-t="appZDf1">Automatic categorisation from plain words (“Sparkasse EC card”, “FRITZ!Box Wi-Fi”, “GMX”) — or paste a whole list at once</li>
-            <li data-t="appZDf2">Deliberately no password field: printed boxes for passwords, PINs, PUK and Wi-Fi keys are filled in by pen or pencil</li>
-            <li data-t="appZDf3">Real PDF download and standalone HTML download, cover page with table of contents and card-blocking hotline</li>
-            <li data-t="appZDf4">Optional blank cards per category, one page per category, “last changed” line</li>
-            <li data-t="appZDf5">100% offline, no accounts, no server — entries stay in your browser and can be backed up as a file</li>
-          </ul>
-          <div class="download-row">
-            <a href="https://nitrogen-ai.github.io/tools/zugangsdaten-mappe.html" download class="btn btn-primary">⬇ Download</a>
-            <a href="https://nitrogen-ai.github.io/tools/zugangsdaten-mappe.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnUseOnline">▶ Use Online</a>
-            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Dokumentenscan-Anleitung -->
-      <div class="app-card reveal">
-        <div class="app-preview" style="background:linear-gradient(135deg,#1c1428,#2a1f3d)">
-          <div class="app-preview-mock" style="background:#211a30">
-            <div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:#a78bfa"></div></div>
-            <div style="display:grid;grid-template-columns:1fr 34px;gap:5px;margin-bottom:10px">
-              <div style="background:#ffffff14;border-radius:4px;padding:6px;display:grid;grid-template-columns:1fr 1fr;gap:4px">
-                <div style="height:12px;border-radius:3px;background:#ffffff18"></div>
-                <div style="height:12px;border-radius:3px;background:#f59e0b40;border:1.5px solid #f59e0b"></div>
-                <div style="height:12px;border-radius:3px;background:#ffffff18"></div>
-                <div style="height:12px;border-radius:3px;background:#ffffff18"></div>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:3px">
-                <div style="height:7px;border-radius:2px;background:#ffffff20"></div>
-                <div style="height:7px;border-radius:2px;background:#b91c1c"></div>
-                <div style="flex:1;border-radius:3px;background:#1d4ed8"></div>
-              </div>
-            </div>
-            <div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#8b5cf6,#a78bfa);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;font-family:'Outfit',sans-serif;font-weight:700">1 → 10</div><div class="mock-btn" style="background:#ffffff10"></div></div>
-            <div class="mock-label" style="color:#ffffff40">📄 Dokumentenscan</div>
-          </div>
-        </div>
-        <div class="app-info">
-          <div class="app-tag tag-general">📄 <span data-t="tagDS">How-to Guide</span></div>
-          <h3 data-t="appDSTitle">Document Scan to USB Stick <span class="skill-badge sb-hypo" data-t="dsDeBadge">🇩🇪 DE only</span></h3>
-          <p data-t="appDSDesc">A step-by-step guide for the school's Triumph-Adler copier: scan a stack of loose pages double-sided into a single PDF and save it straight to a USB stick, no computer needed.</p>
-          <ul class="app-features">
-            <li data-t="appDSf1">One-page PDF guide to print and hang next to the copier</li>
-            <li data-t="appDSf2">Clickable step-by-step slides: each step shows a display sketch with the button to tap highlighted</li>
-            <li data-t="appDSf3">Branches for large stacks (continuous scan), colour vs. black-and-white, paper jams and upside-down back pages</li>
-            <li data-t="appDSf4">Ends with safely removing the stick and logging out</li>
-          </ul>
-          <div class="download-row">
-            <a href="https://nitrogen-ai.github.io/tools/dokumentenscan-anleitung.pdf" download class="btn btn-primary" data-t="btnPdf">⬇ PDF Guide</a>
-            <a href="https://nitrogen-ai.github.io/tools/dokumentenscan.html" target="_blank" rel="noopener" class="btn btn-play" data-t="btnSteps">▶ Step by Step</a>
-            <a href="#support" class="btn btn-secondary" data-t="btnTip">☕ Tip</a>
-          </div>
-        </div>
-      </div>
-
-    </div>
+    <p class="section-subtitle reveal" data-t="secToolsSub">Click a tile for details, downloads and the online version. Folders bundle related apps. Every app works offline — no accounts, no tracking, no ads.</p>
+    <div id="catalog"></div>
   </div>
 </section>
+
+<dialog id="viewer" aria-labelledby="viewerTitle">
+  <div class="v-bar">
+    <button class="v-btn" id="vBack" hidden>←</button>
+    <div class="v-crumbs" id="vCrumbs"></div>
+    <button class="v-btn v-close" id="vClose" aria-label="Close">✕</button>
+  </div>
+  <div id="vBody"></div>
+</dialog>
 
 <section class="section" id="how" style="background:var(--surface)">
   <div class="section-inner">
@@ -888,135 +404,20 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
   <p style="margin-top:6px" data-t="footerP">Free learning tools for educators — built with care, shared with trust.</p>
 </footer>
 
+
 <script>
 const T={
 en:{
   navTools:"Tools",navHow:"How It Works",navAbout:"About",navSupport:"Support",navContact:"Contact",
   heroBadge:"Free & Open for Educators",
   heroTitle:'Teaching tools that <span class="spark-word">spark</span> learning',
-  heroSub:"Handcrafted, offline-ready web apps for language and science teachers. Free to download — powered by a tip-based honesty model.",
+  heroSub:"Handcrafted, offline-ready web apps for language, science and computer-science teachers. Free to download — powered by a tip-based honesty model.",
   heroCTA:"⬇ Choose a Subject",heroTip:"☕ Leave a Tip",
   secSubjects:"Subjects",secSubjectsTitle:"Choose your subject",
-  secSubjectsSub:"Two subject areas, each with a set of focused training apps. Pick one to browse the available tools.",
-  tileEnTitle:"English",
-  tileEnSub:"Verb conjugation across six year-levels plus dedicated trainers for active/passive voice and direct/indirect speech.",
-  tileEnCount:"7 apps · Year 5 → 10",
-  tileChTitle:"Chemistry",
-  tileChSub:"Periodic table quizzes, chemical communication, and an inquiry-based hypothesis trainer — three angles on the language and thinking of chemistry.",
-  tileChCount:"3 apps",
-  tileGenTitle:"General Tools",
-  tileGenSub:"Cross-curricular classroom-management tools that don't belong to a single subject — starting with a seating-plan builder.",
-  tileGenCount:"4 apps",
+  secSubjectsSub:"Four areas, each with a set of focused apps. Pick one to browse the tools at a glance.",
   secTools:"Tools",secToolsTitle:"Learning Apps",
-  secToolsSub:"Each app works entirely offline — no accounts, no tracking, no ads. Just download the HTML file and open it in any browser.",
-  catEnTitle:"English",catEnMeta:"7 apps · Year 5 → 10",
-  catChTitle:"Chemistry",catChMeta:"3 apps",
-  catGenTitle:"General Tools",catGenMeta:"4 apps",
-  btnPlay:"▶ Play Online",btnTip:"☕ Tip",btnUseOnline:"▶ Use Online",
-  appY5Title:'Verb Conjugation Trainer <span class="year-badge yb-5">Year 5</span>',
-  appY5Desc:"First-steps trainer focused on the two foundational tenses every Year 5 learner needs — gentle, focused, and confidence-building.",
-  appY5f1:"2 tenses: simple present & present progressive",
-  appY5f2:"Spinning wheel randomiser for verbs, persons & sentence types",
-  appY5f3:"85+ verbs with optional verb-form tips",
-  appY5f4:"CSV import for student names — classroom ready",
-  appY5f5:"Color-coded formation rules as a learning aid",
-  appY6Title:'Verb Conjugation Trainer <span class="year-badge yb-6">Year 6</span>',
-  appY6Desc:"Entry-level conjugation trainer with 6 foundational tenses — ideal for Year 6 students taking their first steps into English grammar.",
-  appY6f1:"6 tenses: simple present, present progressive, simple past, present perfect, will- & going to-future",
-  appY6f2:"Spinning wheel randomiser for each grammar category",
-  appY6f3:"85+ irregular verbs with optional verb form tips",
-  appY6f4:"CSV import for student names — classroom ready",
-  appY6f5:"Color-coded formation rules as learning aid",
-  apSkillBadge:"Year 7+",isSkillBadge:"Year 8+",ccSkillBadge:"v2",tagSci2:"Science / Chemistry",
-  appAPTitle:'Active & Passive Trainer <span class="skill-badge sb-active">Year 7+</span>',
-  appAPDesc:"Practise transforming sentences between active and passive voice across multiple tenses — with smart validation that accepts any grammatically valid version.",
-  appAPf1:"Bidirectional: active → passive & passive → active",
-  appAPf2:"Multiple tenses with automatic auxiliary handling",
-  appAPf3:"Spinning wheels for tense, polarity & sentence type",
-  appAPf4:"CSV import for student names & streak tracking",
-  appAPf5:"Bilingual UI (German / English) with language toggle",
-  appISTitle:'Direct & Indirect Speech Trainer <span class="skill-badge sb-indirect">Year 8+</span>',
-  appISDesc:"Convert between direct quotes and reported speech with full backshift handling — across statements, questions, and modal verbs.",
-  appISf1:"8 tense/modal forms with proper backshift rules",
-  appISf2:"Statements, Wh-questions, Yes/No-questions & advice",
-  appISf3:"Reporting verbs: said, told, asked, advised, suggested",
-  appISf4:"Pronoun & possessive shift handled automatically",
-  appISf5:"Bilingual UI with smart sentence-level validation",
-  appCCTitle:'Chemical Communication Trainer <span class="skill-badge sb-comm">v2</span>',
-  appCCDesc:"A gamified trainer for the visual language of chemistry — practise names, sum formulas, skeletal formulas and full structural formulas for the key substances of years 7–10. Built with VSEPR-correct rendering and a powerful graphics export.",
-  appCCf1:"4 representations trained side-by-side: name · sum formula · skeletal · structural",
-  appCCf2:"120+ substances across years 7–10 — noble gases, halogens, metals, acids, bases, molecules, alkanes/-enes/-ynes (incl. branched), alcohols, aromatics & esters",
-  appCCf3:"Class mode (with student names & calling-up) and Practice mode with 0–2 point self-assessment",
-  appCCf4:"Export Mode: download any structure as <strong>SVG</strong> or <strong>PNG</strong> in three sizes (small / medium / large) — perfect for slides, worksheets & tests",
-  appCCf5:"Bilingual UI (German / English) — works fully offline",
-  tagSci3:"Science / Chemistry",htDeBadge:"🇩🇪 DE only",
-  appHTTitle:'Hypothesentrainer Chemie <span class="skill-badge sb-hypo">🇩🇪 DE only</span>',
-  appHTDesc:"Inquiry-based chemistry trainer for grades 7–12 — students explore phenomena, formulate their own hypotheses on the particle level, and reveal explanations to self-assess their scientific reasoning.",
-  appHTf1:"Grades 7–12 with phenomena tailored to each level",
-  appHTf2:"Write-your-own hypothesis input (min. 10 characters)",
-  appHTf3:"Optional thinking prompts before revealing explanations",
-  appHTf4:"Particle-level explanations + \"deep dive\" for advanced students",
-  appHTf5:"Self-assessment system (correct / needs revision)",
-  app1Title:'Verb Conjugation Trainer <span class="year-badge yb-7">Year 7</span>',
-  app1Desc:"Beginner-friendly conjugation trainer covering 7 essential tenses — perfect for Year 7 students building their grammar foundation.",
-  app1f1:"7 tenses: simple present, present & past progressive, present perfect, simple past, will- & going to-future",
-  app1f2:"Spinning wheel randomiser for each grammar category",
-  app1f3:"85+ irregular verbs with optional verb form tips",
-  app1f4:"CSV import for student names — classroom ready",
-  app1f5:"Color-coded formation rules as learning aid",
-  app2Title:'Verb Conjugation Trainer <span class="year-badge yb-8">Year 8</span>',
-  app2Desc:"Intermediate level with 9 tenses — adding present perfect progressive and past perfect for deeper grammar practice.",
-  app2f1:"9 tenses: all Year 7 tenses + present perfect progressive & past perfect",
-  app2f2:"Positive & negative polarity with contraction support",
-  app2f3:"Smart predicate checker — accepts any valid sentence",
-  app2f4:"3-attempt system with progressive hints",
-  app2f5:"Sentence type validation (statement, Wh- & Yes/No-question)",
-  app3Title:'Verb Conjugation Trainer <span class="year-badge yb-10">Year 10</span>',
-  app3Desc:"Complete edition covering all 13 English tenses — including future progressive, future perfect, and all progressive forms.",
-  app3f1:"All 13 tenses including future progressive, future perfect & future perfect progressive",
-  app3f2:"Full tense tracking — every tense gets practised before recycling",
-  app3f3:"Streaks, scores & confetti rewards",
-  app3f4:"Color-coded formation rules with examples using a different verb",
-  app3f5:"100% offline — single HTML file, no install needed",
-  tagSci:"Science / Chemistry",
-  app4Title:"Periodic Table Trainer",
-  app4Desc:"Interactive periodic table quiz — practise element names, symbols, and atomic numbers with a spinning name wheel for classroom use.",
-  app4f1:"Interactive periodic table with clickable elements",
-  app4f2:"Quiz mode: name, symbol & atomic number",
-  app4f3:"Built-in name wheel for random student selection",
-  app4f4:"Bilingual (German / English) with language toggle",
-  app4f5:"Works offline on any device — phone, tablet, laptop",
-  tagGen:"Classroom Management",spDeBadge:"🇩🇪 DE only",
-  appSPTitle:'Seating Plan Builder <span class="skill-badge sb-hypo">🇩🇪 DE only</span>',
-  appSPDesc:"A privacy-first seating-plan builder: import your class list and student seating wishes (via a simple Google Form), model your actual classroom layout, and let an optimiser find a fair arrangement — or arrange seats by hand.",
-  appSPf1:"CSV import for class rosters and Google-Form wish surveys — no manual typing",
-  appSPf2:"Automatic solver (simulated annealing) balances seating wishes fairly, or arrange manually / shuffle",
-  appSPf3:"Two-page vector PDF export: student view + point-mirrored teacher view, text always upright",
-  appSPf4:"100% offline, no accounts, no server — all data stays in your browser",
-  appSPf5:"Fulfilment report with a fairness safeguard against pile-up negative wishes",
-  tagGN:"Study Material",gnDeBadge:"🇩🇪 DE guide",
-  appGNTitle:'GoodNotes Answer-Reveal Generator <span class="skill-badge sb-hypo">🇩🇪 DE guide</span>',
-  appGNDesc:"Turn a blank worksheet and its solution sheet (two PDFs) into a ready-to-use GoodNotes file: the solution becomes the background, every answer hides under an erasable white stroke you wipe away live in class to compare results.",
-  appGNf1:"Works for typed-text answers and hand-drawn/vector answers alike (sketches, structural formulas, orbital diagrams)",
-  appGNf2:"No coding needed — a free AI chat with code execution (or a one-time local Python install) runs it for you",
-  appGNf3:"Python command-line tool, not a browser app — the download includes a full walkthrough page",
-  appGNf4:"Free-tier AI compatibility and a plain-language legal note included on the guide page",
-  appGNf5:"Open every freshly generated file once in GoodNotes to confirm it before relying on it in class",
-  tagZD:"Personal Organisation",zdDeBadge:"🇩🇪 DE only",
-  appZDTitle:'Password Binder Builder <span class="skill-badge sb-hypo">🇩🇪 DE only</span>',
-  appZDDesc:"Bring order to scattered logins: describe what each account is for, the tool sorts it automatically into email accounts, bank cards or general logins and lays everything out as a printable master overview — the passwords themselves are only ever written in by hand.",
-  appZDf1:"Automatic categorisation from plain words (“Sparkasse EC card”, “FRITZ!Box Wi-Fi”, “GMX”) — or paste a whole list at once",
-  appZDf2:"Deliberately no password field: printed boxes for passwords, PINs, PUK and Wi-Fi keys are filled in by pen or pencil",
-  appZDf3:"Real PDF download and standalone HTML download, cover page with table of contents and card-blocking hotline",
-  appZDf4:"Optional blank cards per category, one page per category, “last changed” line",
-  appZDf5:"100% offline, no accounts, no server — entries stay in your browser and can be backed up as a file",
-  appDSTitle:'Document Scan to USB Stick <span class="skill-badge sb-hypo">🇩🇪 DE only</span>',
-  tagDS:"How-to Guide",btnPdf:"⬇ PDF Guide",btnSteps:"▶ Step by Step",
-  appDSDesc:"A step-by-step guide for the school's Triumph-Adler copier: scan a stack of loose pages double-sided into a single PDF and save it straight to a USB stick, no computer needed.",
-  appDSf1:"One-page PDF guide to print and hang next to the copier",
-  appDSf2:"Clickable step-by-step slides: each step shows a display sketch with the button to tap highlighted",
-  appDSf3:"Branches for large stacks (continuous scan), colour vs. black-and-white, paper jams and upside-down back pages",
-  appDSf4:"Ends with safely removing the stick and logging out",
+  secToolsSub:"Click a tile for details, downloads and the online version. Folders bundle related apps. Every app works offline — no accounts, no tracking, no ads.",
+  ui:{app:"app",apps:"apps",details:"Details →",openFolder:"Open folder →",download:"⬇ Download",play:"▶ Play Online",use:"▶ Use Online",tip:"☕ Tip",extras:"Extra downloads",close:"Close",back:"Back"},
   secHow:"Process",secHowTitle:"How It Works",secHowSub:"Three simple steps. No sign-up, no paywall, no strings attached.",
   how1T:"1. Download",how1P:"Grab any tool as a single HTML file. It's yours to keep, share, and adapt for your classroom.",
   how2T:"2. Open & Use",how2P:"Open the file in any browser — Chrome, Firefox, Safari. Works offline, on any device.",
@@ -1043,135 +444,19 @@ de:{
   navTools:"Tools",navHow:"So funktioniert's",navAbout:"Über uns",navSupport:"Unterstützen",navContact:"Kontakt",
   heroBadge:"Kostenlos & offen für Lehrkräfte",
   heroTitle:'Lerntools, die den Unterricht <span class="spark-word">bereichern</span>',
-  heroSub:"Handgemachte, offline-fähige Web-Apps für Sprach- und Naturwissenschaftslehrkräfte. Kostenlos herunterladen — getragen von einem Trinkgeld-Modell auf Vertrauensbasis.",
+  heroSub:"Handgemachte, offline-fähige Web-Apps für Sprach-, Naturwissenschafts- und Informatiklehrkräfte. Kostenlos herunterladen — getragen von einem Trinkgeld-Modell auf Vertrauensbasis.",
   heroCTA:"⬇ Fach auswählen",heroTip:"☕ Trinkgeld geben",
   secSubjects:"Fächer",secSubjectsTitle:"Wähle dein Fach",
-  secSubjectsSub:"Zwei Fachbereiche mit jeweils einer Reihe fokussierter Übungs-Apps. Wähle einen aus, um die verfügbaren Tools zu durchstöbern.",
-  tileEnTitle:"Englisch",
-  tileEnSub:"Verbkonjugation in sechs Jahrgangsstufen sowie spezielle Trainer für Aktiv/Passiv und direkte/indirekte Rede.",
-  tileEnCount:"7 Apps · Klasse 5 → 10",
-  tileChTitle:"Chemie",
-  tileChSub:"Periodensystem-Quizze, chemische Kommunikation und ein hypothesengeleiteter Trainer — drei Zugänge zur Sprache und zum Denken der Chemie.",
-  tileChCount:"3 Apps",
-  tileGenTitle:"Allgemeine Werkzeuge",
-  tileGenSub:"Fachübergreifende Werkzeuge zur Unterrichtsorganisation, die keinem einzelnen Fach zugeordnet sind — den Anfang macht ein Sitzplan-Werkzeug.",
-  tileGenCount:"4 Apps",
+  secSubjectsSub:"Vier Bereiche mit jeweils einer Reihe fokussierter Apps. Wähle einen aus und sieh alle Tools auf einen Blick.",
   secTools:"Tools",secToolsTitle:"Lern-Apps",
-  secToolsSub:"Jede App funktioniert komplett offline — kein Konto, kein Tracking, keine Werbung. Einfach die HTML-Datei herunterladen und im Browser öffnen.",
-  catEnTitle:"Englisch",catEnMeta:"7 Apps · Klasse 5 → 10",
-  catChTitle:"Chemie",catChMeta:"3 Apps",
-  catGenTitle:"Allgemeine Werkzeuge",catGenMeta:"4 Apps",
-  btnPlay:"▶ Online spielen",btnTip:"☕ Trinkgeld",btnUseOnline:"▶ Online nutzen",
-  appY5Title:'Verb Conjugation Trainer <span class="year-badge yb-5">Klasse 5</span>',
-  appY5Desc:"Erste-Schritte-Trainer mit den zwei grundlegenden Zeitformen für Klasse 5 — sanft, fokussiert und vertrauensbildend.",
-  appY5f1:"2 Zeitformen: Simple Present & Present Progressive",
-  appY5f2:"Glücksrad-Zufallsprinzip für Verben, Personen & Satzarten",
-  appY5f3:"85+ Verben mit optionalen Stammform-Tipps",
-  appY5f4:"CSV-Import für Schülernamen — sofort im Unterricht einsetzbar",
-  appY5f5:"Farbcodierte Bildungsregeln als Lernhilfe",
-  appY6Title:'Verb Conjugation Trainer <span class="year-badge yb-6">Klasse 6</span>',
-  appY6Desc:"Einstiegstrainer mit 6 grundlegenden Zeitformen — ideal für Klasse 6 als erster Schritt in die englische Grammatik.",
-  appY6f1:"6 Zeitformen: Simple Present, Present Progressive, Simple Past, Present Perfect, Will- & Going-to-Future",
-  appY6f2:"Glücksrad-Zufallsprinzip für jede Grammatikkategorie",
-  appY6f3:"85+ unregelmäßige Verben mit optionalen Stammform-Tipps",
-  appY6f4:"CSV-Import für Schülernamen — sofort im Unterricht einsetzbar",
-  appY6f5:"Farbcodierte Bildungsregeln als Lernhilfe",
-  apSkillBadge:"Klasse 7+",isSkillBadge:"Klasse 8+",ccSkillBadge:"v2",tagSci2:"Naturwissenschaft / Chemie",
-  appAPTitle:'Aktiv & Passiv Trainer <span class="skill-badge sb-active">Klasse 7+</span>',
-  appAPDesc:"Üben des Umformens von Sätzen zwischen Aktiv und Passiv über mehrere Zeitformen — mit intelligenter Prüfung, die jede grammatisch gültige Variante akzeptiert.",
-  appAPf1:"Bidirektional: Aktiv → Passiv & Passiv → Aktiv",
-  appAPf2:"Mehrere Zeitformen mit automatischer Hilfsverb-Behandlung",
-  appAPf3:"Glücksräder für Zeitform, Polarität & Satzart",
-  appAPf4:"CSV-Import für Schülernamen & Streak-Tracking",
-  appAPf5:"Zweisprachige Oberfläche (Deutsch / Englisch) mit Sprachumschalter",
-  appISTitle:'Direkte & indirekte Rede Trainer <span class="skill-badge sb-indirect">Klasse 8+</span>',
-  appISDesc:"Umwandeln zwischen direkten Zitaten und indirekter Rede mit vollständiger Backshift-Behandlung — bei Aussagesätzen, Fragen und Modalverben.",
-  appISf1:"8 Zeitformen/Modalformen mit korrekten Backshift-Regeln",
-  appISf2:"Aussagesätze, W-Fragen, Ja/Nein-Fragen & Aufforderungen",
-  appISf3:"Berichtende Verben: said, told, asked, advised, suggested",
-  appISf4:"Pronomen- & Possessivpronomen-Verschiebung automatisch",
-  appISf5:"Zweisprachige Oberfläche mit intelligenter Satzprüfung",
-  appCCTitle:'Chemische Kommunikation Trainer <span class="skill-badge sb-comm">v2</span>',
-  appCCDesc:"Ein spielerischer Trainer für die visuelle Sprache der Chemie — übe Namen, Summenformeln, Skelettformeln und vollständige Strukturformeln der wichtigsten Substanzen der Klassen 7–10. Mit VSEPR-konformer Darstellung und leistungsstarkem Grafik-Export.",
-  appCCf1:"4 Darstellungsformen parallel trainiert: Name · Summenformel · Skelettformel · Strukturformel",
-  appCCf2:"120+ Substanzen für die Klassen 7–10 — Edelgase, Halogene, Metalle, Säuren, Basen, Moleküle, Alkane/-ene/-ine (auch verzweigt), Alkohole, Aromaten & Ester",
-  appCCf3:"Klassenmodus (mit Namensliste & Aufrufen) und Übungsmodus mit Selbstbewertung (0–2 Punkte)",
-  appCCf4:"Export-Modus: jede Struktur als <strong>SVG</strong> oder <strong>PNG</strong> in drei Größen (klein / mittel / groß) herunterladen — ideal für Folien, Arbeitsblätter & Klassenarbeiten",
-  appCCf5:"Zweisprachige Oberfläche (Deutsch / Englisch) — funktioniert komplett offline",
-  tagSci3:"Naturwissenschaft / Chemie",htDeBadge:"🇩🇪 Nur DE",
-  appHTTitle:'Hypothesentrainer Chemie <span class="skill-badge sb-hypo">🇩🇪 Nur DE</span>',
-  appHTDesc:"Forschend-entdeckender Chemie-Trainer für Klasse 7–12 — Schüler:innen erkunden Phänomene, formulieren eigene Hypothesen auf Teilchenebene und überprüfen ihre Erklärungen zur Selbsteinschätzung des naturwissenschaftlichen Denkens.",
-  appHTf1:"Klasse 7–12 mit auf jede Stufe abgestimmten Phänomenen",
-  appHTf2:"Eigene Hypothesen eingeben (mind. 10 Zeichen)",
-  appHTf3:"Optionale Denkanstöße vor dem Aufdecken der Erklärung",
-  appHTf4:"Erklärungen auf Teilchenebene + Vertiefung für Fortgeschrittene",
-  appHTf5:"Selbsteinschätzung (richtig / zu überarbeiten)",
-  app1Title:'Verb Conjugation Trainer <span class="year-badge yb-7">Klasse 7</span>',
-  app1Desc:"Einsteigerfreundlicher Konjugationstrainer mit 7 grundlegenden Zeitformen — ideal für Klasse 7 zum Aufbau einer soliden Grammatikbasis.",
-  app1f1:"7 Zeitformen: Simple Present, Present & Past Progressive, Present Perfect, Simple Past, Will- & Going-to-Future",
-  app1f2:"Glücksrad-Zufallsprinzip für jede Grammatikkategorie",
-  app1f3:"85+ unregelmäßige Verben mit optionalen Stammform-Tipps",
-  app1f4:"CSV-Import für Schülernamen — sofort im Unterricht einsetzbar",
-  app1f5:"Farbcodierte Bildungsregeln als Lernhilfe",
-  app2Title:'Verb Conjugation Trainer <span class="year-badge yb-8">Klasse 8</span>',
-  app2Desc:"Mittelstufe mit 9 Zeitformen — erweitert um Present Perfect Progressive und Past Perfect für tieferes Grammatikverständnis.",
-  app2f1:"9 Zeitformen: alle aus Klasse 7 + Present Perfect Progressive & Past Perfect",
-  app2f2:"Positive & negative Polarität mit Kurzform-Unterstützung (don't, won't...)",
-  app2f3:"Intelligente Prädikatsprüfung — akzeptiert jeden gültigen Satz",
-  app2f4:"3-Versuche-System mit aufbauenden Hinweisen",
-  app2f5:"Satzart-Validierung (Aussagesatz, W-Frage & Ja/Nein-Frage)",
-  app3Title:'Verb Conjugation Trainer <span class="year-badge yb-10">Klasse 10</span>',
-  app3Desc:"Vollständige Ausgabe mit allen 13 englischen Zeitformen — inklusive Future Progressive, Future Perfect und alle Progressive-Formen.",
-  app3f1:"Alle 13 Zeitformen inkl. Future Progressive, Future Perfect & Future Perfect Progressive",
-  app3f2:"Zeitformen-Tracking — jede Zeitform wird geübt, bevor sie wiederholt wird",
-  app3f3:"Streaks, Punktestand & Konfetti-Belohnungen",
-  app3f4:"Farbcodierte Bildungsregeln mit Beispielen eines anderen Verbs",
-  app3f5:"100% offline — einzelne HTML-Datei, keine Installation nötig",
-  tagSci:"Naturwissenschaft / Chemie",
-  app4Title:"Periodensystem Trainer",
-  app4Desc:"Interaktives Periodensystem-Quiz — Elementnamen, Symbole und Ordnungszahlen üben, mit Namenrad für den Unterrichtseinsatz.",
-  app4f1:"Interaktives Periodensystem mit klickbaren Elementen",
-  app4f2:"Quiz-Modus: Name, Symbol & Ordnungszahl",
-  app4f3:"Eingebautes Namenrad für zufällige Schülerauswahl",
-  app4f4:"Zweisprachig (Deutsch / Englisch) mit Sprachumschalter",
-  app4f5:"Funktioniert offline auf jedem Gerät — Handy, Tablet, Laptop",
-  tagGen:"Unterrichtsorganisation",spDeBadge:"🇩🇪 Nur DE",
-  appSPTitle:'Sitzplan-Werkzeug <span class="skill-badge sb-hypo">🇩🇪 Nur DE</span>',
-  appSPDesc:"Ein datenschutzfreundliches Sitzplan-Werkzeug: Namensliste und Sitzwünsche der Klasse (per einfachem Google-Formular) importieren, den echten Klassenraum nachbilden und automatisch eine faire Sitzordnung berechnen lassen — oder von Hand anordnen.",
-  appSPf1:"CSV-Import für Namenslisten und Google-Formular-Wunschabfragen — kein manuelles Abtippen",
-  appSPf2:"Automatischer Solver (Simulated Annealing) verteilt Sitzwünsche fair, oder manuell anordnen / würfeln",
-  appSPf3:"Zweiseitiger Vektor-PDF-Export: Schüler:innenansicht + punktgespiegelte Lehrpersonenansicht, Text immer aufrecht",
-  appSPf4:"100 % offline, kein Konto, kein Server — alle Daten bleiben im Browser",
-  appSPf5:"Erfüllungsbericht mit Fairness-Schutz gegen Häufung von Negativwünschen bei einzelnen Personen",
-  tagGN:"Unterrichtsmaterial",gnDeBadge:"🇩🇪 Nur DE",
-  appGNTitle:'GoodNotes-Antworten-Enthüller <span class="skill-badge sb-hypo">🇩🇪 Nur DE</span>',
-  appGNDesc:"Aus leerem Arbeitsblatt und Lösungsblatt (zwei PDFs) wird automatisch eine fertige GoodNotes-Datei: die Lösung wird zum Hintergrund, jede Antwort versteckt sich unter einem wegradierbaren weißen Strich, den ihr live im Unterricht zum Vergleichen freilegt.",
-  appGNf1:"Funktioniert bei getipptem Text genauso wie bei handgezeichneten/vektorbasierten Antworten (Skizzen, Strukturformeln, Orbitaldiagramme)",
-  appGNf2:"Kein eigenes Programmieren nötig — ein kostenloser KI-Chat mit Code-Ausführung (oder einmalig eigenes Python) übernimmt das für euch",
-  appGNf3:"Python-Kommandozeilenwerkzeug, kein Browser-Tool — der Download enthält eine vollständige Anleitungsseite",
-  appGNf4:"Hinweise zu kostenlosen KI-Tarifen und eine allgemeinverständliche rechtliche Einordnung direkt auf der Anleitungsseite",
-  appGNf5:"Jede frisch erzeugte Datei einmal in GoodNotes testöffnen, bevor sie im Unterricht zum Einsatz kommt",
-  tagZD:"Persönliche Organisation",zdDeBadge:"🇩🇪 Nur DE",
-  appZDTitle:'Zugangsdaten-Mappe <span class="skill-badge sb-hypo">🇩🇪 Nur DE</span>',
-  appZDDesc:"Ordnung in lose Zugangsdaten: einfach beschreiben, wofür ein Zugang ist – das Werkzeug sortiert automatisch nach E-Mail-Konten, Bankkarten und allgemeinen Zugangsdaten und setzt alles als druckfertige Masterübersicht. Die Passwörter selbst werden nur von Hand eingetragen.",
-  appZDf1:"Automatische Einordnung aus eigenen Worten („Sparkasse EC-Karte“, „FRITZ!Box WLAN“, „GMX“) – oder gleich eine ganze Liste einfügen",
-  appZDf2:"Bewusst ohne Passwortfeld: Kästchen für Passwörter, PINs, PUK und WLAN-Schlüssel werden auf dem Ausdruck mit Stift ausgefüllt",
-  appZDf3:"Echter PDF-Download und eigenständiger HTML-Download, Deckblatt mit Inhaltsübersicht und Sperr-Notruf",
-  appZDf4:"Wahlweise Leerkarten je Kategorie, jede Kategorie auf neuer Seite, Zeile „zuletzt geändert“",
-  appZDf5:"100 % offline, kein Konto, kein Server – Einträge bleiben im Browser und lassen sich als Datei sichern",
-  appDSTitle:'Dokumentenscan auf USB-Stick <span class="skill-badge sb-hypo">🇩🇪 Nur DE</span>',
-  tagDS:"Anleitung",btnPdf:"⬇ PDF-Anleitung",btnSteps:"▶ Schritt für Schritt",
-  appDSDesc:"Schritt-für-Schritt-Anleitung für den Triumph-Adler-Kopierer der Schule: einen Stapel loser Blätter beidseitig in eine einzige PDF scannen und direkt auf einem USB-Stick speichern, ganz ohne Computer.",
-  appDSf1:"Einseitige PDF-Anleitung zum Ausdrucken und Aufhängen neben dem Kopierer",
-  appDSf2:"Klickbare Schritt-Slides: jeder Schritt zeigt eine Display-Skizze, die zu tippende Taste ist markiert",
-  appDSf3:"Verzweigungen für große Stapel (kontinuierlicher Scan), Farbe oder Schwarzweiß, Papierstau und Rückseiten auf dem Kopf",
-  appDSf4:"Endet mit dem sicheren Entfernen des Sticks und dem Abmelden",
+  secToolsSub:"Kachel anklicken für Details, Downloads und die Online-Version. Ordner bündeln zusammengehörige Apps. Jede App funktioniert offline — kein Konto, kein Tracking, keine Werbung.",
+  ui:{app:"App",apps:"Apps",details:"Details →",openFolder:"Ordner öffnen →",download:"⬇ Download",play:"▶ Online spielen",use:"▶ Online nutzen",tip:"☕ Trinkgeld",extras:"Zusätzliche Downloads",close:"Schließen",back:"Zurück"},
   secHow:"Ablauf",secHowTitle:"So funktioniert's",secHowSub:"Drei einfache Schritte. Keine Anmeldung, keine Paywall, keine Haken.",
   how1T:"1. Herunterladen",how1P:"Jedes Tool als einzelne HTML-Datei speichern. Behalten, teilen und für den eigenen Unterricht anpassen.",
   how2T:"2. Öffnen & Nutzen",how2P:"Die Datei in einem beliebigen Browser öffnen — Chrome, Firefox, Safari. Funktioniert offline, auf jedem Gerät.",
   how3T:"3. Trinkgeld, wenn es gefällt",how3P:"Wenn ein Tool den Unterricht bereichert, freue ich mich über ein kleines Trinkgeld. Freiwillig und auf Vertrauensbasis.",
   secAbout:"Über uns",secAboutTitle:"Hinter ClassroomSpark",
-  aboutH:"Von einer Lehrkraft, für Lehrkräfte",
+  aboutH:"Von einer Lehrperson, für Lehrpersonen",
   aboutP1:"ClassroomSpark ist ein persönliches Projekt, das aus echten Bedürfnissen im Unterricht entstanden ist. Jedes Tool ist pädagogisch durchdacht — durchdachte Lernübungen, die Schülerinnen und Schülern helfen, zu üben, Fehler zu machen und sich zu verbessern.",
   aboutP2:"Die Apps werden iterativ entwickelt: konzipiert, getestet und verfeinert, bis sie so funktionieren, wie eine gute Übung es sollte. Sie werden immer kostenlos bleiben. Ein kleines Trinkgeld hilft, das Projekt am Laufen zu halten.",
   tipH:"☕ ClassroomSpark unterstützen",tipP:"Diese Tools sind kostenlos, weil Bildung keine Paywall haben sollte. Wenn eine App Vorbereitungszeit gespart oder Schülern geholfen hat — ein kleines Trinkgeld macht einen großen Unterschied.",
@@ -1190,7 +475,251 @@ de:{
 }
 };
 
+/* ═══════════ CATALOG ═══════════
+   SUBJECTS = the four big tiles (order = page order); `items` = top-level tiles of that subject.
+   ITEMS: type "app" (detail view with buttons) or "folder" (opens a grid of its `children`).
+   Texts are {en,de}; features {en:[…],de:[…]}. `url` = online version, `download` = file for the
+   Download button (same origin nitrogen-ai.github.io → the download attribute works), `dlName` = saved
+   file name, `online` = "play" | "use", `labels` = own button texts {download,online}, `extras` = further downloads. `thumb` = [background, mock HTML]. */
+const TR="https://nitrogen-ai.github.io/training/",TL="https://nitrogen-ai.github.io/tools/";
+const mock=(dots,inner,label,bg)=>`<div class="app-preview-mock" style="background:${bg}"><div class="mock-bar"><div class="mock-dot" style="background:#00c853"></div><div class="mock-dot" style="background:#ffd700"></div><div class="mock-dot" style="background:${dots}"></div></div>${inner}<div class="mock-label" style="color:#ffffff40">${label}</div></div>`;
+const ln=(w,bg,extra="")=>`<div class="mock-line" style="width:${w};background:${bg};${extra}"></div>`;
+const btns=g=>`<div class="mock-btn-row"><div class="mock-btn" style="background:${g}"></div><div class="mock-btn" style="background:#ffffff10"></div></div>`;
+const cells=(cols,colors,h=16)=>`<div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:3px;margin-bottom:10px">${colors.map(c=>`<div style="background:${c[0]};height:${h}px;border-radius:3px;opacity:${c[1]||.7}"></div>`).join("")}</div>`;
+
+const SUBJECTS=[
+  {id:"english",icon:"🌍",title:{en:"English",de:"Englisch"},
+   sub:{en:"One tenses trainer for Years 5–10, sentence-structure trainers with motivating “Why?” intros, and escape games.",de:"Ein Tenses-Trainer für Klasse 5–10, Satzstruktur-Trainer mit motivierenden „Why?“-Einstiegen und Escape Games."},
+   range:{en:"Year 5 → 10",de:"Klasse 5 → 10"},items:["tenses","structures","en-escape"]},
+  {id:"chemistry",icon:"🧪",title:{en:"Chemistry",de:"Chemie"},
+   sub:{en:"Chemical communication, the periodic table, inquiry-based hypotheses — and escape games with 3D-printable props.",de:"Chemische Kommunikation, Periodensystem, hypothesengeleitetes Forschen — und Escape Games mit 3D-Druck-Requisiten."},
+   items:["cc","pse","hypo","ch-escape"]},
+  {id:"informatics",icon:"💻",title:{en:"Computer Science",de:"Informatik"},
+   sub:{en:"Hands-on physical computing — starting with a browser uploader that puts any sketch onto an Arduino.",de:"Physical Computing zum Anfassen — den Anfang macht ein Browser-Uploader, der jeden Sketch auf den Arduino bringt."},
+   items:["arduino"]},
+  {id:"general",icon:"🪑",title:{en:"General Tools",de:"Allgemeine Werkzeuge"},
+   sub:{en:"Cross-curricular helpers for planning and organising — seating plans, GoodNotes answer reveals and more.",de:"Fachübergreifende Helfer für Planung und Organisation — Sitzpläne, GoodNotes-Lösungsaufdecker und mehr."},
+   items:["sitzplan","goodnotes","zugang","scan"]}
+];
+
+const ITEMS={
+/* ─────────── ENGLISH ─────────── */
+tenses:{type:"app",tag:{en:"English · Tenses",de:"Englisch · Zeitformen"},
+  title:{en:"Tenses Trainer",de:"Tenses Trainer (Zeitformen)"},badge:[{en:"Year 5 → 10",de:"Klasse 5 → 10"},"b-en"],
+  short:{en:"All verb-conjugation trainers in one: choose Year 5, 6, 7, 8 or 10 and spin verb, person, tense, polarity and sentence type.",de:"Alle Konjugationstrainer in einem: Klasse 5, 6, 7, 8 oder 10 wählen und Verb, Person, Zeitform, Polarität und Satzart erdrehen."},
+  desc:{en:"One trainer for the whole journey from 2 to 13 tenses. A motivating “Why do tenses matter?” intro shows how the tense changes the message — and how systematic English tenses really are: three times, four forms, three helper verbs.",de:"Ein Trainer für den ganzen Weg von 2 bis 13 Zeitformen. Ein motivierender Einstieg „Why do tenses matter?“ zeigt, wie die Zeitform die Aussage verändert — und wie systematisch die englischen Zeitformen sind: drei Zeiten, vier Formen, drei Hilfsverben."},
+  features:{en:["Level switch: Year 5 (2 tenses) · 6 (6) · 7 (7) · 8 (10) · 10 (all 13) — or link a level directly with <code>?year=7</code>","“Why?” intro with minimal pairs and a tense map that lights up the tenses of the chosen level","Spinning wheels for verb, person, number, tense, polarity & sentence type; tick which tenses to practise","Colour-coded formation rules, verb-form tips, 3 attempts with progressive hints, smart predicate checker","CSV import for student names, streaks, bonus points & confetti — single offline HTML file"],
+            de:["Stufenwahl: Klasse 5 (2 Zeitformen) · 6 (6) · 7 (7) · 8 (10) · 10 (alle 13) — oder eine Stufe direkt verlinken mit <code>?year=7</code>","„Why?“-Einstieg mit Minimalpaaren und einer Zeitformen-Landkarte, auf der die Zeitformen der gewählten Stufe aufleuchten","Glücksräder für Verb, Person, Numerus, Zeitform, Polarität & Satzart; zu übende Zeitformen abhakbar","Farbcodierte Bildungsregeln, Stammform-Tipps, 3 Versuche mit aufbauenden Hinweisen, intelligente Prädikatsprüfung","CSV-Import für Namen, Streaks, Bonuspunkte & Konfetti — eine einzige Offline-HTML-Datei"]},
+  url:TR+"tenses_trainer.html",online:"play",
+  thumb:["linear-gradient(135deg,#0f1a2e,#1a1438)",mock("#58a6ff",`<div style="font-family:Outfit,sans-serif;font-weight:700;color:#79c0ff;text-align:center;margin-bottom:8px">⏰ past · present · future</div>`+cells(3,[["#3fb950"],["#3fb950"],["#3fb950"],["#3fb950"],["#3fb950",.45],["#3fb950",.45],["#3fb950"],["#ffffff",.08],["#ffffff",.08],["#3fb950",.45],["#ffffff",.08],["#ffffff",.08]],14)+btns("linear-gradient(135deg,#58a6ff,#d2a8ff)"),"🎯 Year 5 → 10","#161b22")]},
+
+structures:{type:"folder",tag:{en:"English · Structures",de:"Englisch · Strukturen"},
+  title:{en:"Structures",de:"Structures (Satzstrukturen)"},
+  short:{en:"Participle clauses, active & passive voice, direct & indirect speech — each with a motivating “Why?” intro.",de:"Partizipialsätze, Aktiv & Passiv, direkte & indirekte Rede — jeweils mit motivierendem „Why?“-Einstieg."},
+  desc:{en:"Sentence-building trainers that go beyond single verb forms. Each one opens with a short “Why?” intro that shows what the structure is good for in real English — before the practice starts.",de:"Trainer für Satzbau jenseits einzelner Verbformen. Jeder beginnt mit einem kurzen „Why?“-Einstieg, der zeigt, wozu die Struktur im echten Englisch gut ist — bevor das Üben losgeht."},
+  children:["participle","activepassive","indirect"],
+  thumb:["linear-gradient(135deg,#0a1a1f,#1a1430)",mock("#14b8a6",`<div style="display:flex;gap:6px;justify-content:center;margin:6px 0 12px;font-family:monospace;font-size:.8rem"><span style="background:#3fb95033;color:#56d364;padding:3px 8px;border-radius:6px">-ing</span><span style="background:#14b8a633;color:#5eead4;padding:3px 8px;border-radius:6px">⇄</span><span style="background:#f472b633;color:#f9a8d4;padding:3px 8px;border-radius:6px">“…”</span></div>`+ln("85%","#ffffff12")+ln("60%","#ffd700","opacity:.35")+btns("linear-gradient(135deg,#14b8a6,#d2a8ff)"),"🧩 Structures","#121e26")]},
+
+participle:{type:"app",tag:{en:"English · Structures",de:"Englisch · Strukturen"},
+  title:{en:"Participle Clause Trainer",de:"Participle Clause Trainer"},badge:[{en:"Year 9",de:"Klasse 9"},"b-en"],
+  short:{en:"Shorten, rewrite, fix and build sentences with participle clauses — six task types.",de:"Sätze mit Partizipialkonstruktionen kürzen, umformen, korrigieren und bauen — sechs Aufgabentypen."},
+  desc:{en:"Starts with “Why use participle clauses?”: a before/after comparison of a busy Mumbai platform and six reasons why -ing clauses make writing shorter, livelier and more natural. Then six task types train the structure step by step.",de:"Startet mit „Why use participle clauses?“: ein Vorher-Nachher-Vergleich an einem Bahnsteig in Mumbai und sechs Gründe, warum -ing-Konstruktionen Texte kürzer, lebendiger und natürlicher machen. Danach trainieren sechs Aufgabentypen die Struktur Schritt für Schritt."},
+  features:{en:["6 task types: shorten, rewrite, verb of perception + object + -ing, fix the mistake, word order, word bank","Motivating “Why?” intro (before/after + six arguments), remembered per browser","Spinning wheels, CSV import for student names, streaks & bonus points","Tick which task types to practise","Single offline HTML file"],de:["6 Aufgabentypen: kürzen, umformen, Wahrnehmungsverb + Objekt + -ing, Fehler korrigieren, Wortstellung, Wortbank","Motivierender „Why?“-Einstieg (Vorher/Nachher + sechs Argumente), wird pro Browser gemerkt","Glücksräder, CSV-Import für Namen, Streaks & Bonuspunkte","Aufgabentypen abhakbar","Eine einzige Offline-HTML-Datei"]},
+  url:TR+"participle_clause_trainer_year9.html",online:"play",
+  thumb:["linear-gradient(135deg,#140f24,#1f1638)",mock("#d2a8ff",`<div style="font-family:Outfit,sans-serif;font-size:.78rem;color:#e6edf3cc;line-height:1.6;margin-bottom:10px">The man <span style="color:#f778ba;text-decoration:line-through">who was</span> <span style="color:#56d364;font-weight:700">selling</span> tea…</div>`+ln("70%","#ffffff12")+btns("linear-gradient(135deg,#79c0ff,#d2a8ff)"),"🧩 Participle clauses","#1b1430")]},
+
+activepassive:{type:"app",tag:{en:"English · Structures",de:"Englisch · Strukturen"},
+  title:{en:"Active & Passive Trainer",de:"Aktiv & Passiv Trainer"},badge:[{en:"Year 7+",de:"Klasse 7+"},"b-en"],
+  short:{en:"Transform sentences between active and passive voice across many tenses — both directions.",de:"Sätze zwischen Aktiv und Passiv umformen, über viele Zeitformen — in beide Richtungen."},
+  desc:{en:"Opens with “Why use the passive?”: who did it — and does it even matter? Six reasons from news, science and polite English. Then practise transforming sentences with smart validation that accepts any grammatically valid version.",de:"Beginnt mit „Why use the passive?“: Wer war's — und ist das überhaupt wichtig? Sechs Gründe aus Nachrichten, Naturwissenschaft und höflichem Englisch. Danach Umformen mit intelligenter Prüfung, die jede grammatisch gültige Variante akzeptiert."},
+  features:{en:["Bidirectional: active → passive & passive → active","Multiple tenses with automatic auxiliary handling","Motivating “Why?” intro (before/after + six arguments)","Spinning wheels for tense, polarity & sentence type","CSV import for student names & streak tracking"],de:["Bidirektional: Aktiv → Passiv & Passiv → Aktiv","Mehrere Zeitformen mit automatischer Hilfsverb-Behandlung","Motivierender „Why?“-Einstieg (Vorher/Nachher + sechs Argumente)","Glücksräder für Zeitform, Polarität & Satzart","CSV-Import für Namen & Streak-Tracking"]},
+  url:TR+"active_passive_trainer.html",online:"play",
+  thumb:["linear-gradient(135deg,#0a1a1f,#0f2933)",mock("#14b8a6",`<div style="display:flex;gap:6px;margin-bottom:12px;align-items:center"><div style="background:#4fc3f7;width:38%;height:12px;border-radius:3px"></div><div style="color:#ffffff60;font-size:.7rem;font-family:monospace">⇄</div><div style="background:#f778ba;width:38%;height:12px;border-radius:3px"></div></div>`+ln("60%","linear-gradient(90deg,#14b8a6,#5eead4)","height:12px")+ln("100%","#ffffff10")+btns("linear-gradient(135deg,#14b8a6,#5eead4)"),"🔄 Active ⇄ Passive","#0e2228")]},
+
+indirect:{type:"app",tag:{en:"English · Structures",de:"Englisch · Strukturen"},
+  title:{en:"Direct & Indirect Speech Trainer",de:"Direkte & indirekte Rede Trainer"},badge:[{en:"Year 8+",de:"Klasse 8+"},"b-en"],
+  short:{en:"Turn direct quotes into reported speech with backshift, pronoun and time-word changes.",de:"Direkte Rede in indirekte Rede umwandeln — mit Backshift, Pronomen- und Zeitangaben-Verschiebung."},
+  desc:{en:"Opens with “Why use reported speech?”: three voice messages from Mia — quote every word or pass on the message? Then convert statements, questions and advice with full backshift handling.",de:"Beginnt mit „Why use reported speech?“: drei Sprachnachrichten von Mia — jedes Wort zitieren oder die Botschaft weitergeben? Danach Aussagen, Fragen und Ratschläge mit vollständigem Backshift umwandeln."},
+  features:{en:["8 tense/modal forms with proper backshift rules","Statements, Wh-questions, Yes/No-questions & advice","Reporting verbs: said, told, asked, advised, suggested","Pronoun & possessive shift handled automatically","Motivating “Why?” intro (before/after + six arguments)"],de:["8 Zeit-/Modalformen mit korrekten Backshift-Regeln","Aussagesätze, W-Fragen, Ja/Nein-Fragen & Ratschläge","Berichtende Verben: said, told, asked, advised, suggested","Pronomen- & Possessivverschiebung automatisch","Motivierender „Why?“-Einstieg (Vorher/Nachher + sechs Argumente)"]},
+  url:TR+"indirect_speech_trainer.html",online:"play",
+  thumb:["linear-gradient(135deg,#1a0f1a,#2e1626)",mock("#f472b6",`<div style="display:flex;gap:8px;margin-bottom:10px;align-items:center"><div style="color:#4fc3f7;font-size:.8rem;font-family:monospace">"…"</div><div style="background:#f472b6;width:50%;height:10px;border-radius:3px"></div></div><div style="color:#f472b6;font-size:.7rem;font-family:monospace;margin-bottom:8px">→ said that …</div>`+ln("80%","linear-gradient(90deg,#ec4899,#f472b6)","height:12px")+btns("linear-gradient(135deg,#ec4899,#f472b6)"),"💬 Indirect Speech","#241420")]},
+
+"en-escape":{type:"folder",tag:{en:"English · Games",de:"Englisch · Spiele"},
+  title:{en:"Escape Games",de:"Escape Games"},
+  short:{en:"Story-driven games where students read, decide and speak their way out — starting with Lost in Sydney.",de:"Story-Spiele, in denen sich Lernende lesend, entscheidend und sprechend herausarbeiten — den Anfang macht Lost in Sydney."},
+  desc:{en:"Interactive adventures for the English classroom. More games will be added to this folder over time.",de:"Interaktive Abenteuer für den Englischunterricht. Weitere Spiele kommen nach und nach in diesen Ordner."},
+  children:["sydney"],
+  thumb:["linear-gradient(135deg,#002664,#0d3a84)",mock("#F5C400",`<div style="display:flex;gap:3px;justify-content:center;margin:4px 0 12px">${["1","4",":","0","5"].map(c=>`<span style="background:#0D3A84;color:#FFD200;font-family:monospace;font-weight:700;padding:2px 6px;border-radius:4px">${c}</span>`).join("")}</div><div style="display:flex;align-items:center;gap:4px;margin-bottom:10px">${["#F5C400","#ffffff40","#ffffff40","#F5C400"].map((c,i)=>`<span style="width:10px;height:10px;border-radius:50%;background:${c}"></span>${i<3?'<span style="flex:1;height:2px;background:#ffffff30"></span>':""}`).join("")}</div>`+btns("linear-gradient(135deg,#F5C400,#ffd84d)"),"🗝️ Escape Games","#06142B")]},
+
+sydney:{type:"app",tag:{en:"English · Escape Game",de:"Englisch · Escape Game"},
+  title:{en:"Lost in Sydney",de:"Lost in Sydney"},badge:[{en:"Year 9",de:"Klasse 9"},"b-en"],
+  short:{en:"A choose-your-path gamebook: find your way back to your class through Sydney — then report in a voice message.",de:"Ein Spielbuch mit Weggabelungen: durch Sydney zurück zur Klasse finden — und davon in einer Sprachnachricht berichten."},
+  desc:{en:"Students team up in pairs and navigate Sydney card by card: read, decide, take the right train or ferry and collect keywords on the way. At the end they record a 2–3-minute voice message for their class “at Uluru” — real speaking, no written text.",de:"Zu zweit geht es Karte für Karte durch Sydney: lesen, entscheiden, den richtigen Zug oder die Fähre nehmen und unterwegs Schlüsselwörter sammeln. Zum Schluss nehmen die Paare eine 2–3-minütige Sprachnachricht für ihre Klasse „am Uluru“ auf — echtes Sprechen statt Schreiben."},
+  features:{en:["Gamebook with branching route cards, a station clock and “Did you know?” facts about Sydney","Works on phones and tablets, light & dark mode","Final speaking task: voice message with keyword chips and a suggested file name","Fits Unit 1 “Australia” of Year 9 — usable as a stand-alone lesson","Single offline HTML file"],de:["Spielbuch mit verzweigten Routenkarten, Bahnhofsuhr und „Did you know?“-Fakten zu Sydney","Läuft auf Handy und Tablet, hell & dunkel","Abschluss-Sprechaufgabe: Sprachnachricht mit Keyword-Chips und vorgeschlagenem Dateinamen","Passt zu Unit 1 „Australia“ in Klasse 9 — auch als Einzelstunde nutzbar","Eine einzige Offline-HTML-Datei"]},
+  url:"https://nitrogen-ai.github.io/English/SEK-I/year9/Unit-1-Australia-the-island-continent/09-Lost-in-Sydney/",download:"https://nitrogen-ai.github.io/English/SEK-I/year9/Unit-1-Australia-the-island-continent/09-Lost-in-Sydney/index.html",dlName:"lost-in-sydney.html",online:"play",
+  thumb:["linear-gradient(135deg,#EDF1F2,#D3DBDD)",mock("#F5C400",`<div style="background:#002664;color:#fff;font-family:Outfit,sans-serif;font-weight:700;font-size:.8rem;padding:6px 8px;border-radius:6px;margin-bottom:10px;box-shadow:0 3px 0 #F5C400">🚆 Central → Circular Quay</div>`+ln("90%","#14202B22")+ln("70%","#14202B22")+`<div class="mock-btn-row"><div class="mock-btn" style="background:#002664"></div><div class="mock-btn" style="background:#002664"></div></div>`,"🦘 Lost in Sydney","#FFFFFF")]},
+
+/* ─────────── CHEMISTRY ─────────── */
+cc:{type:"app",tag:{en:"Chemistry",de:"Chemie"},
+  title:{en:"Chemical Communication Trainer",de:"Chemische Kommunikation Trainer"},badge:[{en:"v2",de:"v2"},"b-ch"],
+  short:{en:"Names, sum, skeletal and structural formulas for 120+ substances — with SVG/PNG export.",de:"Namen, Summen-, Skelett- und Strukturformeln für 120+ Stoffe — mit SVG/PNG-Export."},
+  desc:{en:"A gamified trainer for the visual language of chemistry — practise names, sum formulas, skeletal formulas and full structural formulas for the key substances of years 7–10. Built with VSEPR-correct rendering and a powerful graphics export.",de:"Ein spielerischer Trainer für die visuelle Sprache der Chemie — übe Namen, Summenformeln, Skelettformeln und vollständige Strukturformeln der wichtigsten Substanzen der Klassen 7–10. Mit VSEPR-konformer Darstellung und leistungsstarkem Grafik-Export."},
+  features:{en:["4 representations trained side-by-side: name · sum formula · skeletal · structural","120+ substances across years 7–10 — noble gases, halogens, metals, acids, bases, molecules, alkanes/-enes/-ynes (incl. branched), alcohols, aromatics & esters","Class mode (with student names & calling-up) and Practice mode with 0–2 point self-assessment","Export Mode: download any structure as <strong>SVG</strong> or <strong>PNG</strong> in three sizes — perfect for slides, worksheets & tests","Bilingual UI (German / English) — works fully offline"],
+            de:["4 Darstellungsformen parallel trainiert: Name · Summenformel · Skelettformel · Strukturformel","120+ Substanzen für die Klassen 7–10 — Edelgase, Halogene, Metalle, Säuren, Basen, Moleküle, Alkane/-ene/-ine (auch verzweigt), Alkohole, Aromaten & Ester","Klassenmodus (mit Namensliste & Aufrufen) und Übungsmodus mit Selbstbewertung (0–2 Punkte)","Export-Modus: jede Struktur als <strong>SVG</strong> oder <strong>PNG</strong> in drei Größen — ideal für Folien, Arbeitsblätter & Klassenarbeiten","Zweisprachige Oberfläche (Deutsch / Englisch) — funktioniert komplett offline"]},
+  url:TR+"chemical_communication_trainer.html",online:"play",
+  thumb:["linear-gradient(135deg,#160d24,#241638)",mock("#a855f7",`<div style="font-family:Outfit,sans-serif;font-size:1.3rem;text-align:center;color:#c084fc;margin:8px 0;letter-spacing:2px">H₂O · NaCl · CO₂</div>`+ln("70%","linear-gradient(90deg,#a855f7,#c084fc)","height:12px;margin-bottom:10px")+ln("50%","#ffd700","opacity:.4")+btns("linear-gradient(135deg,#a855f7,#c084fc)"),"⚗️ Chemical Communication","#1c1230")]},
+
+pse:{type:"app",tag:{en:"Chemistry",de:"Chemie"},
+  title:{en:"Periodic Table Trainer",de:"Periodensystem Trainer"},
+  short:{en:"Element names, symbols and atomic numbers — with a name wheel and printable posters.",de:"Elementnamen, Symbole und Ordnungszahlen — mit Namensrad und druckbaren Postern."},
+  desc:{en:"Interactive periodic table quiz — practise element names, symbols, and atomic numbers with a spinning name wheel for classroom use.",de:"Interaktives Periodensystem-Quiz — Elementnamen, Symbole und Ordnungszahlen üben, mit Namenrad für den Unterrichtseinsatz."},
+  features:{en:["Interactive periodic table with clickable elements","Quiz mode: name, symbol & atomic number","Built-in name wheel for random student selection","Bilingual (German / English) with language toggle","Works offline on any device — phone, tablet, laptop"],de:["Interaktives Periodensystem mit klickbaren Elementen","Quiz-Modus: Name, Symbol & Ordnungszahl","Eingebautes Namenrad für zufällige Schülerauswahl","Zweisprachig (Deutsch / Englisch) mit Sprachumschalter","Funktioniert offline auf jedem Gerät — Handy, Tablet, Laptop"]},
+  url:TR+"periodensystem_trainer.html",online:"play",
+  thumb:["linear-gradient(135deg,#0a1628,#0f2440)",mock("#0ea5e9",cells(6,[["#ef4444"],["#f59e0b"],["#10b981"],["#0ea5e9"],["#8b5cf6"],["#ec4899"],["#0ea5e9",.5],["#10b981",.5],["#f59e0b",.5],["#ef4444",.5],["#8b5cf6",.5],["#ec4899",.5]])+ln("60%","#ffd700","opacity:.4")+btns("linear-gradient(135deg,#0ea5e9,#06b6d4)"),"🧪 Periodensystem","#0f1a2e")]},
+
+hypo:{type:"app",tag:{en:"Chemistry",de:"Chemie"},
+  title:{en:"Hypothesentrainer Chemie",de:"Hypothesentrainer Chemie"},badge:[{en:"🇩🇪 DE only",de:"🇩🇪 Nur DE"},"b-de"],
+  short:{en:"Explore phenomena and write your own particle-level hypotheses — grades 7–12.",de:"Phänomene erkunden und eigene Hypothesen auf Teilchenebene formulieren — Klasse 7–12."},
+  desc:{en:"Inquiry-based chemistry trainer for grades 7–12 — students explore phenomena, formulate their own hypotheses on the particle level, and reveal explanations to self-assess their scientific reasoning.",de:"Forschend-entdeckender Chemie-Trainer für Klasse 7–12 — Schüler:innen erkunden Phänomene, formulieren eigene Hypothesen auf Teilchenebene und überprüfen ihre Erklärungen zur Selbsteinschätzung des naturwissenschaftlichen Denkens."},
+  features:{en:["Grades 7–12 with phenomena tailored to each level","Write-your-own hypothesis input (min. 10 characters)","Optional thinking prompts before revealing explanations","Particle-level explanations + \"deep dive\" for advanced students","Self-assessment system (correct / needs revision)"],de:["Klasse 7–12 mit auf jede Stufe abgestimmten Phänomenen","Eigene Hypothesen eingeben (mind. 10 Zeichen)","Optionale Denkanstöße vor dem Aufdecken der Erklärung","Erklärungen auf Teilchenebene + Vertiefung für Fortgeschrittene","Selbsteinschätzung (richtig / zu überarbeiten)"]},
+  url:TR+"hypothesentrainer.html",online:"play",
+  thumb:["linear-gradient(135deg,#0a1f24,#0f3338)",mock("#06b6d4",`<div style="font-family:Outfit,sans-serif;font-size:1rem;text-align:center;color:#67e8f9;margin:6px 0 8px;font-weight:600">🧪 Phänomen → Hypothese</div><div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:center;margin-bottom:10px">${["Kl. 7","Kl. 8","Kl. 9","Kl. 10–12"].map((k,i)=>`<span style="background:rgba(6,182,212,.22);color:#67e8f9;padding:2px 8px;border-radius:6px;font-size:.62rem;opacity:${1-i*.15}">${k}</span>`).join("")}</div>`+ln("90%","#ffffff10","height:14px;margin-bottom:6px")+btns("linear-gradient(135deg,#06b6d4,#67e8f9)"),"⚛️ Auf Teilchenebene","#0d2a30")]},
+
+"ch-escape":{type:"folder",tag:{en:"Chemistry · Games",de:"Chemie · Spiele"},
+  title:{en:"Escape Games",de:"Escape Games"},
+  short:{en:"Digital escape games with printable and 3D-printable props — starting with CHIRALITY.",de:"Digitale Escape Games mit Druck- und 3D-Druck-Requisiten — den Anfang macht CHIRALITY."},
+  desc:{en:"Team-based escape games for the chemistry classroom: solve stations, unlock archive compartments and secure the results in a lab journal. More games will be added to this folder over time.",de:"Escape Games im Team für den Chemieunterricht: Stationen lösen, Archivfächer öffnen, Ergebnisse im Laborjournal sichern. Weitere Spiele kommen nach und nach in diesen Ordner."},
+  children:["chirality"],
+  thumb:["linear-gradient(135deg,#071a14,#123028)",mock("#10b981",`<div style="display:flex;justify-content:center;align-items:center;gap:10px;font-family:Outfit,sans-serif;font-weight:800;font-size:1.3rem;margin:4px 0 10px"><span style="color:#34d399">L</span><span style="width:2px;height:26px;background:#ffffff40"></span><span style="color:#f472b6">D</span></div><div style="display:flex;gap:4px;justify-content:center;margin-bottom:10px">${[..."🔒🔒🔓🔒🔒🔒"].map(c=>`<span style="background:#ffffff10;border-radius:5px;padding:2px 4px;font-size:.75rem">${c}</span>`).join("")}</div>`+btns("linear-gradient(135deg,#10b981,#34d399)"),"🗝️ Escape Games","#0b241d")]},
+
+chirality:{type:"app",tag:{en:"Chemistry · Escape Game",de:"Chemie · Escape Game"},
+  title:{en:"CHIRALITY – The End of L-Life",de:"CHIRALITY – Das Ende des L-Lebens"},badge:[{en:"Grade 11–12 · 🇩🇪 DE only",de:"Q1 · 🇩🇪 Nur DE"},"b-de"],
+  short:{en:"Escape game on chirality and Fischer projections of amino acids: six archive compartments, one final code.",de:"Escape Game zu Chiralität und FISCHER-Projektion der Aminosäuren: sechs Archivfächer, ein Finalcode."},
+  desc:{en:"Year 2189: D-amino-acid-based bacteria threaten L-life. Teams travel from Pasteur's crystals (1848) via Fischer projections, drug docking, electrophoresis and polarimetry to a strategy against the enzyme MurI — and finally lay the chain of evidence. Runs in the browser (3D molecules included); the teacher guide and the two 3D-printable Pasteur crystals are available below.",de:"Im Jahr 2189 bedrohen D-aminosäurebasierte Bakterien das L-Leben. Die Teams reisen von Pasteurs Kristallen (1848) über FISCHER-Projektionen, Wirkstoff-Docking, Elektrophorese und Polarimetrie bis zur Strategie gegen das Enzym MurI — und legen am Ende die Beweiskette. Läuft im Browser (inkl. 3D-Molekülen); die Spielanleitung und die zwei 3D-druckbaren Pasteur-Kristalle gibt es unten zum Download."},
+  features:{en:["6 archive compartments with codes, 2-step hints, 60-minute countdown and a team logbook","FISCHER construction kit, 3D molecules (WebGL with still-image fallback), docking, polarimeter","Final: chain of evidence with 20 cards (5 distractors) + final code","Lab journal as PDF for submission; teacher mode protected by a PIN (see guide)","Physical props: two mirror-image Pasteur crystals (+)/(−) as STL files for 3D printing"],
+            de:["6 Archivfächer mit Codes, zweistufigen Hinweisen, 60-Minuten-Countdown und Team-Logbuch","FISCHER-Baukasten, 3D-Moleküle (WebGL mit Standbild-Ersatz), Docking, Polarimeter","Finale: Beweiskette aus 20 Karten (5 Distraktoren) + Finalcode","Laborjournal als PDF zur Abgabe; Spielleitungsmodus per PIN geschützt (siehe Anleitung)","Haptische Requisiten: zwei spiegelbildliche Pasteur-Kristalle (+)/(−) als STL für den 3D-Druck"]},
+  url:"https://nitrogen-ai.github.io/Chemie/SEK-II/Leistungskurs/Q1/escape-game-q1-07-chirality.html",dlName:"chirality-escape-game.html",online:"play",
+  extras:[
+    {href:"downloads/chirality/chirality-spielanleitung-digital.pdf",name:"Q1 07 Chirality – Spielanleitung Digital.pdf",icon:"📄",label:{en:"Teacher guide (game master, 2 pages, German) — contains PIN and codes",de:"Spielanleitung für die Spielleitung (2 S.) — enthält PIN und Codes"},meta:"PDF"},
+    {href:"downloads/chirality/pasteur-kristall-plus.stl",name:"Pasteur-Kristall Sorte (+).stl",icon:"🧊",label:{en:"Pasteur crystal type (+) for 3D printing",de:"Pasteur-Kristall Sorte (+) für den 3D-Druck"},meta:"STL"},
+    {href:"downloads/chirality/pasteur-kristall-minus.stl",name:"Pasteur-Kristall Sorte (−).stl",icon:"🧊",label:{en:"Pasteur crystal type (−) for 3D printing",de:"Pasteur-Kristall Sorte (−) für den 3D-Druck"},meta:"STL"}
+  ],
+  thumb:["linear-gradient(135deg,#0b1f1a,#1d1033)",mock("#f472b6",`<div style="display:flex;justify-content:center;gap:16px;margin:2px 0 10px">${[["#34d399","(+)"],["#f472b6","(−)"]].map(c=>`<div style="text-align:center"><div style="width:34px;height:34px;margin:0 auto;background:${c[0]};clip-path:polygon(50% 0,100% 30%,85% 100%,15% 100%,0 30%);opacity:.85"></div><div style="color:${c[0]};font-size:.6rem;font-family:monospace;margin-top:2px">${c[1]}</div></div>`).join(`<div style="width:2px;background:#ffffff30"></div>`)}</div><div style="display:flex;gap:3px;justify-content:center;margin-bottom:8px">${"CHIRAL".split("").map(c=>`<span style="background:#ffffff12;color:#fbbf24;font-family:monospace;font-size:.7rem;padding:1px 5px;border-radius:4px">${c}</span>`).join("")}</div>`+btns("linear-gradient(135deg,#10b981,#f472b6)"),"🪞 CHIRALITY · 2189","#14161f")]},
+
+/* ─────────── COMPUTER SCIENCE ─────────── */
+arduino:{type:"app",tag:{en:"Computer Science · Arduino",de:"Informatik · Arduino"},
+  title:{en:"Arduino Sketch Uploader",de:"Arduino-Sketch hochladen"},badge:[{en:"🇩🇪 DE only",de:"🇩🇪 Nur DE"},"b-de"],
+  short:{en:"Paste a sketch, check it and upload it to an Arduino Uno or Nano — right in the browser, no IDE, no account.",de:"Sketch einfügen, prüfen und auf Arduino Uno oder Nano laden — direkt im Browser, ohne IDE, ohne Konto."},
+  desc:{en:"The quickest way from code to blinking LED on locked-down school computers: the sketch is compiled online and flashed via Web Serial straight from Chrome or Edge. Error messages are explained in plain German and the faulty line is highlighted.",de:"Der schnellste Weg vom Code zur blinkenden LED auf abgesicherten Schulrechnern: Der Sketch wird online übersetzt und per Web Serial direkt aus Chrome oder Edge auf den Arduino geschrieben. Fehlermeldungen werden verständlich erklärt, die fehlerhafte Zeile rot markiert."},
+  features:{en:["No installation, no Arduino IDE, no account — Chrome or Edge on Windows, macOS, Linux or ChromeOS","Compiles with the public Wokwi compiler (only the code is sent), uploads via Web Serial (STK500 / Optiboot)","Works with Arduino Uno and Nano (incl. old bootloader); “Test Arduino” blink sketch built in","Serial monitor (9600 baud), open/save .ino files, code remembered in the browser","Step-by-step help for the typical problems (no port, port busy, no response)"],
+            de:["Keine Installation, keine Arduino-IDE, kein Konto — Chrome oder Edge unter Windows, macOS, Linux oder ChromeOS","Übersetzen mit dem öffentlichen Wokwi-Compiler (nur der Code wird gesendet), Hochladen per Web Serial (STK500 / Optiboot)","Für Arduino Uno und Nano (auch alter Bootloader); Test-Sketch „Arduino testen“ eingebaut","Serieller Monitor (9600 Baud), .ino-Dateien öffnen/speichern, Code bleibt im Browser gemerkt","Schritt-für-Schritt-Hilfe für typische Probleme (kein Anschluss, Anschluss belegt, keine Antwort)"]},
+  url:TL+"arduino-upload.html",online:"use",
+  note:{en:"Needs an internet connection for compiling; works in Chrome/Edge only (no iPad, Firefox or Safari).",de:"Zum Übersetzen ist eine Internetverbindung nötig; nur in Chrome/Edge (nicht iPad, Firefox oder Safari)."},
+  thumb:["linear-gradient(135deg,#e6f2f1,#cfe3e6)",mock("#00818a",`<div style="font-family:ui-monospace,Menlo,monospace;font-size:.66rem;line-height:1.55;color:#1d2330;background:#f1f3f6;border-radius:6px;padding:6px 8px;margin-bottom:8px"><span style="color:#00818a">void</span> setup() {<br>&nbsp;&nbsp;pinMode(13, OUTPUT);<br>}</div><div class="mock-btn-row"><div class="mock-btn" style="background:#00818a;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.68rem;font-family:Outfit,sans-serif;font-weight:700">⬆ Upload</div><div class="mock-btn" style="background:#1d233014"></div></div>`,"<span style='color:#1d2330'>💡 Uno · Nano</span>","#ffffff")]},
+
+/* ─────────── GENERAL TOOLS ─────────── */
+sitzplan:{type:"app",tag:{en:"Classroom Management",de:"Unterrichtsorganisation"},
+  title:{en:"Seating Plan Builder",de:"Sitzplan-Werkzeug"},badge:[{en:"🇩🇪 DE only",de:"🇩🇪 Nur DE"},"b-de"],
+  short:{en:"Import class list and seating wishes, model your room, let an optimiser find a fair plan.",de:"Namensliste und Sitzwünsche importieren, Raum nachbauen, faire Sitzordnung berechnen lassen."},
+  desc:{en:"A privacy-first seating-plan builder: import your class list and student seating wishes (via a simple Google Form), model your actual classroom layout, and let an optimiser find a fair arrangement — or arrange seats by hand.",de:"Ein datenschutzfreundliches Sitzplan-Werkzeug: Namensliste und Sitzwünsche der Klasse (per einfachem Google-Formular) importieren, den echten Klassenraum nachbilden und automatisch eine faire Sitzordnung berechnen lassen — oder von Hand anordnen."},
+  features:{en:["CSV import for class rosters and Google-Form wish surveys — no manual typing","Automatic solver (simulated annealing) balances seating wishes fairly, or arrange manually / shuffle","Two-page vector PDF export: student view + point-mirrored teacher view, text always upright","100% offline, no accounts, no server — all data stays in your browser","Fulfilment report with a fairness safeguard against pile-up negative wishes"],de:["CSV-Import für Namenslisten und Google-Formular-Wunschabfragen — kein manuelles Abtippen","Automatischer Solver (Simulated Annealing) verteilt Sitzwünsche fair, oder manuell anordnen / würfeln","Zweiseitiger Vektor-PDF-Export: Schüler:innenansicht + punktgespiegelte Lehrpersonenansicht, Text immer aufrecht","100 % offline, kein Konto, kein Server — alle Daten bleiben im Browser","Erfüllungsbericht mit Fairness-Schutz gegen Häufung von Negativwünschen bei einzelnen Personen"]},
+  url:TL+"sitzplan.html",online:"use",
+  thumb:["linear-gradient(135deg,#1c1428,#2a1f3d)",mock("#a78bfa",ln("40%","#ffffff18","height:10px;margin-bottom:10px")+cells(4,[["#8b5cf6",.75],["#a78bfa",.6],["#8b5cf6",.75],["#a78bfa",.6],["#a78bfa",.6],["#8b5cf6",.75],["#a78bfa",.6],["#8b5cf6",.75]])+ln("60%","#ffd700","opacity:.4")+btns("linear-gradient(135deg,#8b5cf6,#a78bfa)"),"🪑 Sitzplan","#211a30")]},
+
+goodnotes:{type:"app",tag:{en:"Study Material",de:"Unterrichtsmaterial"},
+  title:{en:"GoodNotes Answer-Reveal Generator",de:"GoodNotes-Antworten-Enthüller"},badge:[{en:"🇩🇪 DE guide",de:"🇩🇪 Nur DE"},"b-de"],
+  short:{en:"Worksheet + solution PDF → GoodNotes file where every answer hides under an erasable stroke.",de:"Arbeitsblatt + Lösungs-PDF → GoodNotes-Datei, in der jede Antwort unter einem wegradierbaren Strich liegt."},
+  desc:{en:"Turn a blank worksheet and its solution sheet (two PDFs) into a ready-to-use GoodNotes file: the solution becomes the background, every answer hides under an erasable white stroke you wipe away live in class to compare results.",de:"Aus leerem Arbeitsblatt und Lösungsblatt (zwei PDFs) wird automatisch eine fertige GoodNotes-Datei: die Lösung wird zum Hintergrund, jede Antwort versteckt sich unter einem wegradierbaren weißen Strich, den ihr live im Unterricht zum Vergleichen freilegt."},
+  features:{en:["Works for typed-text answers and hand-drawn/vector answers alike (sketches, structural formulas, orbital diagrams)","Online version runs entirely in your browser (no server); the download is a Python command-line tool with more modes","The download includes a full walkthrough page","Free-tier AI compatibility and a plain-language legal note included on the guide page","Open every freshly generated file once in GoodNotes to confirm it before relying on it in class"],de:["Funktioniert bei getipptem Text genauso wie bei handgezeichneten/vektorbasierten Antworten (Skizzen, Strukturformeln, Orbitaldiagramme)","Die Online-Version läuft komplett im Browser (kein Server); der Download ist ein Python-Kommandozeilenwerkzeug mit weiteren Modi","Der Download enthält eine vollständige Anleitungsseite","Hinweise zu kostenlosen KI-Tarifen und eine allgemeinverständliche rechtliche Einordnung direkt auf der Anleitungsseite","Jede frisch erzeugte Datei einmal in GoodNotes testöffnen, bevor sie im Unterricht zum Einsatz kommt"]},
+  url:TL+"goodnotes-praesentation-generator.html",download:TL+"goodnotes-praesentation-generator.zip",online:"use",
+  thumb:["linear-gradient(135deg,#1c1428,#2a1f3d)",mock("#a78bfa",ln("80%","#ffffff18")+`<div style="position:relative;margin-bottom:8px">${ln("55%","#ffffff18","margin:0")}<div style="position:absolute;inset:0;width:70%;background:#fff;border-radius:4px;opacity:.92"></div></div>`+ln("70%","#ffffff18")+`<div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#8b5cf6,#a78bfa);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;font-family:Outfit,sans-serif;font-weight:700">🖍️ erase</div><div class="mock-btn" style="background:#ffffff10"></div></div>`,"🖍️ GoodNotes Reveal","#211a30")]},
+
+zugang:{type:"app",tag:{en:"Personal Organisation",de:"Persönliche Organisation"},
+  title:{en:"Password Binder Builder",de:"Zugangsdaten-Mappe"},badge:[{en:"🇩🇪 DE only",de:"🇩🇪 Nur DE"},"b-de"],
+  short:{en:"Sort scattered logins into a printable master overview — passwords are written in by hand only.",de:"Lose Zugangsdaten zu einer druckfertigen Masterübersicht ordnen — Passwörter nur handschriftlich."},
+  desc:{en:"Bring order to scattered logins: describe what each account is for, the tool sorts it automatically into email accounts, bank cards or general logins and lays everything out as a printable master overview — the passwords themselves are only ever written in by hand.",de:"Ordnung in lose Zugangsdaten: einfach beschreiben, wofür ein Zugang ist – das Werkzeug sortiert automatisch nach E-Mail-Konten, Bankkarten und allgemeinen Zugangsdaten und setzt alles als druckfertige Masterübersicht. Die Passwörter selbst werden nur von Hand eingetragen."},
+  features:{en:["Automatic categorisation from plain words (“Sparkasse EC card”, “FRITZ!Box Wi-Fi”, “GMX”) — or paste a whole list at once","Deliberately no password field: printed boxes for passwords, PINs, PUK and Wi-Fi keys are filled in by pen or pencil","Real PDF download and standalone HTML download, cover page with table of contents and card-blocking hotline","Optional blank cards per category, one page per category, “last changed” line","100% offline, no accounts, no server — entries stay in your browser and can be backed up as a file"],de:["Automatische Einordnung aus eigenen Worten („Sparkasse EC-Karte“, „FRITZ!Box WLAN“, „GMX“) – oder gleich eine ganze Liste einfügen","Bewusst ohne Passwortfeld: Kästchen für Passwörter, PINs, PUK und WLAN-Schlüssel werden auf dem Ausdruck mit Stift ausgefüllt","Echter PDF-Download und eigenständiger HTML-Download, Deckblatt mit Inhaltsübersicht und Sperr-Notruf","Wahlweise Leerkarten je Kategorie, jede Kategorie auf neuer Seite, Zeile „zuletzt geändert“","100 % offline, kein Konto, kein Server – Einträge bleiben im Browser und lassen sich als Datei sichern"]},
+  url:TL+"zugangsdaten-mappe.html",online:"use",
+  thumb:["linear-gradient(135deg,#1c1428,#2a1f3d)",mock("#a78bfa",`<div style="display:flex;height:5px;border-radius:3px;overflow:hidden;margin-bottom:10px"><div style="flex:1;background:#2563eb"></div><div style="flex:1;background:#0f766e"></div><div style="flex:1;background:#c2410c"></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:10px">${["#2563eb","#0f766e","#c2410c","#c2410c"].map(c=>`<div style="border:1px solid #ffffff20;border-left:3px solid ${c};border-radius:4px;padding:5px"><div class="mock-line" style="width:70%;background:#ffffff30;margin:0 0 5px"></div><div style="height:9px;border:1px dashed ${c};border-radius:3px"></div></div>`).join("")}</div><div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#8b5cf6,#a78bfa);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;font-family:Outfit,sans-serif;font-weight:700">⬇ PDF</div><div class="mock-btn" style="background:#ffffff10"></div></div>`,"🔐 Zugangsdaten","#211a30")]},
+
+scan:{type:"app",tag:{en:"How-to Guide",de:"Anleitung"},
+  title:{en:"Document Scan to USB Stick",de:"Dokumentenscan auf USB-Stick"},badge:[{en:"🇩🇪 DE only",de:"🇩🇪 Nur DE"},"b-de"],
+  short:{en:"Scan a stack of loose pages double-sided into one PDF on a USB stick — at the school copier, no computer needed.",de:"Einen Stapel loser Blätter beidseitig in eine PDF auf dem USB-Stick scannen — am Schulkopierer, ganz ohne Computer."},
+  desc:{en:"A step-by-step guide for the school's Triumph-Adler copier: scan a stack of loose pages double-sided into a single PDF and save it straight to a USB stick, no computer needed.",de:"Schritt-für-Schritt-Anleitung für den Triumph-Adler-Kopierer der Schule: einen Stapel loser Blätter beidseitig in eine einzige PDF scannen und direkt auf einem USB-Stick speichern, ganz ohne Computer."},
+  features:{en:["One-page PDF guide to print and hang next to the copier","Clickable step-by-step slides: each step shows a display sketch with the button to tap highlighted","Branches for large stacks (continuous scan), colour vs. black-and-white, paper jams and upside-down back pages","Ends with safely removing the stick and logging out"],de:["Einseitige PDF-Anleitung zum Ausdrucken und Aufhängen neben dem Kopierer","Klickbare Schritt-Slides: jeder Schritt zeigt eine Display-Skizze, die zu tippende Taste ist markiert","Verzweigungen für große Stapel (kontinuierlicher Scan), Farbe oder Schwarzweiß, Papierstau und Rückseiten auf dem Kopf","Endet mit dem sicheren Entfernen des Sticks und dem Abmelden"]},
+  url:TL+"dokumentenscan.html",download:TL+"dokumentenscan-anleitung.pdf",online:"use",
+  labels:{download:{en:"⬇ PDF Guide",de:"⬇ PDF-Anleitung"},online:{en:"▶ Step by Step",de:"▶ Schritt für Schritt"}},
+  thumb:["linear-gradient(135deg,#1c1428,#2a1f3d)",mock("#a78bfa",`<div style="display:grid;grid-template-columns:1fr 34px;gap:5px;margin-bottom:10px"><div style="background:#ffffff14;border-radius:4px;padding:6px;display:grid;grid-template-columns:1fr 1fr;gap:4px"><div style="height:12px;border-radius:3px;background:#ffffff18"></div><div style="height:12px;border-radius:3px;background:#f59e0b40;border:1.5px solid #f59e0b"></div><div style="height:12px;border-radius:3px;background:#ffffff18"></div><div style="height:12px;border-radius:3px;background:#ffffff18"></div></div><div style="display:flex;flex-direction:column;gap:3px"><div style="height:7px;border-radius:2px;background:#ffffff20"></div><div style="height:7px;border-radius:2px;background:#b91c1c"></div><div style="flex:1;border-radius:3px;background:#1d4ed8"></div></div></div><div class="mock-btn-row"><div class="mock-btn" style="background:linear-gradient(135deg,#8b5cf6,#a78bfa);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;font-family:Outfit,sans-serif;font-weight:700">1 → 10</div><div class="mock-btn" style="background:#ffffff10"></div></div>`,"📄 Dokumentenscan","#211a30")]}
+};
+
+/* ═══════════ RENDERING ═══════════ */
 let curLang='en';
+const L=o=>o==null?"":typeof o==="string"?o:(o[curLang]??o.en);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const subjectOf={};SUBJECTS.forEach(s=>{const walk=id=>{subjectOf[id]=s.id;(ITEMS[id].children||[]).forEach(walk);};s.items.forEach(walk);});
+const parentOf={};Object.entries(ITEMS).forEach(([id,it])=>(it.children||[]).forEach(c=>parentOf[c]=id));
+function leafCount(ids){return ids.reduce((n,id)=>n+(ITEMS[id].type==="folder"?leafCount(ITEMS[id].children):1),0);}
+function countLabel(n){return `${n} ${n===1?T[curLang].ui.app:T[curLang].ui.apps}`;}
+function badge(it){return it.badge?` <span class="skill-badge ${it.badge[1]}">${L(it.badge[0])}</span>`:"";}
+
+function tileHTML(id){
+  const it=ITEMS[id],f=it.type==="folder",ui=T[curLang].ui;
+  return `<button class="tool-tile ${subjectOf[id]}${f?" folder":""}" data-open="${id}" aria-label="${esc(L(it.title))}">
+    <div class="thumb" style="background:${it.thumb[0]}">${it.thumb[1]}</div>
+    <div class="tt-body"><div class="tt-tag">${L(it.tag)}</div><h4>${L(it.title)}${badge(it)}</h4><p>${L(it.short)}</p></div>
+    <div class="tt-foot">${f?`<span class="folder-chip">📁 ${countLabel(leafCount(it.children))}</span><span class="tt-open">${ui.openFolder}</span>`:`<span></span><span class="tt-open">${ui.details}</span>`}</div>
+  </button>`;
+}
+function renderSubjects(){
+  document.getElementById("subjectsGrid").innerHTML=SUBJECTS.map(s=>{
+    const n=leafCount(s.items);
+    return `<a href="#cat-${s.id}" class="subject-tile ${s.id}"><span class="subject-icon">${s.icon}</span><h3 class="subject-title">${L(s.title)}</h3><p class="subject-subtitle">${L(s.sub)}</p><span class="subject-count">${countLabel(n)}${s.range?" · "+L(s.range):""}</span><span class="subject-arrow">↓</span></a>`;
+  }).join("");
+  document.getElementById("catalog").innerHTML=SUBJECTS.map((s,i)=>`<div class="category-header ${s.id}${i?"":" first"}" id="cat-${s.id}"><span class="category-icon">${s.icon}</span><h3 class="category-name">${L(s.title)}</h3><span class="category-meta">${countLabel(leafCount(s.items))}${s.range?" · "+L(s.range):""}</span></div><div class="tile-grid">${s.items.map(tileHTML).join("")}</div>`).join("");
+}
+
+/* Viewer: #open=<id> in the URL, so a tile can be linked directly and the back button closes it */
+const viewer=document.getElementById("viewer");
+function appHTML(id){
+  const it=ITEMS[id],ui=T[curLang].ui,dl=it.download||it.url;
+  const dlAttr=it.dlName?`download="${esc(it.dlName)}"`:"download";
+  let h=`<div class="v-app"><div class="app-preview" style="background:${it.thumb[0]}">${it.thumb[1]}</div><div class="app-info ${subjectOf[id]}">
+    <div class="tt-tag">${L(it.tag)}</div><h3 id="viewerTitle">${L(it.title)}${badge(it)}</h3><p>${L(it.desc)}</p>
+    <ul class="app-features">${(it.features[curLang]||it.features.en).map(x=>`<li>${x}</li>`).join("")}</ul>
+    <div class="download-row"><a href="${dl}" ${dlAttr} class="btn btn-primary">${it.labels?L(it.labels.download):ui.download}</a><a href="${it.url}" target="_blank" rel="noopener" class="btn btn-play">${it.labels?L(it.labels.online):ui[it.online]}</a><a href="#support" class="btn btn-secondary" data-close>${ui.tip}</a></div>`;
+  if(it.extras)h+=`<div class="extras"><h5>${ui.extras}</h5>${it.extras.map(x=>`<a href="${x.href}" download="${esc(x.name)}"><span>${x.icon}</span><span>${L(x.label)}</span><small>${x.meta}</small></a>`).join("")}</div>`;
+  if(it.note)h+=`<p class="note">ℹ️ ${L(it.note)}</p>`;
+  return h+`</div></div>`;
+}
+function folderHTML(id){
+  const it=ITEMS[id];
+  return `<div class="v-folder"><div class="v-folder-head"><span class="category-icon">📁</span><div><div class="tt-tag ${subjectOf[id]}" style="color:var(--tile-c1)">${L(it.tag)}</div><h3 id="viewerTitle">${L(it.title)}</h3><p>${L(it.desc)}</p></div></div><div class="tile-grid">${it.children.map(tileHTML).join("")}</div></div>`;
+}
+function showItem(id){
+  if(!ITEMS[id]){if(viewer.open)viewer.close();return;}
+  const it=ITEMS[id],subj=SUBJECTS.find(s=>s.id===subjectOf[id]),p=parentOf[id];
+  document.getElementById("vCrumbs").innerHTML=[L(subj.title),p?L(ITEMS[p].title):null,`<b>${L(it.title)}</b>`].filter(Boolean).join(" › ");
+  const back=document.getElementById("vBack");back.hidden=!p;back.textContent="← "+(p?L(ITEMS[p].title):"");back.dataset.open=p||"";
+  document.getElementById("vClose").setAttribute("aria-label",T[curLang].ui.close);
+  document.getElementById("vBody").innerHTML=it.type==="folder"?folderHTML(id):appHTML(id);
+  viewer.scrollTop=0;
+  if(!viewer.open)viewer.showModal();
+}
+function currentOpen(){const m=location.hash.match(/^#open=([\w-]+)$/);return m?m[1]:null;}
+// one history entry per dialog session: navigating inside the open dialog replaces it, so closing = one step back
+function openItem(id){if(currentOpen()===id)return;if(viewer.open&&history.state&&history.state.cs)history.replaceState({cs:1},"","#open="+id);else history.pushState({cs:1},"","#open="+id);showItem(id);}
+function closeViewer(){if(currentOpen()){if(history.state&&history.state.cs)history.back();else{history.replaceState(null,"",location.pathname+location.search);viewer.close();}}else viewer.close();}
+window.addEventListener("popstate",()=>{const id=currentOpen();if(id)showItem(id);else if(viewer.open)viewer.close();});
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-open]");
+  if(t&&t.dataset.open){e.preventDefault();openItem(t.dataset.open);return;}
+  const c=e.target.closest("[data-close]");
+  if(c){e.preventDefault();viewer.close();history.replaceState(null,"",c.getAttribute("href"));document.querySelector(c.getAttribute("href")).scrollIntoView({behavior:"smooth"});}
+});
+document.getElementById("vClose").addEventListener("click",closeViewer);
+viewer.addEventListener("cancel",e=>{e.preventDefault();closeViewer();});
+viewer.addEventListener("click",e=>{if(e.target===viewer)closeViewer();});
+
 function setLang(l){
   curLang=l;
   document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.textContent.trim()===l.toUpperCase())});
@@ -1199,7 +728,12 @@ function setLang(l){
     const key=el.getAttribute('data-t');
     if(T[l]&&T[l][key]) el.innerHTML=T[l][key];
   });
+  renderSubjects();
+  if(viewer.open&&currentOpen())showItem(currentOpen());
 }
+
+renderSubjects();
+if(currentOpen())showItem(currentOpen());
 
 // Scroll reveal
 const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
