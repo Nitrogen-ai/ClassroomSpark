@@ -200,13 +200,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,253,247,
 .about-text h3{font-size:1.4rem;margin-bottom:12px}
 .about-text p{color:var(--ink2);font-size:1rem}
 
-/* Tip */
-.tip-section{text-align:center;background:linear-gradient(170deg,var(--sparkGlow),var(--bg));padding:80px 32px}
-.tip-box{max-width:600px;margin:0 auto;background:var(--card);border-radius:20px;padding:48px;box-shadow:var(--shadow);border:2px solid rgba(245,158,11,.15)}
-.tip-box h2{font-size:1.8rem;margin-bottom:12px}
-.tip-box p{color:var(--ink2);margin-bottom:28px;font-size:1rem}
-.tip-link{display:inline-flex;align-items:center;gap:10px;padding:16px 36px;border-radius:14px;background:linear-gradient(135deg,var(--spark),var(--spark2));color:#fff;font-family:'Outfit',sans-serif;font-weight:700;font-size:1.1rem;box-shadow:0 4px 20px rgba(245,158,11,.3);transition:all .3s;text-decoration:none}
-.tip-link:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(245,158,11,.4);color:#fff}
+/* Footer-Trinkgeld */
+.footer-tip{margin-top:14px;font-size:.75rem;opacity:.85}
+.footer-tip a{color:var(--ink2);text-decoration:underline;text-underline-offset:2px}
 
 /* Terms */
 .terms-content{max-width:700px;background:var(--surface);border-radius:16px;padding:36px;font-size:.92rem;color:var(--ink2);line-height:1.8}
@@ -234,7 +230,6 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
   .nav-links{display:none}
   .nav-inner{padding:14px 16px}
   .section{padding:60px 16px}
-  .tip-box{padding:32px 24px}
   .section-title{font-size:1.8rem}
   .subject-chooser{padding:60px 16px 10px}
   .category-header{flex-wrap:wrap;gap:10px;margin:44px 0 18px}
@@ -264,7 +259,6 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
         <a href="#subjects" data-t="navTools">Tools</a>
         <a href="#how" data-t="navHow">How It Works</a>
         <a href="#about" data-t="navAbout">About</a>
-        <a href="#support" data-t="navSupport">Support</a>
         <a href="#contact" data-t="navContact">Contact</a>
       </div>
       <div class="lang-toggle">
@@ -284,10 +278,9 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
   <div class="hero-content reveal">
     <div class="hero-badge" data-t="heroBadge">Free &amp; Open for Educators</div>
     <h1 data-t="heroTitle">Teaching tools that <span class="spark-word">spark</span> learning</h1>
-    <p data-t="heroSub">Handcrafted, offline-ready web apps for language, science and computer-science teachers. Free to download — powered by a tip-based honesty model.</p>
+    <p data-t="heroSub">Handcrafted, offline-ready web apps for language, science and computer-science teachers. Free to download, free to use.</p>
     <div class="hero-buttons">
       <a href="#subjects" class="btn btn-primary" data-t="heroCTA">⬇ Choose a Subject</a>
-      <a href="#support" class="btn btn-secondary" data-t="heroTip">☕ Leave a Tip</a>
     </div>
   </div>
 </section>
@@ -336,9 +329,9 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
         <p data-t="how2P">Open the file in any browser — Chrome, Firefox, Safari. Works offline, on any device.</p>
       </div>
       <div class="how-card reveal">
-        <div class="how-icon" style="background:rgba(245,158,11,.1)">☕</div>
-        <h4 data-t="how3T">3. Tip if You Like It</h4>
-        <p data-t="how3P">If a tool helps your teaching, consider a small tip. It's voluntary and based on the honesty principle.</p>
+        <div class="how-icon" style="background:rgba(245,158,11,.1)">🤝</div>
+        <h4 data-t="how3T">3. Share &amp; Adapt</h4>
+        <p data-t="how3P">Pass tools on to colleagues and tailor them to your class — that's what they're made for.</p>
       </div>
     </div>
   </div>
@@ -353,18 +346,9 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
       <div class="about-text">
         <h3 data-t="aboutH">Made by a Teacher, for Teachers</h3>
         <p data-t="aboutP1">ClassroomSpark is a personal project born from real classroom needs. Every tool is designed with pedagogical intent — thoughtful learning experiences that help students practise, make mistakes, and improve.</p>
-        <p style="margin-top:12px" data-t="aboutP2">The apps are crafted iteratively: conceived, tested, and refined until they work the way a good exercise should. They'll always be free to use. If you find them useful, a small tip helps keep the project going.</p>
+        <p style="margin-top:12px" data-t="aboutP2">The apps are crafted iteratively: conceived, tested, and refined until they work the way a good exercise should. They'll always be free to use.</p>
       </div>
     </div>
-  </div>
-</section>
-
-<section class="tip-section" id="support">
-  <div class="tip-box reveal">
-    <h2 data-t="tipH">☕ Support ClassroomSpark</h2>
-    <p data-t="tipP">These tools are free because education shouldn't have a paywall. If an app saved you preparation time or helped your students — a small tip goes a long way.</p>
-    <a href="https://buymeacoffee.com/nitrogen14" target="_blank" rel="noopener" class="tip-link">☕ Buy Me a Coffee</a>
-    <p style="margin-top:16px;font-size:.8rem;color:var(--ink3)" data-t="tipThx">Every tip — no matter the size — is genuinely appreciated. Thank you! 🙏</p>
   </div>
 </section>
 
@@ -377,8 +361,8 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
       <p data-t="t1p">All tools on ClassroomSpark are provided free of charge for personal and educational use. You may download, use, and share them with colleagues and students. You may adapt them for your own classroom needs.</p>
       <h4 data-t="t2h">Restrictions</h4>
       <p data-t="t2p">You may not resell these tools or claim them as your own creation. You may not redistribute modified versions under a different brand without attribution. Commercial use beyond individual classroom settings requires prior written consent.</p>
-      <h4 data-t="t3h">Tip-Based Model</h4>
-      <p data-t="t3p">ClassroomSpark operates on an honesty-based tip model. There is no obligation to pay, and all tools remain fully functional without payment. Tips are voluntary contributions to support ongoing development.</p>
+      <h4 data-t="t3h">Free of Charge</h4>
+      <p data-t="t3p">All tools are free of charge and fully functional. There is no obligation to pay — voluntary support is possible but never required.</p>
       <h4 data-t="t4h">Disclaimer</h4>
       <p data-t="t4p">Tools are provided "as is" without warranty. While great care is taken to ensure accuracy, no guarantee is made. Content may be updated or corrected at any time.</p>
       <h4 data-t="t5h">Privacy</h4>
@@ -402,76 +386,73 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
 <footer>
   <div class="footer-brand">✦ ClassroomSpark</div>
   <p style="margin-top:6px" data-t="footerP">Free learning tools for educators — built with care, shared with trust.</p>
+  <p class="footer-tip" id="support"><span data-t="footerTip">Found a tool useful? A voluntary tip is welcome</span> · <a href="https://buymeacoffee.com/nitrogen14" target="_blank" rel="noopener">☕ Buy Me a Coffee</a></p>
 </footer>
 
 
 <script>
 const T={
 en:{
-  navTools:"Tools",navHow:"How It Works",navAbout:"About",navSupport:"Support",navContact:"Contact",
+  navTools:"Tools",navHow:"How It Works",navAbout:"About",navContact:"Contact",
   heroBadge:"Free & Open for Educators",
   heroTitle:'Teaching tools that <span class="spark-word">spark</span> learning',
-  heroSub:"Handcrafted, offline-ready web apps for language, science and computer-science teachers. Free to download — powered by a tip-based honesty model.",
-  heroCTA:"⬇ Choose a Subject",heroTip:"☕ Leave a Tip",
+  heroSub:"Handcrafted, offline-ready web apps for language, science and computer-science teachers. Free to download, free to use.",
+  heroCTA:"⬇ Choose a Subject",
   secSubjects:"Subjects",secSubjectsTitle:"Choose your subject",
   secSubjectsSub:"Four areas, each with a set of focused apps. Pick one to browse the tools at a glance.",
   secTools:"Tools",secToolsTitle:"Learning Apps",
   secToolsSub:"Click a tile for details, downloads and the online version. Folders bundle related apps. Every app works offline — no accounts, no tracking, no ads.",
-  ui:{app:"app",apps:"apps",details:"Details →",openFolder:"Open folder →",download:"⬇ Download",play:"▶ Play Online",use:"▶ Use Online",tip:"☕ Tip",extras:"Extra downloads",close:"Close",back:"Back"},
+  ui:{app:"app",apps:"apps",details:"Details →",openFolder:"Open folder →",download:"⬇ Download",play:"▶ Play Online",use:"▶ Use Online",extras:"Extra downloads",close:"Close",back:"Back"},
   secHow:"Process",secHowTitle:"How It Works",secHowSub:"Three simple steps. No sign-up, no paywall, no strings attached.",
   how1T:"1. Download",how1P:"Grab any tool as a single HTML file. It's yours to keep, share, and adapt for your classroom.",
   how2T:"2. Open & Use",how2P:"Open the file in any browser — Chrome, Firefox, Safari. Works offline, on any device.",
-  how3T:"3. Tip if You Like It",how3P:"If a tool helps your teaching, consider a small tip. It's voluntary and based on the honesty principle.",
+  how3T:"3. Share &amp; Adapt",how3P:"Pass tools on to colleagues and tailor them to your class — that's what they're made for.",
   secAbout:"About",secAboutTitle:"Behind ClassroomSpark",
   aboutH:"Made by a Teacher, for Teachers",
   aboutP1:"ClassroomSpark is a personal project born from real classroom needs. Every tool is designed with pedagogical intent — thoughtful learning experiences that help students practise, make mistakes, and improve.",
-  aboutP2:"The apps are crafted iteratively: conceived, tested, and refined until they work the way a good exercise should. They'll always be free to use. If you find them useful, a small tip helps keep the project going.",
-  tipH:"☕ Support ClassroomSpark",tipP:"These tools are free because education shouldn't have a paywall. If an app saved you preparation time or helped your students — a small tip goes a long way.",
-  tipThx:"Every tip — no matter the size — is genuinely appreciated. Thank you! 🙏",
+  aboutP2:"The apps are crafted iteratively: conceived, tested, and refined until they work the way a good exercise should. They'll always be free to use.",
   secTerms:"Legal",secTermsTitle:"Terms of Use",
   t1h:"Usage Rights",t1p:"All tools on ClassroomSpark are provided free of charge for personal and educational use. You may download, use, and share them with colleagues and students. You may adapt them for your own classroom needs.",
   t2h:"Restrictions",t2p:"You may not resell these tools or claim them as your own creation. You may not redistribute modified versions under a different brand without attribution. Commercial use beyond individual classroom settings requires prior written consent.",
-  t3h:"Tip-Based Model",t3p:"ClassroomSpark operates on an honesty-based tip model. There is no obligation to pay, and all tools remain fully functional without payment. Tips are voluntary contributions to support ongoing development.",
+  t3h:"Free of Charge",t3p:"All tools are free of charge and fully functional. There is no obligation to pay — voluntary support is possible but never required.",
   t4h:"Disclaimer",t4p:'Tools are provided "as is" without warranty. While great care is taken to ensure accuracy, no guarantee is made. Content may be updated or corrected at any time.',
   t5h:"Privacy",t5p:"ClassroomSpark tools run entirely in your browser. No data is collected, transmitted, or stored on any server. Your students' information stays on your device.",
   secContact:"Contact",secContactTitle:"Get in Touch",
   contactP:"Have a suggestion, found a bug, or want to request a new tool? I'd love to hear from you.",
   contactHint:'Reach out via the contact form on <strong>Buy Me a Coffee</strong>',
   contactSub:"I read and reply to every message.",
-  footerP:"Free learning tools for educators — built with care, shared with trust.",
+  footerP:"Free learning tools for educators — built with care, shared with trust.",footerTip:"Found a tool useful? A voluntary tip is welcome",
 },
 de:{
-  navTools:"Tools",navHow:"So funktioniert's",navAbout:"Über uns",navSupport:"Unterstützen",navContact:"Kontakt",
+  navTools:"Tools",navHow:"So funktioniert's",navAbout:"Über uns",navContact:"Kontakt",
   heroBadge:"Kostenlos & offen für Lehrkräfte",
   heroTitle:'Lerntools, die den Unterricht <span class="spark-word">bereichern</span>',
-  heroSub:"Handgemachte, offline-fähige Web-Apps für Sprach-, Naturwissenschafts- und Informatiklehrkräfte. Kostenlos herunterladen — getragen von einem Trinkgeld-Modell auf Vertrauensbasis.",
-  heroCTA:"⬇ Fach auswählen",heroTip:"☕ Trinkgeld geben",
+  heroSub:"Handgemachte, offline-fähige Web-Apps für Lehrpersonen in Sprachen, Naturwissenschaften und Informatik. Kostenlos herunterladen, kostenlos nutzen.",
+  heroCTA:"⬇ Fach auswählen",
   secSubjects:"Fächer",secSubjectsTitle:"Wähle dein Fach",
   secSubjectsSub:"Vier Bereiche mit jeweils einer Reihe fokussierter Apps. Wähle einen aus und sieh alle Tools auf einen Blick.",
   secTools:"Tools",secToolsTitle:"Lern-Apps",
   secToolsSub:"Kachel anklicken für Details, Downloads und die Online-Version. Ordner bündeln zusammengehörige Apps. Jede App funktioniert offline — kein Konto, kein Tracking, keine Werbung.",
-  ui:{app:"App",apps:"Apps",details:"Details →",openFolder:"Ordner öffnen →",download:"⬇ Download",play:"▶ Online spielen",use:"▶ Online nutzen",tip:"☕ Trinkgeld",extras:"Zusätzliche Downloads",close:"Schließen",back:"Zurück"},
+  ui:{app:"App",apps:"Apps",details:"Details →",openFolder:"Ordner öffnen →",download:"⬇ Download",play:"▶ Online spielen",use:"▶ Online nutzen",extras:"Zusätzliche Downloads",close:"Schließen",back:"Zurück"},
   secHow:"Ablauf",secHowTitle:"So funktioniert's",secHowSub:"Drei einfache Schritte. Keine Anmeldung, keine Paywall, keine Haken.",
   how1T:"1. Herunterladen",how1P:"Jedes Tool als einzelne HTML-Datei speichern. Behalten, teilen und für den eigenen Unterricht anpassen.",
   how2T:"2. Öffnen & Nutzen",how2P:"Die Datei in einem beliebigen Browser öffnen — Chrome, Firefox, Safari. Funktioniert offline, auf jedem Gerät.",
-  how3T:"3. Trinkgeld, wenn es gefällt",how3P:"Wenn ein Tool den Unterricht bereichert, freue ich mich über ein kleines Trinkgeld. Freiwillig und auf Vertrauensbasis.",
+  how3T:"3. Teilen &amp; anpassen",how3P:"Tools an Kolleg:innen weitergeben und an die eigene Klasse anpassen — genau dafür sind sie gemacht.",
   secAbout:"Über uns",secAboutTitle:"Hinter ClassroomSpark",
   aboutH:"Von einer Lehrperson, für Lehrpersonen",
   aboutP1:"ClassroomSpark ist ein persönliches Projekt, das aus echten Bedürfnissen im Unterricht entstanden ist. Jedes Tool ist pädagogisch durchdacht — durchdachte Lernübungen, die Schülerinnen und Schülern helfen, zu üben, Fehler zu machen und sich zu verbessern.",
-  aboutP2:"Die Apps werden iterativ entwickelt: konzipiert, getestet und verfeinert, bis sie so funktionieren, wie eine gute Übung es sollte. Sie werden immer kostenlos bleiben. Ein kleines Trinkgeld hilft, das Projekt am Laufen zu halten.",
-  tipH:"☕ ClassroomSpark unterstützen",tipP:"Diese Tools sind kostenlos, weil Bildung keine Paywall haben sollte. Wenn eine App Vorbereitungszeit gespart oder Schülern geholfen hat — ein kleines Trinkgeld macht einen großen Unterschied.",
-  tipThx:"Jedes Trinkgeld — egal wie klein — wird aufrichtig geschätzt. Vielen Dank! 🙏",
+  aboutP2:"Die Apps werden iterativ entwickelt: konzipiert, getestet und verfeinert, bis sie so funktionieren, wie eine gute Übung es sollte. Sie werden immer kostenlos bleiben.",
   secTerms:"Rechtliches",secTermsTitle:"Nutzungsbedingungen",
   t1h:"Nutzungsrechte",t1p:"Alle Tools auf ClassroomSpark werden kostenlos für den persönlichen und schulischen Gebrauch bereitgestellt. Sie dürfen heruntergeladen, genutzt und mit Kolleginnen, Kollegen und Schülern geteilt werden. Anpassungen für den eigenen Unterricht sind erlaubt.",
   t2h:"Einschränkungen",t2p:"Die Tools dürfen nicht weiterverkauft oder als eigenes Werk ausgegeben werden. Veränderte Versionen dürfen nicht ohne Quellenangabe unter einem anderen Namen verbreitet werden. Kommerzielle Nutzung über den eigenen Unterricht hinaus bedarf der vorherigen schriftlichen Zustimmung.",
-  t3h:"Trinkgeld-Modell",t3p:"ClassroomSpark basiert auf einem ehrlichen Trinkgeld-Modell. Es gibt keine Zahlungspflicht, und alle Tools funktionieren vollständig ohne Bezahlung. Trinkgelder sind freiwillige Beiträge zur Unterstützung der Weiterentwicklung.",
+  t3h:"Kostenlos",t3p:"Alle Tools sind kostenlos und voll funktionsfähig. Es gibt keine Zahlungspflicht — freiwillige Unterstützung ist möglich, aber nie Voraussetzung.",
   t4h:"Haftungsausschluss",t4p:"Die Tools werden ohne Gewährleistung bereitgestellt. Obwohl große Sorgfalt auf Richtigkeit gelegt wird, kann keine Garantie gegeben werden. Inhalte können jederzeit aktualisiert oder korrigiert werden.",
   t5h:"Datenschutz",t5p:"ClassroomSpark-Tools laufen vollständig im Browser. Es werden keine Daten erhoben, übertragen oder auf einem Server gespeichert. Die Daten Ihrer Schüler bleiben auf Ihrem Gerät.",
   secContact:"Kontakt",secContactTitle:"Kontakt aufnehmen",
   contactP:"Vorschlag, Fehler gefunden oder ein neues Tool gewünscht? Ich freue mich über jede Nachricht.",
   contactHint:'Kontaktformular auf <strong>Buy Me a Coffee</strong> nutzen',
   contactSub:"Ich lese und beantworte jede Nachricht.",
-  footerP:"Kostenlose Lerntools für Lehrkräfte — mit Sorgfalt gebaut, mit Vertrauen geteilt.",
+  footerP:"Kostenlose Lerntools für Lehrpersonen — mit Sorgfalt gebaut, mit Vertrauen geteilt.",footerTip:"Ein Tool hat geholfen? Über ein freiwilliges Trinkgeld freue ich mich",
 }
 };
 
@@ -686,7 +667,7 @@ function appHTML(id){
   let h=`<div class="v-app"><div class="app-preview" style="background:${it.thumb[0]}">${it.thumb[1]}</div><div class="app-info ${subjectOf[id]}">
     <div class="tt-tag">${L(it.tag)}</div><h3 id="viewerTitle">${L(it.title)}${badge(it)}</h3><p>${L(it.desc)}</p>
     <ul class="app-features">${(it.features[curLang]||it.features.en).map(x=>`<li>${x}</li>`).join("")}</ul>
-    <div class="download-row"><a href="${dl}" ${dlAttr} class="btn btn-primary">${it.labels?L(it.labels.download):ui.download}</a><a href="${it.url}" target="_blank" rel="noopener" class="btn btn-play">${it.labels?L(it.labels.online):ui[it.online]}</a><a href="#support" class="btn btn-secondary" data-close>${ui.tip}</a></div>`;
+    <div class="download-row"><a href="${dl}" ${dlAttr} class="btn btn-primary">${it.labels?L(it.labels.download):ui.download}</a><a href="${it.url}" target="_blank" rel="noopener" class="btn btn-play">${it.labels?L(it.labels.online):ui[it.online]}</a></div>`;
   if(it.extras)h+=`<div class="extras"><h5>${ui.extras}</h5>${it.extras.map(x=>`<a href="${x.href}" download="${esc(x.name)}"><span>${x.icon}</span><span>${L(x.label)}</span><small>${x.meta}</small></a>`).join("")}</div>`;
   if(it.note)h+=`<p class="note">ℹ️ ${L(it.note)}</p>`;
   return h+`</div></div>`;
