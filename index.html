@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -262,8 +262,8 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
         <a href="#contact" data-t="navContact">Contact</a>
       </div>
       <div class="lang-toggle">
-        <button class="lang-btn active" onclick="setLang('en')">EN</button>
-        <button class="lang-btn" onclick="setLang('de')">DE</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+        <button class="lang-btn active" onclick="setLang('de')">DE</button>
       </div>
     </div>
   </div>
@@ -636,7 +636,7 @@ scan:{type:"app",tag:{en:"How-to Guide",de:"Anleitung"},
 };
 
 /* ═══════════ RENDERING ═══════════ */
-let curLang='en';
+let curLang='de';
 const L=o=>o==null?"":typeof o==="string"?o:(o[curLang]??o.en);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const subjectOf={};SUBJECTS.forEach(s=>{const walk=id=>{subjectOf[id]=s.id;(ITEMS[id].children||[]).forEach(walk);};s.items.forEach(walk);});
@@ -715,7 +715,7 @@ function setLang(l){
   if(viewer.open&&currentOpen())showItem(currentOpen());
 }
 
-renderSubjects();
+setLang(curLang);
 if(currentOpen())showItem(currentOpen());
 
 // Scroll reveal
