@@ -22,6 +22,25 @@ h1,h2,h3,h4{font-family:'Outfit',sans-serif;line-height:1.2}
 a{color:var(--spark2);text-decoration:none;transition:color .2s}
 a:hover{color:var(--coral)}
 .reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+/* Öko-Steckbrief */
+.eco-tile{margin-top:8px;font-family:'Outfit',sans-serif;font-size:.74rem;font-weight:600;color:#047857;background:rgba(16,185,129,.10);border-radius:6px;padding:3px 8px;display:inline-block}
+.eco-vs{opacity:.6;font-weight:400;margin:0 2px}
+.eco-card{margin:12px 0 16px;padding:12px 14px;border:1px solid rgba(16,185,129,.35);border-radius:12px;background:rgba(16,185,129,.06);font-family:'Outfit',sans-serif;font-size:.85rem;color:var(--ink)}
+.eco-head{font-weight:700;margin-bottom:8px}.eco-head span{font-weight:400;opacity:.75}
+.eco-row{display:grid;grid-template-columns:1.6em 1fr auto auto;gap:4px 10px;align-items:baseline;padding:3px 0}
+.eco-eq{grid-column:2/-1;font-size:.75rem;opacity:.65;margin-top:-2px}
+.eco-ai .eco-v{color:#C2410C;font-weight:600}
+.eco-sub{border-top:1px dashed rgba(127,127,127,.3);margin-top:4px;padding-top:6px}
+.eco-note{font-size:.75rem;opacity:.7;margin-top:6px}
+.eco-warn{font-size:.78rem;margin-top:6px;color:#B45309}
+.eco-more{display:inline-block;margin-top:6px;font-size:.75rem}
+.eco-folder{margin-top:8px}
+.eco-facts{max-width:820px;margin:32px auto 0;background:var(--card);border-radius:16px;padding:28px 32px;font-size:.92rem;color:var(--ink2);line-height:1.75;box-shadow:var(--shadow)}
+.eco-facts h4{font-family:'Outfit',sans-serif;color:var(--ink);margin:0 0 8px}
+.eco-facts ul{padding-left:20px;margin-bottom:16px}
+.eco-facts .eco-src{font-size:.8rem;color:var(--ink3)}
+.eco-facts .eco-src a{word-break:break-word}
+@media (max-width:480px){.eco-row{grid-template-columns:1.6em 1fr}.eco-v{grid-column:2}.eco-facts{padding:20px}}
 .reveal.visible{opacity:1;transform:translateY(0)}
 
 /* Nav */
@@ -258,6 +277,7 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
       <div class="nav-links">
         <a href="#subjects" data-t="navTools">Tools</a>
         <a href="#how" data-t="navHow">How It Works</a>
+        <a href="#eco" data-t="navEco">Eco</a>
         <a href="#about" data-t="navAbout">About</a>
         <a href="#contact" data-t="navContact">Contact</a>
       </div>
@@ -321,7 +341,7 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
       <div class="how-card reveal">
         <div class="how-icon" style="background:rgba(14,165,233,.1)">⬇</div>
         <h4 data-t="how1T">1. Download</h4>
-        <p data-t="how1P">Grab any tool as a single HTML file. It's yours to keep, share, and adapt for your classroom.</p>
+        <p data-t="how1P">Grab any tool as a single HTML file. It's yours to keep, share, and adapt for your classroom. Download once, use as often as you like, with almost no electricity or water used in the network.</p>
       </div>
       <div class="how-card reveal">
         <div class="how-icon" style="background:rgba(16,185,129,.1)">🌐</div>
@@ -334,6 +354,32 @@ footer .footer-brand{font-weight:700;color:var(--ink2)}
         <p data-t="how3P">Pass tools on to colleagues and tailor them to your class — that's what they're made for.</p>
       </div>
     </div>
+  </div>
+</section>
+
+<section class="section" id="eco">
+  <div class="section-inner">
+    <div class="section-label reveal" data-t="secEco">Sustainability</div>
+    <h2 class="section-title reveal" data-t="secEcoTitle">🌱 Why offline?</h2>
+    <p class="section-subtitle reveal" data-t="secEcoSub">Every app shows an eco profile: how much electricity and cooling water is used outside your own device if you do the same task offline, online or via an AI chat. An estimate, not a life-cycle assessment.</p>
+    <div class="how-grid">
+      <div class="how-card reveal">
+        <div class="how-icon" style="background:rgba(16,185,129,.1)">⬇️</div>
+        <h4 data-t="eco1T">Offline file</h4>
+        <p data-t="eco1P">Downloaded once (file size × 0.114 Wh/MB), then everything runs locally. Passing it on via USB, AirDrop or the school network costs practically nothing.</p>
+      </div>
+      <div class="how-card reveal">
+        <div class="how-icon" style="background:rgba(14,165,233,.1)">🌐</div>
+        <h4 data-t="eco2T">Online (GitHub Pages)</h4>
+        <p data-t="eco2P">Every device loads the page once per session: file size × number of devices × 0.114 Wh/MB.</p>
+      </div>
+      <div class="how-card reveal">
+        <div class="how-icon" style="background:rgba(239,68,68,.1)">🤖</div>
+        <h4 data-t="eco3T">Same task via AI chat</h4>
+        <p data-t="eco3P">ChatGPT, Gemini, Claude and others: 0.3 Wh per text prompt, 2.5 Wh with an attached PDF or list, 1.35 Wh per AI image.</p>
+      </div>
+    </div>
+    <div class="eco-facts reveal" data-t="ecoFacts"></div>
   </div>
 </section>
 
@@ -404,9 +450,22 @@ en:{
   secToolsSub:"Click a tile for details, downloads and the online version. Folders bundle related apps. Every app works offline — no accounts, no tracking, no ads.",
   ui:{app:"app",apps:"apps",details:"Details →",openFolder:"Open folder →",download:"⬇ Download",play:"▶ Play Online",use:"▶ Use Online",extras:"Extra downloads",close:"Close",back:"Back"},
   secHow:"Process",secHowTitle:"How It Works",secHowSub:"Three simple steps. No sign-up, no paywall, no strings attached.",
-  how1T:"1. Download",how1P:"Grab any tool as a single HTML file. It's yours to keep, share, and adapt for your classroom.",
+  how1T:"1. Download",how1P:"Grab any tool as a single HTML file. It's yours to keep, share, and adapt for your classroom. Download once, use as often as you like, with almost no electricity or water used in the network.",
   how2T:"2. Open & Use",how2P:"Open the file in any browser — Chrome, Firefox, Safari. Works offline, on any device.",
   how3T:"3. Share &amp; Adapt",how3P:"Pass tools on to colleagues and tailor them to your class — that's what they're made for.",
+  navEco:"Eco",secEco:"Sustainability",secEcoTitle:"🌱 Why offline?",
+  secEcoSub:"Every app shows an eco profile: how much electricity and cooling water is used outside your own device if you do the same task offline, online or via an AI chat. An estimate, not a life-cycle assessment.",
+  eco1T:"Offline file",eco1P:"Downloaded once (file size × 0.114 Wh/MB), then everything runs locally. Passing it on via USB, AirDrop or the school network costs practically nothing.",
+  eco2T:"Online (GitHub Pages)",eco2P:"Every device loads the page once per session: file size × number of devices × 0.114 Wh/MB.",
+  eco3T:"Same task via AI chat",eco3P:"ChatGPT, Gemini, Claude and others: 0.3 Wh per text prompt, 2.5 Wh with an attached PDF or list, 1.35 Wh per AI image.",
+  ecoFacts:`<h4>What is counted, and what is not</h4><ul>
+<li>Only the <em>additional</em> consumption outside your device. Your laptop, iPad or phone runs equally long in all three scenarios, so it cancels out.</li>
+<li>Not included: manufacturing the hardware and training the AI models. Both would make the AI values <em>higher</em>, so they are conservative.</li>
+<li>Water: only cooling water in the data centre (about 1 mL per Wh). Including power generation it is roughly 3 to 4 times as much, equally for all scenarios.</li>
+<li>Per-megabyte network factors are disputed; 0.114 Wh/MB is rather an upper bound, so the offline and online values tend to be too high.</li>
+<li>AI values vary a lot with model, answer length, chat length (the history is sent along every time) and reasoning mode. 0.3 Wh is a favourable case. Prompt counts are reasoned assumptions, not measurements.</li>
+<li>For scale: 1 smartphone charge ≈ 19 Wh · a 10 W LED lamp uses 1 Wh in 6 minutes · 1 drop ≈ 0.05 mL.</li></ul>
+<h4>Sources</h4><p class="eco-src"><a href="https://arxiv.org/abs/2508.15734" target="_blank" rel="noopener">Google 2025, Measuring the environmental impact of delivering AI at Google scale</a> · <a href="https://epoch.ai/gradient-updates/how-much-energy-does-chatgpt-use" target="_blank" rel="noopener">Epoch AI, How much energy does ChatGPT use?</a> · <a href="https://arxiv.org/abs/2311.16863" target="_blank" rel="noopener">Luccioni et al. 2024, Power Hungry Processing</a> · <a href="https://arxiv.org/abs/2506.17016" target="_blank" rel="noopener">Bertazzini et al. 2025</a> · <a href="https://sustainablewebdesign.org/estimating-digital-emissions/" target="_blank" rel="noopener">Sustainable Web Design Model v4</a> · <a href="https://hal-iogs.archives-ouvertes.fr/LP2N/hal-04631084v1" target="_blank" rel="noopener">Critique of kWh/GB factors (HAL)</a></p>`,
   secAbout:"About",secAboutTitle:"Behind ClassroomSpark",
   aboutH:"Made by a Teacher, for Teachers",
   aboutP1:"ClassroomSpark is a personal project born from real classroom needs. Every tool is designed with pedagogical intent — thoughtful learning experiences that help students practise, make mistakes, and improve.",
@@ -435,9 +494,22 @@ de:{
   secToolsSub:"Kachel anklicken für Details, Downloads und die Online-Version. Ordner bündeln zusammengehörige Apps. Jede App funktioniert offline — kein Konto, kein Tracking, keine Werbung.",
   ui:{app:"App",apps:"Apps",details:"Details →",openFolder:"Ordner öffnen →",download:"⬇ Download",play:"▶ Online spielen",use:"▶ Online nutzen",extras:"Zusätzliche Downloads",close:"Schließen",back:"Zurück"},
   secHow:"Ablauf",secHowTitle:"So funktioniert's",secHowSub:"Drei einfache Schritte. Keine Anmeldung, keine Paywall, keine Haken.",
-  how1T:"1. Herunterladen",how1P:"Jedes Tool als einzelne HTML-Datei speichern. Behalten, teilen und für den eigenen Unterricht anpassen.",
+  how1T:"1. Herunterladen",how1P:"Jedes Tool als einzelne HTML-Datei speichern. Behalten, teilen und für den eigenen Unterricht anpassen. Einmal laden, beliebig oft nutzen, nahezu ohne Strom- und Wasserverbrauch im Netz.",
   how2T:"2. Öffnen & Nutzen",how2P:"Die Datei in einem beliebigen Browser öffnen — Chrome, Firefox, Safari. Funktioniert offline, auf jedem Gerät.",
   how3T:"3. Teilen &amp; anpassen",how3P:"Tools an Kolleg:innen weitergeben und an die eigene Klasse anpassen — genau dafür sind sie gemacht.",
+  navEco:"Öko",secEco:"Nachhaltigkeit",secEcoTitle:"🌱 Warum offline?",
+  secEcoSub:"Jede App zeigt einen Öko-Steckbrief: Wie viel Strom und Kühlwasser fällt außerhalb des eigenen Geräts an, wenn dieselbe Aufgabe offline, online oder per KI-Chat erledigt wird? Eine Abschätzung, keine Ökobilanz.",
+  eco1T:"Offline-Datei",eco1P:"Einmal geladen (Dateigröße × 0,114 Wh/MB), danach läuft alles lokal. Weitergabe per USB, AirDrop oder Schulnetz kostet praktisch nichts.",
+  eco2T:"Online (GitHub Pages)",eco2P:"Jedes Gerät lädt die Seite einmal pro Sitzung: Dateigröße × Anzahl Geräte × 0,114 Wh/MB.",
+  eco3T:"Gleiche Aufgabe per KI-Chat",eco3P:"ChatGPT, Gemini, Claude und Co.: 0,3 Wh pro Text-Prompt, 2,5 Wh mit angehängter PDF oder Liste, 1,35 Wh pro KI-Bild.",
+  ecoFacts:`<h4>Was gezählt wird und was nicht</h4><ul>
+<li>Nur der <em>zusätzliche</em> Verbrauch außerhalb des eigenen Geräts. Laptop, iPad oder Handy laufen in allen drei Szenarien gleich lang, das kürzt sich heraus.</li>
+<li>Nicht enthalten: Herstellung der Hardware und Training der KI-Modelle. Beides würde die KI-Werte <em>erhöhen</em>, sie sind also eher konservativ.</li>
+<li>Wasser: nur Kühlwasser im Rechenzentrum (etwa 1 mL pro Wh). Mit der Stromerzeugung grob das 3- bis 4-Fache, für alle Szenarien gleich.</li>
+<li>Netzfaktoren pro Megabyte sind umstritten; 0,114 Wh/MB ist eher eine Obergrenze, die Offline- und Online-Werte sind also eher zu hoch angesetzt.</li>
+<li>KI-Werte schwanken stark mit Modell, Antwortlänge, Chatlänge (der Verlauf wird jedes Mal mitgeschickt) und Reasoning-Modus. 0,3 Wh ist ein günstiger Fall. Prompt-Anzahlen sind begründete Annahmen, keine Messung.</li>
+<li>Zum Vergleich: 1 Smartphone-Ladung ≈ 19 Wh · eine 10-W-LED-Lampe braucht 1 Wh in 6 Minuten · 1 Tropfen ≈ 0,05 mL.</li></ul>
+<h4>Quellen</h4><p class="eco-src"><a href="https://arxiv.org/abs/2508.15734" target="_blank" rel="noopener">Google 2025, Measuring the environmental impact of delivering AI at Google scale</a> · <a href="https://epoch.ai/gradient-updates/how-much-energy-does-chatgpt-use" target="_blank" rel="noopener">Epoch AI, How much energy does ChatGPT use?</a> · <a href="https://arxiv.org/abs/2311.16863" target="_blank" rel="noopener">Luccioni et al. 2024, Power Hungry Processing</a> · <a href="https://arxiv.org/abs/2506.17016" target="_blank" rel="noopener">Bertazzini et al. 2025</a> · <a href="https://sustainablewebdesign.org/estimating-digital-emissions/" target="_blank" rel="noopener">Sustainable Web Design Model v4</a> · <a href="https://hal-iogs.archives-ouvertes.fr/LP2N/hal-04631084v1" target="_blank" rel="noopener">Kritik an kWh/GB-Faktoren (HAL)</a></p>`,
   secAbout:"Über uns",secAboutTitle:"Hinter ClassroomSpark",
   aboutH:"Von einer Lehrperson, für Lehrpersonen",
   aboutP1:"ClassroomSpark ist ein persönliches Projekt, das aus echten Bedürfnissen im Unterricht entstanden ist. Jedes Tool ist pädagogisch durchdacht — durchdachte Lernübungen, die Schülerinnen und Schülern helfen, zu üben, Fehler zu machen und sich zu verbessern.",
@@ -503,9 +575,9 @@ structures:{type:"folder",tag:{en:"English · Structures",de:"Englisch · Strukt
 
 participle:{type:"app",tag:{en:"English · Structures",de:"Englisch · Strukturen"},
   title:{en:"Participle Clause Trainer",de:"Participle Clause Trainer"},badge:[{en:"Year 9",de:"Klasse 9"},"b-en"],
-  short:{en:"Shorten, rewrite, fix and build sentences with participle clauses — six task types.",de:"Sätze mit Partizipialkonstruktionen kürzen, umformen, korrigieren und bauen — sechs Aufgabentypen."},
-  desc:{en:"Starts with “Why use participle clauses?”: a before/after comparison of a busy Mumbai platform and six reasons why -ing clauses make writing shorter, livelier and more natural. Then six task types train the structure step by step.",de:"Startet mit „Why use participle clauses?“: ein Vorher-Nachher-Vergleich an einem Bahnsteig in Mumbai und sechs Gründe, warum -ing-Konstruktionen Texte kürzer, lebendiger und natürlicher machen. Danach trainieren sechs Aufgabentypen die Struktur Schritt für Schritt."},
-  features:{en:["6 task types: shorten, rewrite, verb of perception + object + -ing, fix the mistake, word order, word bank","Motivating “Why?” intro (before/after + six arguments), remembered per browser","Spinning wheels, CSV import for student names, streaks & bonus points","Tick which task types to practise","Single offline HTML file"],de:["6 Aufgabentypen: kürzen, umformen, Wahrnehmungsverb + Objekt + -ing, Fehler korrigieren, Wortstellung, Wortbank","Motivierender „Why?“-Einstieg (Vorher/Nachher + sechs Argumente), wird pro Browser gemerkt","Glücksräder, CSV-Import für Namen, Streaks & Bonuspunkte","Aufgabentypen abhakbar","Eine einzige Offline-HTML-Datei"]},
+  short:{en:"Shorten, rewrite, fix and build sentences with participle clauses: relative, time and reason, eleven task types.",de:"Sätze mit Partizipialkonstruktionen kürzen, umformen, korrigieren und bauen: Relativ-, Zeit- und Begründungssätze, elf Aufgabentypen."},
+  desc:{en:"Starts with “Why use participle clauses?”: a before/after comparison of a busy Mumbai platform and six reasons why -ing clauses make writing shorter, livelier and more natural. A second part shows clauses of time and reason. Then eleven task types train the structures step by step.",de:"Startet mit „Why use participle clauses?“: ein Vorher-Nachher-Vergleich an einem Bahnsteig in Mumbai und sechs Gründe, warum -ing-Konstruktionen Texte kürzer, lebendiger und natürlicher machen. Ein zweiter Teil zeigt Zeit- und Begründungssätze. Danach trainieren elf Aufgabentypen die Strukturen Schritt für Schritt."},
+  features:{en:["6 task types for relative clauses: shorten, rewrite, verb of perception + object + -ing, fix the mistake, word order, word bank","5 task types for time and reason: while/when/after/before, Being … / Not knowing …, join two sentences, fix the mistake, -ing or past?","Motivating “Why?” intro (before/after + six arguments), remembered per browser","Spinning wheels, CSV import for student names, streaks & bonus points","Tick which task types to practise, or pick one lesson","Single offline HTML file"],de:["6 Aufgabentypen zu Relativsätzen: kürzen, umformen, Wahrnehmungsverb + Objekt + -ing, Fehler korrigieren, Wortstellung, Wortbank","5 Aufgabentypen zu Zeit und Grund: while/when/after/before, Being … / Not knowing …, zwei Sätze verbinden, Fehler korrigieren, -ing oder Vergangenheit?","Motivierender „Why?“-Einstieg (Vorher/Nachher + sechs Argumente), wird pro Browser gemerkt","Glücksräder, CSV-Import für Namen, Streaks & Bonuspunkte","Aufgabentypen abhakbar oder nach Stunde wählbar","Eine einzige Offline-HTML-Datei"]},
   url:TR+"participle_clause_trainer_year9.html",online:"play",
   thumb:["linear-gradient(135deg,#140f24,#1f1638)",mock("#d2a8ff",`<div style="font-family:Outfit,sans-serif;font-size:.78rem;color:#e6edf3cc;line-height:1.6;margin-bottom:10px">The man <span style="color:#f778ba;text-decoration:line-through">who was</span> <span style="color:#56d364;font-weight:700">selling</span> tea…</div>`+ln("70%","#ffffff12")+btns("linear-gradient(135deg,#79c0ff,#d2a8ff)"),"🧩 Participle clauses","#1b1430")]},
 
@@ -661,11 +733,62 @@ function leafCount(ids){return ids.reduce((n,id)=>n+(ITEMS[id].type==="folder"?l
 function countLabel(n){return `${n} ${n===1?T[curLang].ui.app:T[curLang].ui.apps}`;}
 function badge(it){return it.badge?` <span class="skill-badge ${it.badge[1]}">${L(it.badge[0])}</span>`:"";}
 
+/* ═══════════ ÖKO-STECKBRIEF ═══════════
+   Wh = Energie, mL = Kühlwasser im Rechenzentrum; nur Verbrauch außerhalb des eigenen Geräts. Methodik: Abschnitt #eco.
+   off = Download einmalig · on = online, alle Geräte einer Nutzung · ai = gleiche Aufgabe per KI-Chat.
+   Neues Tool: MB × 0,114 = Wh (offline), × Geräte (online); KI = Prompts × 0,3 (+ lange × 2,5, Bilder × 1,35). Wasser: MB × 0,06 mL; KI ≈ Wh × 1 mL.
+   u = Einheit [de,en], n = Annahme [de,en], x = Zusatzzeilen [de,en,Wh,mL], w = Warnung [de,en]. */
+const ECO={
+ tenses:       {u:["1 Stunde · 25 Lernende","1 lesson · 25 students"],off:[0.007,0.004],on:[0.18,0.09],ai:[150,150],n:["20 KI-Prompts pro Person","20 AI prompts per person"]},
+ participle:   {u:["1 Stunde · 25 Lernende","1 lesson · 25 students"],off:[0.009,0.005],on:[0.23,0.12],ai:[150,150],n:["20 KI-Prompts pro Person","20 AI prompts per person"]},
+ activepassive:{u:["1 Stunde · 25 Lernende","1 lesson · 25 students"],off:[0.008,0.004],on:[0.19,0.10],ai:[150,150],n:["20 KI-Prompts pro Person","20 AI prompts per person"]},
+ indirect:     {u:["1 Stunde · 25 Lernende","1 lesson · 25 students"],off:[0.009,0.005],on:[0.23,0.12],ai:[150,150],n:["20 KI-Prompts pro Person","20 AI prompts per person"]},
+ sydney:       {u:["1 Stunde · 13 Paare","1 lesson · 13 pairs"],off:[0.009,0.005],on:[0.12,0.06],ai:[98,98],n:["KI als Spielleiter, 25 Züge pro Paar","AI as game master, 25 turns per pair"]},
+ cc:           {u:["1 Stunde · 25 Lernende","1 lesson · 25 students"],off:[0.043,0.022],on:[1.1,0.55],ai:[150,150],n:["20 KI-Prompts pro Person","20 AI prompts per person"],
+                x:[["10 Formeln als Vektorgrafik (SVG)","10 formulas as vector graphics (SVG)",6,6],["10 Formeln als Rastergrafik (KI-Bild)","10 formulas as raster images (AI image)",44,47]]},
+ pse:          {u:["1 Stunde · 25 Lernende","1 lesson · 25 students"],off:[0.016,0.008],on:[0.40,0.21],ai:[150,150],n:["20 KI-Prompts pro Person; Poster-PDFs einmalig +0,29 Wh","20 AI prompts per person; poster PDFs once +0.29 Wh"]},
+ hypo:         {u:["1 Stunde · 25 Lernende","1 lesson · 25 students"],off:[0.008,0.004],on:[0.21,0.11],ai:[113,113],n:["15 KI-Prompts pro Person","15 AI prompts per person"]},
+ chirality:    {u:["1 Doppelstunde · 6 Gruppen","1 double lesson · 6 groups"],off:[0.55,0.29],on:[3.3,1.7],ai:[54,54],n:["KI als Spielleiter, 30 Züge pro Gruppe","AI as game master, 30 turns per group"]},
+ arduino:      {u:["1 Sketch","1 sketch"],off:[0.003,0.002],on:[0.003,0.002],ai:[0.9,0.9],n:["3 Prompts; hochladen kann die KI nicht","3 prompts; the AI cannot upload"]},
+ pdfsvg:       {u:["1 PDF-Datei","1 PDF file"],off:[0.74,0.39],on:[0.74,0.39],ai:[3.1,3.1],n:["PDF als Anhang, 2 Prompts; echte Vektorpfade liefert der Chat nicht","PDF attached, 2 prompts; the chat does not deliver real vector paths"]},
+ sitzplan:     {u:["1 Sitzplan","1 seating plan"],off:[0.21,0.11],on:[0.21,0.11],ai:[11,11],n:["Klassenliste als Anhang. 🔒 Hier bleiben Schülerdaten lokal.","Class list attached. 🔒 Here student data stays local."]},
+ goodnotes:    {u:["1 Präsentation","1 presentation"],off:[0.003,0.002],on:[2.8,1.5],ai:[8,9],n:["2 PDFs als Anhang, 5 Prompts","2 PDFs attached, 5 prompts"],
+                w:["Online beim ersten Erzeugen ~25 MB (Python im Browser, gemessen komprimiert), danach aus dem Browser-Cache.","First online run ~25 MB (Python in the browser, measured compressed), cached by the browser afterwards."]},
+ zugang:       {u:["1 Mappe","1 binder"],off:[0.008,0.004],on:[0.008,0.004],ai:[1.5,1.5],n:["🔒 Passwörter gehören nie in einen KI-Chat","🔒 Passwords never belong in an AI chat"]},
+ scan:         {u:["1 Scanvorgang","1 scan"],off:[0.002,0.001],on:[0.002,0.001],ai:[1.2,1.2],n:["4 Prompts Schritt-für-Schritt-Hilfe","4 prompts step-by-step help"]}
+};
+const ECO_PHONE=19; // Wh pro Smartphone-Ladung
+const ecoE=()=>curLang==="en"?1:0;
+function fmtNum(x){const loc=ecoE()?"en":"de";
+  return x<0.01?x.toLocaleString(loc,{maximumSignificantDigits:1})
+       :x<1?x.toLocaleString(loc,{maximumSignificantDigits:2})
+       :x<100?x.toLocaleString(loc,{maximumFractionDigits:1})
+       :Math.round(x).toLocaleString(loc);}
+function ecoEquiv(wh){const e=ecoE();
+  if(wh>=ECO_PHONE/2)return "≈ "+fmtNum(wh/ECO_PHONE)+(e?" phone charges":" Handy-Ladungen");
+  const s=wh/10*3600; // 10-W-LED
+  return s<60?`≈ LED ${fmtNum(s)} s`:`≈ LED ${fmtNum(s/60)} min`;}
+function ecoRow(ic,label,v,cls=""){return `<div class="eco-row${cls}"><span class="eco-ic">${ic}</span><span class="eco-lbl">${label}</span><span class="eco-v">⚡ ${fmtNum(v[0])} Wh</span><span class="eco-v">💧 ${fmtNum(v[1])} mL</span><span class="eco-eq">${ecoEquiv(v[0])}</span></div>`;}
+function ecoTile(id){const d=ECO[id];if(!d)return"";const e=ecoE();
+  return `<div class="eco-tile" title="${e?"Energy offline vs. AI chat for the same task":"Energie offline im Vergleich zum KI-Chat für dieselbe Aufgabe"}">🌱 ⚡ ${fmtNum(d.off[0])} Wh <span class="eco-vs">vs.</span> 🤖 ${fmtNum(d.ai[0])} Wh</div>`;}
+function ecoCard(id){const d=ECO[id];if(!d)return"";const e=ecoE(),t=a=>a[e];
+  let h=`<div class="eco-card"><div class="eco-head">🌱 ${e?"Eco profile":"Öko-Steckbrief"} · <span>${t(d.u)}</span></div>`
+   +ecoRow("⬇️","Download, offline",d.off)
+   +ecoRow("🌐","Online (GitHub)",d.on)
+   +ecoRow("🤖",e?"Same task via AI chat":"Gleiche Aufgabe per KI-Chat",d.ai," eco-ai")
+   +`<div class="eco-note">${t(d.n)}</div>`;
+  if(d.x)h+=d.x.map(r=>`<div class="eco-row eco-sub eco-ai"><span class="eco-ic">🧪</span><span class="eco-lbl">${r[e]}</span><span class="eco-v">⚡ ${fmtNum(r[2])} Wh</span><span class="eco-v">💧 ${fmtNum(r[3])} mL</span><span class="eco-eq">${ecoEquiv(r[2])} · ⬇️ ≈ 0</span></div>`).join("");
+  if(d.w)h+=`<div class="eco-warn">⚠️ ${t(d.w)}</div>`;
+  return h+`<a class="eco-more" href="#eco" data-close>${e?"How we calculate":"So wird gerechnet"} →</a></div>`;}
+function ecoFolder(id){const v=ITEMS[id].children.map(c=>ECO[c]).filter(Boolean);if(!v.length)return"";
+  const off=Math.max(...v.map(d=>d.off[0])),ai=Math.min(...v.map(d=>d.ai[0])),e=ecoE();
+  return `<div class="eco-tile eco-folder">🌱 ${e?"All apps here":"Alle Apps hier"}: ⬇️ offline ≤ ${fmtNum(off)} Wh <span class="eco-vs">vs.</span> 🤖 ≥ ${fmtNum(ai)} Wh</div>`;}
+
 function tileHTML(id){
   const it=ITEMS[id],f=it.type==="folder",ui=T[curLang].ui;
   return `<button class="tool-tile ${subjectOf[id]}${f?" folder":""}" data-open="${id}" aria-label="${esc(L(it.title))}">
     <div class="thumb" style="background:${it.thumb[0]}">${it.thumb[1]}</div>
-    <div class="tt-body"><div class="tt-tag">${L(it.tag)}</div><h4>${L(it.title)}${badge(it)}</h4><p>${L(it.short)}</p></div>
+    <div class="tt-body"><div class="tt-tag">${L(it.tag)}</div><h4>${L(it.title)}${badge(it)}</h4><p>${L(it.short)}</p>${ecoTile(id)}</div>
     <div class="tt-foot">${f?`<span class="folder-chip">📁 ${countLabel(leafCount(it.children))}</span><span class="tt-open">${ui.openFolder}</span>`:`<span></span><span class="tt-open">${ui.details}</span>`}</div>
   </button>`;
 }
@@ -683,7 +806,7 @@ function appHTML(id){
   const it=ITEMS[id],ui=T[curLang].ui,dl=it.download||it.url;
   const dlAttr=it.dlName?`download="${esc(it.dlName)}"`:"download";
   let h=`<div class="v-app"><div class="app-preview" style="background:${it.thumb[0]}">${it.thumb[1]}</div><div class="app-info ${subjectOf[id]}">
-    <div class="tt-tag">${L(it.tag)}</div><h3 id="viewerTitle">${L(it.title)}${badge(it)}</h3><p>${L(it.desc)}</p>
+    <div class="tt-tag">${L(it.tag)}</div><h3 id="viewerTitle">${L(it.title)}${badge(it)}</h3>${ecoCard(id)}<p>${L(it.desc)}</p>
     <ul class="app-features">${(it.features[curLang]||it.features.en).map(x=>`<li>${x}</li>`).join("")}</ul>
     <div class="download-row"><a href="${dl}" ${dlAttr} class="btn btn-primary">${it.labels?L(it.labels.download):ui.download}</a><a href="${it.url}" target="_blank" rel="noopener" class="btn btn-play">${it.labels?L(it.labels.online):ui[it.online]}</a></div>`;
   if(it.extras)h+=`<div class="extras"><h5>${ui.extras}</h5>${it.extras.map(x=>`<a href="${x.href}" download="${esc(x.name)}"><span>${x.icon}</span><span>${L(x.label)}</span><small>${x.meta}</small></a>`).join("")}</div>`;
@@ -692,7 +815,7 @@ function appHTML(id){
 }
 function folderHTML(id){
   const it=ITEMS[id];
-  return `<div class="v-folder"><div class="v-folder-head"><span class="category-icon">📁</span><div><div class="tt-tag ${subjectOf[id]}" style="color:var(--tile-c1)">${L(it.tag)}</div><h3 id="viewerTitle">${L(it.title)}</h3><p>${L(it.desc)}</p></div></div><div class="tile-grid">${it.children.map(tileHTML).join("")}</div></div>`;
+  return `<div class="v-folder"><div class="v-folder-head"><span class="category-icon">📁</span><div><div class="tt-tag ${subjectOf[id]}" style="color:var(--tile-c1)">${L(it.tag)}</div><h3 id="viewerTitle">${L(it.title)}</h3><p>${L(it.desc)}</p>${ecoFolder(id)}</div></div><div class="tile-grid">${it.children.map(tileHTML).join("")}</div></div>`;
 }
 function showItem(id){
   if(!ITEMS[id]){if(viewer.open)viewer.close();return;}
