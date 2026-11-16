@@ -44,8 +44,12 @@
   optional `x` Zusatzzeilen, `w` Warnung; Texte als [de,en]. Rendering: `ecoTile` (Kachel),
   `ecoCard` (Detailansicht über der Beschreibung), `ecoFolder` (Ordnerkopf, aus Kindern berechnet).
 - Methodik steht im Abschnitt `#eco` (T-Keys `secEco…`, `eco1T…`, `ecoFacts`).
-- Neues Tool → `ECO`-Eintrag ergänzen: MB × 0,114 = Wh (offline), × Geräte (online);
-  KI = Prompts × 0,3 (+ lange Prompts × 2,5, Bilder × 1,35). Wasser: MB × 0,06 mL; KI ≈ Wh × 1 mL.
-  Dateigröße als komprimierten Transfer messen (`curl -H 'Accept-Encoding: gzip' -w '%{size_download}'`).
+- Neues Tool → `ECO`-Eintrag ergänzen. Einheitliche Regel (seit 2026-11-16 für alle Einträge):
+  - Größe = übertragene Bytes, gemessen mit `curl -s -o /dev/null -H 'Accept-Encoding: gzip' -w '%{size_download}' <URL>`
+    (HTML kommt gzip-komprimiert, ZIP/PDF unverändert). 1 MB = 10⁶ Byte. Nie `ls -l`.
+  - `off` = Datei hinter dem Download-Button (z. B. GoodNotes-ZIP, Scan-PDF-Anleitung): MB × 0,114 Wh, MB × 0,06 mL.
+  - `on` = online geöffnete Seite × Geräte der Nutzung (25 Lernende, 13 Paare, 6 Gruppen, Werkzeuge 1).
+    Ausnahme goodnotes: `on` = 25 MB Python-Laufzeit beim ersten Erzeugen.
+  - KI = Prompts × 0,3 (+ lange Prompts × 2,5, Bilder × 1,35) Wh; Wasser ≈ Wh × 1 mL.
+  - Nach Änderungen an einer Datei ihren Eintrag neu messen.
 - `kiprep` hat noch keinen Eintrag.
-- Werte bisher aus der rohen Dateigröße (`ls -l`), nicht komprimiert: so sind alle Einträge gerechnet (z. B. tenses 62 KB → 0,007 Wh). Neue Einträge genauso rechnen.
